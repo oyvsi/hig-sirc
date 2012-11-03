@@ -1,12 +1,21 @@
 package no.hig.sss.sirc;
 
+import java.awt.Dimension;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.swing.JFrame;
 
-public class sIRC {
+
+public class sIRC extends JFrame {
 	private static ResourceBundle messages;
 	private static Locale currentLocale;
+	
+	public sIRC() {
+		GUI gui = new GUI(messages);
+		setPreferredSize(new Dimension(800, 600));
+		setJMenuBar(gui.menu());		
+	}
 	
 	/**
 	 * @param args
@@ -15,7 +24,10 @@ public class sIRC {
 		currentLocale = Locale.getDefault();
 		messages = ResourceBundle.getBundle("i18n/I18N", currentLocale);
 		
-		System.out.println(messages.getString("connectionOptions.dialogTitle"));
-	}
+		sIRC irc = new sIRC();
+		irc.pack();
+		irc.setVisible(true);
+		irc.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+	}
 }

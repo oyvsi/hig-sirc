@@ -1,0 +1,28 @@
+Krav:
+
+-Krav i RFC2812
+
+-Your IRC client will have to support multiple windows showing different channels simultaneously. 
+-Private chats should also be shown in separate windows. 
+-There should also be a separate window for showing the list of available channels (should only be shown when the user requests it.)
+
+-The windows showing a chat channel need to have a list of users shown in some way, 
+-and it should be possible to bring up a pop up window through right clicking in this list. The pop up menu should then give access to the most common tasks that a user would want to perform against a user in this list.
+
+-The participant list should be sorted in such a way that those with the most rights is at the top of the list, 
+for users with the same set of privileges the list should be sorted alphabetically.
+
+-In the IRC client main window there should be an overview of the channel windows 
+(possibly organized as the program bar in the windows environment) that makes it easy to switch between the different channels. 
+-Clicking on a channel that does not have the focus should bring that channel to the front. 
+-Clicking on a focused channel should minimize that channels window.
+
+-The user should be able to maintain a list of the different servers/networks 
+-(and it should be possible to import the list of servers/networks that accompany the mIRC IRC client ( http://www.mirc.co.uk )) 
+-The user should be allowed to enter their details like name, username and other information needed to connect to an IRC server. 
+Make sure that last used settings are stored so that it is set as default when starting the client.
+
+ -The user should also be able to define the color/font/size and so on for the different types of messages 
+ (ie pure text, private message, status messages and so on.)
+ -The users preferences should be stored as preferences on the system 
+ while you can decide for yourself how you would like to store the list of servers/networks. 

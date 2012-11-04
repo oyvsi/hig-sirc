@@ -12,9 +12,15 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -26,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.SpinnerListModel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -41,7 +48,9 @@ public class TextOptions extends JFrame {
 	private JCheckBox bold, italic;
 	private JSpinner size;
 	private StyledDocument preview;
-	
+	private Integer[] sizeValues = {8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72};
+	private ColorSelector color;
+		
 	public TextOptions() {
 		fontName = new JComboBox<String>(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
 		fontName.addItemListener(new ItemListener() {
@@ -53,7 +62,7 @@ public class TextOptions extends JFrame {
 		
 		
 		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout());
+		mainPanel.setLayout(new BorderLayout(10, 15));
 		
 		JPanel previewPanel = new JPanel();
 		previewPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED), "Preview"));
@@ -78,15 +87,27 @@ public class TextOptions extends JFrame {
 		bold.addItemListener(update);
 		italic = new JCheckBox("Italic");
 		italic.addItemListener(update);
-		size = new JSpinner();
+		size = new JSpinner(new SpinnerListModel(sizeValues));
 		size.setValue(12);
-		size.addChangeListener(new ChangeListener() {
-			
-			@Override
+		size.addChangeListener(new ChangeListener() {			
 			public void stateChanged(ChangeEvent e) {
 				updatePreview();
 			}
 		});
+		color = new ColorSelector();
+		
+		// Add custom action to ColorSelector?
+		color.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				updatePreview();			
+			}
+		});
+		
+		JLabel colorLabel = new JLabel("Color");
 
 		previewPanel.add(text);
 		settingsPanel.add(fontLabel);
@@ -94,6 +115,8 @@ public class TextOptions extends JFrame {
 		settingsPanel.add(bold);
 		settingsPanel.add(italic);
 		settingsPanel.add(size);
+		settingsPanel.add(color);
+		settingsPanel.add(colorLabel);
 		
 		updatePreview();
 
@@ -120,6 +143,7 @@ public class TextOptions extends JFrame {
 		StyleConstants.setBold(sas, bold.isSelected());
 		StyleConstants.setItalic(sas, italic.isSelected());
 		StyleConstants.setFontSize(sas, (int) size.getValue());
+		StyleConstants.setForeground(sas, color.getColor());
 		
 		return sas;
 	}

@@ -1,5 +1,8 @@
 Krav:
 
+-Andre
+-Støtte for ÆØÅ (utf-8)
+
 -Krav i RFC2812
 
 -Your IRC client will have to support multiple windows showing different channels simultaneously. 

@@ -2,6 +2,7 @@ package no.hig.sss.sirc;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
@@ -11,6 +12,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.event.MenuListener;
 
 class GUI {
@@ -57,7 +59,11 @@ class GUI {
 		// Items for help
 		JMenuItem helpHelp = createMenuItem("sIRC.helpMenu.Help", "help", "", "sIRC.tooltip.Help");
 		JMenuItem helpAbout = createMenuItem("sIRC.helpMenu.About", "about", "", "sIRC.tooltip.About");
-
+	
+		//Mnemonics	
+		fileExit.setMnemonic(KeyEvent.VK_Q);
+        fileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.ALT_MASK));
+		
 		// Adding buttons to menu
 		fileMenu.add(fileExit);
 		

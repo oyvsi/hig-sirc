@@ -13,7 +13,7 @@ public class sIRC extends JFrame {
 	
 	public sIRC() {
 		GUI gui = new GUI(messages);
-		setPreferredSize(new Dimension(800, 600));
+		setExtendedState(MAXIMIZED_BOTH);
 		setJMenuBar(gui.menu());		
 	}
 	

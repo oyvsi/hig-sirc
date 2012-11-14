@@ -25,26 +25,28 @@ import javax.swing.JTextField;
  *
  */
 @SuppressWarnings("serial")
-public class ConnectionOptions extends JPanel {
+public class ConnectionOptions extends JInternalFrame {
 	private static ResourceBundle messages;
 	
 	private JTextField fullName, email, nickname, altnick;
 	JButton add, change, delete, sort, connect, ok, cancel, help;
 	private JComboBox<String> networks, servers;
 	private JCheckBox invisible;
-	private GridBagLayout l;
+	private GridBagLayout layout = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private String dummyNetworks[] = { "Velg et nettverk", "Nettverk 1" ,"Nettverk 2" };
 	private String dummyServers[] = { "Random EU Undernet server", "Server med virkelig langt navn" };
-	
+	private ConnectionOptionsPrefs cop;
 	/**
 	 * Constructor for the class, handle all GUI layout and fill inn initial values
 	 * 
 	 */
 	
-	public ConnectionOptions (GridBagLayout layout, ConnectionOptionsPrefs cop) {
-		l = layout;
-		setLayout (l);
+	public ConnectionOptions () {
+		
+		cop = new ConnectionOptionsPrefs();
+		
+		setLayout (layout);
 		JPanel networksPanel = new JPanel ();
 		networksPanel.setLayout (new FlowLayout(FlowLayout.LEFT, 0, 0));
 		networksPanel.add (new JLabel (messages.getString ("connectionOptions.label.networks")));
@@ -105,6 +107,9 @@ public class ConnectionOptions extends JPanel {
 		ok.setToolTipText(messages.getString("connectionOptions.button.ok.tooltip"));
 		cancel.setToolTipText(messages.getString("connectionOptions.button.cancel.tooltip"));
 		help.setToolTipText(messages.getString("connectionOptions.button.help.tooltip"));
+		
+		pack ();
+		setVisible(true);
 	}
 	
 	/**
@@ -133,7 +138,7 @@ public class ConnectionOptions extends JPanel {
 		gbc.gridy = y;
 		gbc.gridwidth = width;
 		gbc.gridheight = height;
-		l.setConstraints(c, gbc);
+		layout.setConstraints(c, gbc);
 		add (c);
 	}
 	
@@ -188,12 +193,11 @@ public class ConnectionOptions extends JPanel {
 	 * @param args
 	 */
 	
-/*	public static void main(String[] args) {
+	public static void main(String[] args) {
 		ConnectionOptions.setMessages (ResourceBundle.getBundle ("i18n/I18N"));
 		ConnectionOptions co = new ConnectionOptions ();
-		co.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		co.pack ();
+	//	co.setDefaultCloseOperation(EXIT_ON_CLOSE);
+	//	co.pack ();
 		co.setVisible(true);
 	}
-*/
 }

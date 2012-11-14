@@ -8,31 +8,24 @@ import javax.swing.JTextField;
 import jerklib.Channel;
 import jerklib.Session;
 
-
 public class TabComponent extends JPanel {
-	JTextArea textField;
-	JTextField inputField;
+	final int PM = 0;
+	final int CHANNEL = 1;
+	
+	private int type;
+	JTextArea chatArea;
 	ConnectionManagement cm = sIRC.conManagement;
-	JList users;
-
-	public TabComponent(Channel chan) {
-		
-		
-		textField = new JTextArea();
-		inputField = new JTextField();
 	
+	public TabComponent(int type) {
+		if(type == PM) {
+			this.type = PM;
+		}
+		else if(type == CHANNEL) {
+			this.type = CHANNEL;
+			// add userlist
+		}	
+		chatArea = new JTextArea();
 	}		
-	
-	public JTextArea getTextArea() {
-		return textField;
-		
-	}
-		
-	public void updateOwnNick() {
-		
-		
-	}
-	
 	
 }
 

@@ -27,6 +27,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -43,7 +44,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-public class TextOptions extends JFrame {
+public class TextOptions extends JInternalFrame {
 	private JComboBox<String> fontName;
 	private JCheckBox bold, italic;
 	private JSpinner size;

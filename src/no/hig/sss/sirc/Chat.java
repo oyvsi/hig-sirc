@@ -23,7 +23,6 @@ public class Chat {
 	private JTabbedPane jtp = new JTabbedPane();
 
 
-
 	public Chat(ChatManager wm, final String chan, final String chatType, final String nick) {
 		channelWindow = new JFrame(chan.toString());
 		manager = wm;
@@ -45,9 +44,7 @@ public class Chat {
                 	manager.relayClientChannelMessage(chan, text);
                 }
                 
-                
-                
-                
+                                
                }
            }
 		});

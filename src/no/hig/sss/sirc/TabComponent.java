@@ -9,8 +9,8 @@ import jerklib.Channel;
 import jerklib.Session;
 
 public class TabComponent extends JPanel {
-	final int PM = 0;
-	final int CHANNEL = 1;
+	public final static int PM = 0;
+	public final static int CHANNEL = 1;
 	
 	private int type;
 	JTextArea chatArea;

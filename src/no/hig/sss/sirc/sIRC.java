@@ -7,7 +7,6 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -48,6 +47,7 @@ public class sIRC extends JFrame {
 		
 		
 		GUI gui = new GUI(messages);
+
 		
 		
 		

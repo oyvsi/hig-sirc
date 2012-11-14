@@ -77,6 +77,7 @@ public class Options extends JPanel
     }
     void setViewColorOptions() {
     	JPanel to = new TextOptions();  
+		to.setBorder(null);
 		to.setPreferredSize(new Dimension(800, 600));
 		to.setBorder(null);
 		//to.pack();

@@ -14,14 +14,23 @@ public class TabContainer {
 	public TabContainer() {
 		tabs = new JTabbedPane();	
 	}	
-	
+
 	public void message(String message, String identifier, int type) {
+
 		
 	}
 	
+
+	public boolean hasTab(String identifier) {
+		return (tabs.indexOfTab(identifier) == -1);
+		
+		
+	}
+
 	private void addTab(String identifier, int type) {
 		tab = new TabComponent(type);
 		tabContainer.put(identifier, tab);
 		tabs.addTab(identifier, tab);	
 	}
+
 }

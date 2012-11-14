@@ -25,25 +25,22 @@ import jerklib.ConnectionManager;
 public class sIRC extends JFrame {
 	private static ResourceBundle messages;
 	private static Locale currentLocale;
+	public static TabContainer tabContainer;
 	public static ConnectionManagement conManagement;
 	private JPanel outerPanel;
 	JDesktopPane jdp;
 	
 	public sIRC() {
-		//conManagement = new ConnectionManagement();
+		tabContainer = new TabContainer();
+		conManagement = new ConnectionManagement();
 		//jdp = new JDesktopPane();
 		
-		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab("Console", createTab("Console"));
-        tabbedPane.addTab("golv", createTab("golv"));
-        tabbedPane.addTab("nilssl", createTab("nilssl"));
-        System.out.println(tabbedPane.getTitleAt(tabbedPane.getSelectedIndex()));
         
         //JPanel tmp = (JPanel) tabbedPane.getTabComponentAt(1);
         //System.out.println(tmp);
         
         
-        add(tabbedPane);
+        add(tabContainer);
 		
 		
 		GUI gui = new GUI(messages);

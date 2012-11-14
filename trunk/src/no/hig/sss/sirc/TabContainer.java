@@ -7,30 +7,33 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-public class TabContainer {
-	JTabbedPane tabs;
+public class TabContainer extends JTabbedPane {
 	TabComponent tab;
 	Map<String, TabComponent> tabContainer = new HashMap<String, TabComponent>();
+
 	public TabContainer() {
-		tabs = new JTabbedPane();	
+		super();
+		newTab("Console", TabComponent.CONSOLE);
 	}	
 
 	public void message(String message, String identifier, int type) {
-
-		
+		int index = getTabIndex(identifier);
+		if(index == -1) {
+			newTab(identifier, type);
+			index = getTabIndex(identifier);
+		}
+		setSelectedIndex(index);
+		tabContainer.get(identifier).addText(message);
+		System.out.println("Got message: " + message);
 	}
 	
-
-	public boolean hasTab(String identifier) {
-		return (tabs.indexOfTab(identifier) == -1);
-		
-		
+	public int getTabIndex(String identifier) {
+		return indexOfTab(identifier);
 	}
 
-	private void addTab(String identifier, int type) {
+	private void newTab(String identifier, int type) {
 		tab = new TabComponent(type);
 		tabContainer.put(identifier, tab);
-		tabs.addTab(identifier, tab);	
+		addTab(identifier, tab);	
 	}
-
 }

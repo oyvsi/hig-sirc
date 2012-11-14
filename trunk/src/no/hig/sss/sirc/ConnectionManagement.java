@@ -14,10 +14,10 @@ public class ConnectionManagement implements IRCEventListener
 
 {
 	private ChatManager chatManager;
-	private ConnectionManager manager;
+	private static  ConnectionManager manager;
 	private Channel channel;
-	private Session session;
-	private Profile profile;
+	public Session session;
+	Profile profile;
 	
 	
 	public ConnectionManagement() 
@@ -32,7 +32,7 @@ public class ConnectionManagement implements IRCEventListener
 	
 	public void receiveEvent(IRCEvent e)
 	{
-			
+		
 		
 		if (e.getType() == Type.CONNECT_COMPLETE)
 		{
@@ -45,17 +45,17 @@ public class ConnectionManagement implements IRCEventListener
 		{
 			MessageEvent me = (MessageEvent) e;
 			chatManager.relayRemoteChannelMessage(me.getNick(), me.getMessage(), me.getChannel().getName());
-			
+			System.out.println(me.getChannel());
 		}
 		
 		else if (e.getType() == Type.PRIVATE_MESSAGE)
 		{
 			MessageEvent me = (MessageEvent) e;
-			System.out.println(me.getNick());
 			if(!(chatManager.getMap().containsKey(me.getNick()))) {
 				chatManager.createChat(me.getNick(), "PRIVATE", profile.getActualNick());
 			}
 			chatManager.relayRemotePrivateMessage(me.getNick(), me.getMessage());
+			System.out.println(me.getChannel());
 		}
 		
 		else if (e.getType() == Type.JOIN_COMPLETE)

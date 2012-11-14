@@ -9,16 +9,21 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
+import jerklib.ConnectionManager;
+
 
 public class sIRC extends JFrame {
 	private static ResourceBundle messages;
 	private static Locale currentLocale;
+	private ConnectionManagement conManagement;
 	JDesktopPane jdp;
 	
 	public sIRC() {
-		
+		conManagement = new ConnectionManagement();
 		jdp = new JDesktopPane();
 		GUI gui = new GUI(messages);
+		
+		
 		
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

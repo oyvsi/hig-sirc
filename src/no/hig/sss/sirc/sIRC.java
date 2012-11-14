@@ -68,20 +68,10 @@ public class sIRC extends JFrame {
 	public JPanel createTab(String nick) {
 		JPanel panel = new JPanel(new BorderLayout());
 		
-		DefaultListModel listModel = new DefaultListModel();
-		listModel.addElement("Oyvsi");
-		JList users = new JList(listModel);
 		
-		
-		JTextArea ja = new JTextArea(50,50);
-		JScrollPane userArea = new JScrollPane(users);
-		userArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		JScrollPane textArea = new JScrollPane(ja);
-		textArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
-        JTextField jtf = new JTextField();
-        panel.add(textArea, BorderLayout.NORTH);
-        panel.add(userArea, BorderLayout.WEST);
+		JTextArea ja = new JTextArea(37,37);
+		 JTextField jtf = new JTextField();
+        panel.add(ja, BorderLayout.NORTH);
         panel.add(jtf, BorderLayout.SOUTH);
         return panel;
 		

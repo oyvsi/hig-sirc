@@ -76,6 +76,7 @@ public class Options extends JPanel
     	splitPane.setRightComponent(co);
     }
     void setViewColorOptions() {
+
     	JPanel to = new TextOptions();  
 		to.setBorder(null);
 		to.setPreferredSize(new Dimension(800, 600));

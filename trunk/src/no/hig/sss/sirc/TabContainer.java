@@ -12,20 +12,16 @@ public class TabContainer {
 	TabComponent tab;
 	Map<String, TabComponent> tabContainer = new HashMap<String, TabComponent>();
 	public TabContainer() {
-		tabs = new JTabbedPane();
-		
-		
+		tabs = new JTabbedPane();	
 	}	
 	
-	public void addTab(String identifier) {
-		//tab = new TabComponent(identifier);
-		tabContainer.put(identifier, tab);
-		tabs.addTab(identifier, tab);
+	public void message(String message, String identifier, int type) {
 		
 	}
 	
-	
-	
-	
-
+	private void addTab(String identifier, int type) {
+		tab = new TabComponent(type);
+		tabContainer.put(identifier, tab);
+		tabs.addTab(identifier, tab);	
+	}
 }

@@ -24,9 +24,14 @@ public class ConnectionManagement implements IRCEventListener
 	{
 		profile = new Profile("golvSIRC");
 		manager = new ConnectionManager(profile);
-		session = manager.requestConnection("se.quakenet.org");
+		session = manager.requestConnection("irc.homelien.no");
 		session.addIRCEventListener(this);
 		chatManager = new ChatManager(this);
+	}
+	
+	public void ListChannels() {
+		System.out.println("Fant " + session.getChannels().size() + " kanaler");
+		
 	}
 	
 	
@@ -36,10 +41,18 @@ public class ConnectionManagement implements IRCEventListener
 		
 		if (e.getType() == Type.CONNECT_COMPLETE)
 		{
+			System.out.println("Connection Complete!");
 			e.getSession().join("#teamhenkars.sirc");
 			e.getSession().join("#teamhenkars.siirc");
 			chatManager.createChat("#teamhenkars.sirc",  "CHANNEL", profile.getActualNick());
 			chatManager.createChat("#teamhenkars.siirc", "CHANNEL", profile.getActualNick());
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			ListChannels();
 		}
 		else if (e.getType() == Type.CHANNEL_MESSAGE)
 		{

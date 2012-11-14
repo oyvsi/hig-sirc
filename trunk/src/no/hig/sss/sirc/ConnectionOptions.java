@@ -25,7 +25,7 @@ import javax.swing.JTextField;
  *
  */
 @SuppressWarnings("serial")
-public class ConnectionOptions extends JInternalFrame {
+public class ConnectionOptions extends JPanel {
 	private static ResourceBundle messages;
 	
 	private JTextField fullName, email, nickname, altnick;
@@ -108,7 +108,7 @@ public class ConnectionOptions extends JInternalFrame {
 		cancel.setToolTipText(messages.getString("connectionOptions.button.cancel.tooltip"));
 		help.setToolTipText(messages.getString("connectionOptions.button.help.tooltip"));
 		
-		pack ();
+//		pack ();
 		setVisible(true);
 	}
 	

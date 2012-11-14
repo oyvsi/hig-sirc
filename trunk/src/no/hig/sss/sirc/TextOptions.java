@@ -44,7 +44,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-public class TextOptions extends JInternalFrame {
+public class TextOptions extends JPanel {
 	private JComboBox<String> fontName;
 	private JCheckBox bold, italic;
 	private JSpinner size;
@@ -152,7 +152,7 @@ public class TextOptions extends JInternalFrame {
 	public static void main(String args[]) {
 		TextOptions test = new TextOptions();
 		test.setPreferredSize(new Dimension(800, 600));
-		test.pack();
+		//test.pack();
 		test.setVisible(true);
 		
 	}	

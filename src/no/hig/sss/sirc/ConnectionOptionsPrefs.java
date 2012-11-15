@@ -1,9 +1,14 @@
 package no.hig.sss.sirc;
 
+import java.awt.List;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Properties;
 
 /**
@@ -14,7 +19,8 @@ import java.util.Properties;
  */
 public class ConnectionOptionsPrefs {
 	private String fullName, email, nickname, altnick; 
-	
+	private ArrayList<String> servers = new ArrayList<String>();
+	private ArrayList<String> networks = new ArrayList<String>();
 	File 	filePrefs,  	// Prefs file for ConnectionOptions preferences 
 			fileServers; 	// List of known servers
 	
@@ -57,9 +63,40 @@ public class ConnectionOptionsPrefs {
 			this.setAltnick(pro.getProperty("altnick"));
 			
 			fis.close();
+			
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
+		try {
+			FileInputStream fis = new FileInputStream(fileServers);
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis, Charset.forName("UTF-8")));
+			
+			String line;
+			String[] split;
+			while (((line = br.readLine()) != null )) {
+				if(line.contains("[networks]"))
+					break;
+				
+			}
+			
+			while (((line = br.readLine()) != null )) {
+				if(line.equals("[servers]"))
+					break;
+				split = line.split("=");
+				networks.add(line);
+			}
+			while (((line = br.readLine()) != null )){
+				split = line.split("");
+				servers.add(line);
+			}
+			fis.close();
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+	public void readServers() {
+		
+		
 	}
 
 	public static void main(String[] args) {
@@ -106,6 +143,17 @@ public class ConnectionOptionsPrefs {
 	 */
 	public String getEmail() {
 		return email;
+	}
+	public String[] getNetworks() {
+		String[] str = new String[networks.size()];
+	    str = networks.toArray(str);
+	    
+		return str;
+	}
+	public String[] getServers() {
+	    String[] str = new String[servers.size()];
+	    str = servers.toArray(str);
+		return str;
 	}
 
 	/**

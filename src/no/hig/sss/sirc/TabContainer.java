@@ -15,6 +15,7 @@ public class TabContainer extends JTabbedPane {
 	public TabContainer() {
 		super();
 		newTab("Console", TabComponent.CONSOLE);
+		setMnemonicAt(0, KeyEvent.VK_1);
 	}	
 	
 	
@@ -26,7 +27,6 @@ public class TabContainer extends JTabbedPane {
 			index = getTabIndex(identifier);
 			setSelectedIndex(index);
 			switch(index) {
-				case 0:  setMnemonicAt(index, KeyEvent.VK_1); break;
 				case 1:  setMnemonicAt(index, KeyEvent.VK_2); break;
 				case 2:  setMnemonicAt(index, KeyEvent.VK_3); break;
 				case 3:  setMnemonicAt(index, KeyEvent.VK_4); break;

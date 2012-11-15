@@ -7,10 +7,17 @@ import javax.swing.JTextField;
 
 public class InputField extends JTextField  {
 	private ConnectionManagement connectionManagement;
+	private TabContainer tabs;
+	private int type;
+	private String identifier;
 		
-	public InputField() {
+	public InputField(int type, String identifier) {
 		super();
 		connectionManagement = sIRC.conManagement;
+		tabs = sIRC.tabContainer;
+		this.type = type;
+		this.identifier = identifier;
+		
 		this.addKeyListener(new KeyAdapter() {
 	           public void keyReleased(KeyEvent e) {
 	               if(e.getKeyCode() == KeyEvent.VK_ENTER ) {
@@ -22,14 +29,14 @@ public class InputField extends JTextField  {
 	           }
 		});
 	}
-	
+	//TODO: Needs cleanup
 	public void parseInput(String text) {
 		if(text.charAt(0) == '/') {
 			try {	// Command with argument
 				String[] line = text.split("\\s+");
 				String cmd = line[0].toLowerCase().substring(1);
 				System.out.println("cmd: " + cmd);
-				if(cmd == "join") {
+				if(cmd.equals("join")) {
 					System.out.println("join " + line.length);
 					if(line.length == 2) { // Where to validate? 
 						System.out.println("All good, passing join");
@@ -37,17 +44,20 @@ public class InputField extends JTextField  {
 					} else {
 						System.out.println("Length is not two");
 					}
-				} else {
+				}
+				else if(cmd.equals("connect")) {
+					connectionManagement.connect("FlashSirc", line[1]);
+				}
+				else {
 					System.out.println("Unknown command");
 				}
 			} catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			};
-			//System.out.println(command);
-		
-		}
-		
-		
+		} else {	// Just normal chat
+			connectionManagement.channelMsg(identifier, text, type);
+			
+		}	
 	}
 	 
 }

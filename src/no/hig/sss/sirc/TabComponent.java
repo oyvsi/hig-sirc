@@ -8,6 +8,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import jerklib.Channel;
 import jerklib.Session;
@@ -18,13 +19,16 @@ public class TabComponent extends JPanel {
 	public final static int CHANNEL = 1;
 	
 	private int type;
+	private String identifier;
 	private JTextArea chatArea;
 	private JScrollPane scrollPane;
 	JTextField inputArea;
 	ConnectionManagement cm = sIRC.conManagement;
 	
-	public TabComponent(int type) {
+	public TabComponent(int type, String identifier) {
 		setLayout(new BorderLayout());
+		
+		this.identifier = identifier;
 		if(type == PM) {
 			this.type = PM;
 		}
@@ -34,7 +38,7 @@ public class TabComponent extends JPanel {
 		}	
 		chatArea = new JTextArea();
 		chatArea.setEditable(false);
-		inputArea = new InputField();
+		inputArea = new InputField(type, identifier);
 		add(inputArea, BorderLayout.SOUTH);
 		add(chatArea, BorderLayout.NORTH);
 		scrollPane = new JScrollPane(chatArea);
@@ -42,9 +46,13 @@ public class TabComponent extends JPanel {
 	}
 	
 	public void addText(String message) {
-		chatArea.append(message + "\n"); 
-		JScrollBar scrollBar = scrollPane.getVerticalScrollBar(); // Should maybe do some fancy thread wait
-		scrollBar.setValue(scrollBar.getMaximum());		
+		chatArea.append(message + "\n");
+	    SwingUtilities.invokeLater(new Thread() {
+	    	public void run() {
+	    		JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+	    		scrollBar.setValue(scrollBar.getMaximum());
+	    	}
+	    });
 	}
 	
 }

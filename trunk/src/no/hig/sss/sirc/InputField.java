@@ -7,8 +7,7 @@ import javax.swing.JTextField;
 
 public class InputField extends JTextField  {
 	private ConnectionManagement connectionManagement;
-	
-	
+		
 	public InputField() {
 		super();
 		connectionManagement = sIRC.conManagement;
@@ -26,8 +25,25 @@ public class InputField extends JTextField  {
 	
 	public void parseInput(String text) {
 		if(text.charAt(0) == '/') {
-			String command = text.substring(1, text.indexOf(""));
-			System.out.println(command);
+			try {	// Command with argument
+				String[] line = text.split("\\s+");
+				String cmd = line[0].toLowerCase().substring(1);
+				System.out.println("cmd: " + cmd);
+				if(cmd == "join") {
+					System.out.println("join " + line.length);
+					if(line.length == 2) { // Where to validate? 
+						System.out.println("All good, passing join");
+						connectionManagement.joinChannel(line[1]);
+					} else {
+						System.out.println("Length is not two");
+					}
+				} else {
+					System.out.println("Unknown command");
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+			};
+			//System.out.println(command);
 		
 		}
 		

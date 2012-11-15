@@ -22,6 +22,8 @@ public class TabComponent extends JPanel {
 	private String identifier;
 	private JTextArea chatArea;
 	private JScrollPane scrollPane;
+	private UsersContainer userContainer;
+	private JList users;
 	JTextField inputArea;
 	ConnectionManagement cm = sIRC.conManagement;
 	
@@ -34,7 +36,9 @@ public class TabComponent extends JPanel {
 		}
 		else if(type == CHANNEL) {
 			this.type = CHANNEL;
-			// add userlist
+			userContainer = new UsersContainer(cm.getUsers(identifier));
+			users = new JList(userContainer);
+			add(users, BorderLayout.EAST);
 		}	
 		chatArea = new JTextArea();
 		chatArea.setEditable(false);

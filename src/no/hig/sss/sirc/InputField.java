@@ -46,7 +46,7 @@ public class InputField extends JTextField  {
 					}
 				}
 				else if(cmd.equals("connect")) {
-					connectionManagement.connect("FlashSirc", line[1]);
+					connectionManagement.connect("GOLVsirc", line[1]);
 				}
 				else {
 					System.out.println("Unknown command");

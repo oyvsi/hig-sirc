@@ -3,6 +3,7 @@ package no.hig.sss.sirc;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import jerklib.ConnectionManager;
 import jerklib.Profile;
@@ -53,7 +54,10 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.message(message, me.getNick(), TabComponent.PM);
 		}
 		
-		else if (e.getType() == Type.JOIN_COMPLETE) { }
+		else if (e.getType() == Type.JOIN_COMPLETE) { 
+			JoinCompleteEvent je = (JoinCompleteEvent) e;
+			sIRC.tabContainer.message("", je.getChannel().getName(), TabComponent.CHANNEL);
+		}
 		
 		else if (e.getType() == Type.CTCP_EVENT) {
 			KickEvent ke = (KickEvent) e;
@@ -86,7 +90,6 @@ public class ConnectionManagement implements IRCEventListener {
 		if(isConnected) {
 			System.out.println("Connected, trying");
 			session.join(channelName);
-			sIRC.tabContainer.message("", channelName, TabComponent.CHANNEL);
 		} else {
 			sIRC.tabContainer.message("Can't join channel when not connected.", "Console", TabComponent.CONSOLE);
 		}
@@ -96,6 +99,10 @@ public class ConnectionManagement implements IRCEventListener {
 		Date timeStamp = new Date();
 		SimpleDateFormat time = new SimpleDateFormat("HH:mm");
 		return time.format(timeStamp) + "  " + nick + " " + msg;
+	}
+	
+	public List<String> getUsers(String channelName) {
+		return session.getChannel(channelName).getNicks();
 	}
 		
 }

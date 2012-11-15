@@ -21,8 +21,8 @@ public class TabContainer extends JTabbedPane {
 		if(index == -1) {
 			newTab(identifier, type);
 			index = getTabIndex(identifier);
+			setSelectedIndex(index);
 		}
-		//setSelectedIndex(index);
 		tabContainer.get(identifier).addText(message);
 		System.out.println("Got message: " + message);
 	}

@@ -55,7 +55,10 @@ public class InputField extends JTextField  {
 				e.printStackTrace();
 			};
 		} else {	// Just normal chat
-			connectionManagement.channelMsg(identifier, text, type);
+			if(type == TabComponent.CHANNEL)
+				connectionManagement.channelMsg(identifier, text, type);
+			else
+				connectionManagement.privMsg(identifier, text, type);
 			
 		}	
 	}

@@ -20,6 +20,7 @@ public class TabComponent extends JPanel {
 	private int type;
 	private JTextArea chatArea;
 	private JScrollPane scrollPane;
+	JTextField inputArea;
 	ConnectionManagement cm = sIRC.conManagement;
 	
 	public TabComponent(int type) {
@@ -32,6 +33,10 @@ public class TabComponent extends JPanel {
 			// add userlist
 		}	
 		chatArea = new JTextArea();
+		chatArea.setEditable(false);
+		inputArea = new InputField();
+		add(inputArea, BorderLayout.SOUTH);
+		add(chatArea, BorderLayout.NORTH);
 		scrollPane = new JScrollPane(chatArea);
 		add(scrollPane);
 	}

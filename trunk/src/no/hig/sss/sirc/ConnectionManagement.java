@@ -82,7 +82,7 @@ public class ConnectionManagement implements IRCEventListener
 		else
 		{
 			tabContainer.message(e.getRawEventData(), "Console", TabComponent.CONSOLE);
-			System.out.println(e.getType() + " " + e.getRawEventData());
+			//System.out.println(e.getType() + " " + e.getRawEventData());
 		}
 	}
 	

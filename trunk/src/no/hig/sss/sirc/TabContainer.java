@@ -32,7 +32,7 @@ public class TabContainer extends JTabbedPane {
 	}
 
 	private void newTab(String identifier, int type) {
-		tab = new TabComponent(type);
+		tab = new TabComponent(type, identifier);
 		tabContainer.put(identifier, tab);
 		addTab(identifier, tab);	
 	}

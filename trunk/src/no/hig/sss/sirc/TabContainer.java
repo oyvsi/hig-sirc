@@ -22,7 +22,7 @@ public class TabContainer extends JTabbedPane {
 			newTab(identifier, type);
 			index = getTabIndex(identifier);
 		}
-		setSelectedIndex(index);
+		//setSelectedIndex(index);
 		tabContainer.get(identifier).addText(message);
 		System.out.println("Got message: " + message);
 	}

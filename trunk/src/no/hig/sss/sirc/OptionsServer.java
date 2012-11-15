@@ -18,6 +18,11 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  * This class handles the dialog for getting the connection options for an IRC session.
@@ -26,25 +31,26 @@ import javax.swing.JTextField;
  *
  */
 @SuppressWarnings("serial")
-public class ConnectionOptions extends JPanel {
+public class OptionsServer extends JPanel implements TreeSelectionListener {
 	private static ResourceBundle messages;
 	
-	private JTextField fullName, email, nickname, altnick;
-	JButton add, change, delete, sort, connect, ok, cancel, help;
+	JButton add, change, delete, sort, ok, cancel, help;
 	private JComboBox<String> networks, servers;
-	private JCheckBox invisible;
 	private GridBagLayout layout = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private String dummyNetworks[] = { "Velg et nettverk", "Nettverk 1" ,"Nettverk 2" };
 	private String dummyServers[] = { "Random EU Undernet server", "Server med virkelig langt navn" };
 	private ConnectionOptionsPrefs cop;
 	
+	JTree tree;
+	DefaultTreeModel treeModel;
+	
 	/**
 	 * Constructor for the class, handle all GUI layout and fill inn initial values
 	 * 
 	 */
 	
-	public ConnectionOptions () {
+	public OptionsServer () {
 		
 		cop = new ConnectionOptionsPrefs();
 		
@@ -52,20 +58,40 @@ public class ConnectionOptions extends JPanel {
 		
 		
 		
+		
+		
 		setLayout (layout);
-		JPanel networksPanel = new JPanel ();
-		networksPanel.setLayout (new FlowLayout(FlowLayout.LEFT, 0, 0));
-		networksPanel.add (new JLabel (messages.getString ("connectionOptions.label.networks")));
 		
+		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
+		DefaultMutableTreeNode tConn = new DefaultMutableTreeNode("Connection");
+	    DefaultMutableTreeNode tStyle = new DefaultMutableTreeNode("Style");
+	    DefaultMutableTreeNode tPersonal = new DefaultMutableTreeNode("Personal");
+	    DefaultMutableTreeNode tServer = new DefaultMutableTreeNode("Server");
+	    DefaultMutableTreeNode tColor = new DefaultMutableTreeNode("Color");
+	    DefaultMutableTreeNode tText = new DefaultMutableTreeNode("Text");
+	    
+	    treeModel = new DefaultTreeModel(tRoot);
+	    
+	    tree = new JTree(treeModel);
+	    
+	    treeModel.insertNodeInto(tStyle, tRoot, 0);
+	    treeModel.insertNodeInto(tConn, tRoot, 0);
+	    tree.expandPath(tree.getPathForRow(0)); // expands path 1
+	    tree.setRootVisible(false); // Hides root node
+	    
+	    
+	    tConn.add(tPersonal);
+	    tConn.add(tServer);
+	    tStyle.add(tColor);
+	    tStyle.add(tText);	    
+	    
+	    tree.addTreeSelectionListener(this);
 		
-		networksPanel.add (networks = new JComboBox<String>(cop.getNetworks()));
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.insets = new Insets(2, 2, 2, 2);
-		// Add the choose network panel
-		add (1, 1, 2, 1, networksPanel);
-		// Add the choose server drop down box
-		add (1, 2, 2, 1, servers = new JComboBox<String>(cop.getServers()));
-		gbc.anchor = GridBagConstraints.CENTER;
+	    addServers(tRoot);
+	    
+	    add (2,2,0,0, tree);
+		
+	    gbc.anchor = GridBagConstraints.CENTER;
 		// Create the panel with the four buttons on the right
 		JPanel alterServerButtons = new JPanel ();
 		alterServerButtons.setLayout (new GridLayout (4,1));
@@ -75,24 +101,7 @@ public class ConnectionOptions extends JPanel {
 		alterServerButtons.add (sort = new JButton (messages.getString("connectionOptions.button.sort.buttonText")));
 		// Add the buttons on the right
 		add (3, 1, 1, 3, alterServerButtons);
-		add (2, 3, connect = new JButton (messages.getString("connectionOptions.button.connect.buttonText")));
 		
-		// Add labels to text fields
-		gbc.anchor = GridBagConstraints.EAST;
-		add (1, 4, new JLabel(messages.getString("connectionOptions.label.fullName")));
-		add (1, 5, new JLabel(messages.getString("connectionOptions.label.email")));
-		add (1, 6, new JLabel(messages.getString("connectionOptions.label.nickname")));
-		add (1, 7, new JLabel(messages.getString("connectionOptions.label.altNick")));
-		// Add textfields
-		gbc.anchor = GridBagConstraints.WEST;
-		add (2, 4, fullName = new JTextField (cop.getFullName(),20));
-		add (2, 5, email= new JTextField (cop.getEmail(), 20));
-		add (2, 6, nickname = new JTextField (cop.getNickname(), 15));
-		add (2, 7, altnick = new JTextField (cop.getAltnick(), 15));
-		
-		
-		// Add invisible checkbox
-		add (2,8, invisible = new JCheckBox (messages.getString("connectionOptions.checkbox.invisible.label")));
 		// Add ok, cancel, help buttons
 		JPanel okCancelHelpPanel = new JPanel ();
 		okCancelHelpPanel.setLayout (new GridLayout(1, 3));
@@ -107,11 +116,6 @@ public class ConnectionOptions extends JPanel {
 		change.setToolTipText(messages.getString("connectionOptions.button.change.tooltip"));
 		delete.setToolTipText(messages.getString("connectionOptions.button.delete.tooltip"));
 		sort.setToolTipText(messages.getString("connectionOptions.button.sort.tooltip"));
-		fullName.setToolTipText(messages.getString("connectionOptions.textfield.fullName.tooltip"));
-		email.setToolTipText(messages.getString("connectionOptions.textfield.email.tooltip"));
-		nickname.setToolTipText(messages.getString("connectionOptions.textfield.nickname.tooltip"));
-		altnick.setToolTipText(messages.getString("connectionOptions.textfield.altNick.tooltip"));
-		invisible.setToolTipText(messages.getString("connectionOptions.checkbox.invisible.tooltip"));
 		ok.setToolTipText(messages.getString("connectionOptions.button.ok.tooltip"));
 		cancel.setToolTipText(messages.getString("connectionOptions.button.cancel.tooltip"));
 		help.setToolTipText(messages.getString("connectionOptions.button.help.tooltip"));
@@ -149,48 +153,12 @@ public class ConnectionOptions extends JPanel {
 		layout.setConstraints(c, gbc);
 		add (c);
 	}
-	
-	/**
-	 * @return the fullName
-	 */
-	public String getFullName() {
-		return fullName.getText();
-	}
-
-
-
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email.getText();
-	}
-
-
-
-	/**
-	 * @return the nickname
-	 */
-	public String getNickname() {
-		return nickname.getText();
-	}
-
-
-
-	/**
-	 * @return the altnick
-	 */
-	public String getAltnick() {
-		return altnick.getText();
-	}
-
-
 
 	/**
 	 * @param messages the messages to set
 	 */
 	public static void setMessages(ResourceBundle messages) {
-		ConnectionOptions.messages = messages;
+		OptionsServer.messages = messages;
 	}
 
 
@@ -207,5 +175,24 @@ public class ConnectionOptions extends JPanel {
 	//	co.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	//	co.pack ();
 		co.setVisible(true);
+	}
+
+	@Override
+	public void valueChanged(TreeSelectionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	private void addServers(DefaultMutableTreeNode t) {
+		String[] networks = cop.getNetworks();
+		
+		for(String network : networks) {
+			
+			DefaultMutableTreeNode i = new DefaultMutableTreeNode(network);
+			treeModel.insertNodeInto(i, t, 0);
+			i.add(new DefaultMutableTreeNode("Test1"));
+		}
+		DefaultMutableTreeNode first = new DefaultMutableTreeNode("Test1");
+		treeModel.insertNodeInto(first, t, 0);
+		first.add(new DefaultMutableTreeNode("Test1"));
 	}
 }

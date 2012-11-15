@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -16,7 +18,8 @@ public class TabComponent extends JPanel {
 	public final static int CHANNEL = 1;
 	
 	private int type;
-	JTextArea chatArea;
+	private JTextArea chatArea;
+	private JScrollPane scrollPane;
 	ConnectionManagement cm = sIRC.conManagement;
 	
 	public TabComponent(int type) {
@@ -29,11 +32,15 @@ public class TabComponent extends JPanel {
 			// add userlist
 		}	
 		chatArea = new JTextArea();
-		add(chatArea);
+		scrollPane = new JScrollPane(chatArea);
+		add(scrollPane);
 	}
 	
 	public void addText(String message) {
-		chatArea.append(message + "\n");
+		chatArea.append(message + "\n"); 
+		JScrollBar scrollBar = scrollPane.getVerticalScrollBar(); // Should maybe do some fancy thread wait
+		scrollBar.setValue(scrollBar.getMaximum());
+		
 		
 	}
 	

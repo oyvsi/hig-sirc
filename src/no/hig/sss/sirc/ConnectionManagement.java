@@ -4,7 +4,6 @@ package no.hig.sss.sirc;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import jerklib.Channel;
 import jerklib.ConnectionManager;
 import jerklib.Profile;
 import jerklib.Session;
@@ -18,16 +17,15 @@ public class ConnectionManagement implements IRCEventListener
 {
 	private TabContainer tabContainer;
 	private static ConnectionManager manager;
-	private Channel channel;
 	public Session session;
 	Profile profile;
 	
 	
 	public ConnectionManagement() 
 	{
-		profile = new Profile("golvSIRC");
+		profile = new Profile("flashSIRC");
 		manager = new ConnectionManager(profile);
-		session = manager.requestConnection("se.quakenet.org");
+		session = manager.requestConnection("irc.homelien.no");
 		session.addIRCEventListener(this);
 		tabContainer = sIRC.tabContainer;
 	}
@@ -45,7 +43,7 @@ public class ConnectionManagement implements IRCEventListener
 		if (e.getType() == Type.CONNECT_COMPLETE)
 		{
 			System.out.println("Connection Complete!");
-			e.getSession().join("#teamhenkars.sirc");
+			//e.getSession().join("#teamhenkars.sirc");
 
 		}
 		else if (e.getType() == Type.CHANNEL_MESSAGE)
@@ -98,8 +96,15 @@ public class ConnectionManagement implements IRCEventListener
 		manager.requestConnection(hostName);
 	}
 	
-	public void newChannel(String channelName) {
-		if(session.isConnected()) session.join(channelName);
+	public void joinChannel(String channelName) {
+		System.out.println("Asked to join " + channelName);
+		if(session.isConnected()) {
+			System.out.println("Connected, trying");
+			session.join(channelName);
+			tabContainer.message("", channelName, TabComponent.CHANNEL);
+		} else {
+			tabContainer.message("Can't join channel when not connected.", "Console", TabComponent.CONSOLE);
+		}
 	}
 		
 }

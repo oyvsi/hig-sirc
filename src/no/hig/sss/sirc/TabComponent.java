@@ -44,12 +44,7 @@ public class TabComponent extends JPanel {
 	public void addText(String message) {
 		chatArea.append(message + "\n"); 
 		JScrollBar scrollBar = scrollPane.getVerticalScrollBar(); // Should maybe do some fancy thread wait
-		scrollBar.setValue(scrollBar.getMaximum());
-		
-		
+		scrollBar.setValue(scrollBar.getMaximum());		
 	}
 	
 }
-
-
-	

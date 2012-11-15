@@ -9,6 +9,7 @@ import jerklib.Profile;
 import jerklib.Session;
 import jerklib.events.*;
 import jerklib.events.IRCEvent.Type;
+import jerklib.events.impl.MessageEventImpl;
 import jerklib.listeners.IRCEventListener;
 
 
@@ -39,29 +40,20 @@ public class ConnectionManagement implements IRCEventListener {
 		if (e.getType() == Type.CONNECT_COMPLETE) {
 			System.out.println("Connection Complete!");
 			isConnected = true;
-			//e.getSession().join("#teamhenkars.sirc");
 		}
-		else if (e.getType() == Type.CHANNEL_MESSAGE) {			
+		else if (e.getType() == Type.CHANNEL_MESSAGE) {	
 			MessageEvent me = (MessageEvent) e;
-			Date timeStamp = new Date();
-			SimpleDateFormat time = new SimpleDateFormat("HH:mm");
-			String message = time.format(timeStamp) + " " + me.getNick() + " " + me.getMessage();
-			sIRC.tabContainer.message(message, me.getChannel().getName(), TabComponent.CHANNEL);
-			
-			System.out.println(me.getChannel());
+			String message = buildSay(me.getNick(), me.getMessage());
+			sIRC.tabContainer.message(message, me.getChannel().getName(), TabComponent.CHANNEL);			
 		}
 		
 		else if (e.getType() == Type.PRIVATE_MESSAGE) {
 			MessageEvent me = (MessageEvent) e;
-			Date timeStamp = new Date();
-			SimpleDateFormat time = new SimpleDateFormat("HH:mm");
-			String message = time.format(timeStamp) + " " + me.getNick() + " " + me.getMessage();
+			String message = buildSay(me.getNick(), me.getMessage());
 			sIRC.tabContainer.message(message, me.getNick(), TabComponent.PM);
 		}
 		
-		else if (e.getType() == Type.JOIN_COMPLETE)
-		{
-		}
+		else if (e.getType() == Type.JOIN_COMPLETE) { }
 		
 		else if (e.getType() == Type.CTCP_EVENT) {
 			KickEvent ke = (KickEvent) e;
@@ -69,19 +61,20 @@ public class ConnectionManagement implements IRCEventListener {
 		
 		else {
 			sIRC.tabContainer.message(e.getRawEventData(), "Console", TabComponent.CONSOLE);
-			//System.out.println(e.getType() + " " + e.getRawEventData());
 		}
 	}
 	
-	public void channelMsg(String identifier, String msg, int type) {
-		System.out.println("ID " + identifier + "Msg: " + msg);
-		sIRC.tabContainer.message(msg, identifier, type);
-		session.getChannel(identifier).say(msg);
+	public void channelMsg(String channelName, String msg, int type) {
+		String message = buildSay(session.getNick(), msg);
+		sIRC.tabContainer.message(message, channelName, type);
+		session.getChannel(channelName).say(msg);
 
 	}
 	
-	public void privMsg(String nick, String msg) {
-		session.sayPrivate(nick, msg);
+	public void privMsg(String toNick, String msg, int type) {
+		String message = buildSay(session.getNick(), msg);
+		sIRC.tabContainer.message(message, toNick, type);
+		session.sayPrivate(toNick, msg);
 	}
 	
 	public void newServer(String hostName) {
@@ -99,5 +92,10 @@ public class ConnectionManagement implements IRCEventListener {
 		}
 	}
 	
+	private String buildSay(String nick, String msg) {
+		Date timeStamp = new Date();
+		SimpleDateFormat time = new SimpleDateFormat("HH:mm");
+		return time.format(timeStamp) + "  " + nick + " " + msg;
+	}
 		
 }

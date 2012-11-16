@@ -1,11 +1,13 @@
 package no.hig.sss.sirc;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.List;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -17,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -38,9 +41,8 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
 	private JComboBox<String> networks, servers;
 	private GridBagLayout layout = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
-	private String dummyNetworks[] = { "Velg et nettverk", "Nettverk 1" ,"Nettverk 2" };
-	private String dummyServers[] = { "Random EU Undernet server", "Server med virkelig langt navn" };
 	private ConnectionOptionsPrefs cop;
+	private ArrayList<OptionsServerPrefs> osp;
 	
 	JTree tree;
 	DefaultTreeModel treeModel;
@@ -63,33 +65,22 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
 		setLayout (layout);
 		
 		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
-		DefaultMutableTreeNode tConn = new DefaultMutableTreeNode("Connection");
-	    DefaultMutableTreeNode tStyle = new DefaultMutableTreeNode("Style");
-	    DefaultMutableTreeNode tPersonal = new DefaultMutableTreeNode("Personal");
-	    DefaultMutableTreeNode tServer = new DefaultMutableTreeNode("Server");
-	    DefaultMutableTreeNode tColor = new DefaultMutableTreeNode("Color");
-	    DefaultMutableTreeNode tText = new DefaultMutableTreeNode("Text");
 	    
 	    treeModel = new DefaultTreeModel(tRoot);
-	    
 	    tree = new JTree(treeModel);
 	    
-	    treeModel.insertNodeInto(tStyle, tRoot, 0);
-	    treeModel.insertNodeInto(tConn, tRoot, 0);
+	    addServers(tRoot);
 	    tree.expandPath(tree.getPathForRow(0)); // expands path 1
 	    tree.setRootVisible(false); // Hides root node
 	    
-	    
-	    tConn.add(tPersonal);
-	    tConn.add(tServer);
-	    tStyle.add(tColor);
-	    tStyle.add(tText);	    
-	    
 	    tree.addTreeSelectionListener(this);
 		
-	    addServers(tRoot);
 	    
-	    add (2,2,0,0, tree);
+	    
+	    JScrollPane sp = new JScrollPane(tree);
+	    sp.setPreferredSize(new Dimension(200,200));
+	    //sp.setMaximumSize(new Dimension(150,200));
+	    add (1,1,1,1, sp);
 		
 	    gbc.anchor = GridBagConstraints.CENTER;
 		// Create the panel with the four buttons on the right
@@ -100,7 +91,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
 		alterServerButtons.add (delete = new JButton (messages.getString("connectionOptions.button.delete.buttonText")));
 		alterServerButtons.add (sort = new JButton (messages.getString("connectionOptions.button.sort.buttonText")));
 		// Add the buttons on the right
-		add (3, 1, 1, 3, alterServerButtons);
+		add (2, 0, 1, 3, alterServerButtons);
 		
 		// Add ok, cancel, help buttons
 		JPanel okCancelHelpPanel = new JPanel ();
@@ -109,7 +100,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
 		okCancelHelpPanel.add (cancel = new JButton (messages.getString("button.cancel.buttonText")));
 		okCancelHelpPanel.add (help = new JButton (messages.getString("button.help.buttonText")));
 		gbc.anchor = GridBagConstraints.CENTER;
-		add (1, 9, 3, 1, okCancelHelpPanel);
+		add (0, 5, 3, 1, okCancelHelpPanel);
 		
 		// Set all tooltip texts
 		add.setToolTipText(messages.getString("connectionOptions.button.add.tooltip"));
@@ -168,31 +159,99 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
 	 * 
 	 * @param args
 	 */
-	
-	public static void main(String[] args) {
-		ConnectionOptions.setMessages (ResourceBundle.getBundle ("i18n/I18N"));
-		ConnectionOptions co = new ConnectionOptions ();
-	//	co.setDefaultCloseOperation(EXIT_ON_CLOSE);
-	//	co.pack ();
-		co.setVisible(true);
-	}
-
 	@Override
 	public void valueChanged(TreeSelectionEvent arg0) {
-		// TODO Auto-generated method stub
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                tree.getLastSelectedPathComponent();
+		if (node == null) return;
+        if (node.isLeaf()) {
+    		switch (node.toString()) {
+    		case "Personal":
+    			break;
+    			
+    		case "Server":
+    			break;
+
+    		case "Text":
+    			break;
+    		
+        	case "Color":
+        		break;
+    		}
+    	System.out.print(node.toString());
+        }
+	}
+	
+	/** Takes string that looks like 6661-6669GROUP, or 6665-6668,7000GROUP
+	 * 
+	 * @param raw
+	 * @return array of ints
+	 */
+	private int[] toPort(String raw) {
+		ArrayList<Integer> al = new ArrayList<Integer>();
+		String[] temp;
+		String[] temp2;
+		temp = raw.split("G");
+		
+		temp = temp[0].split(",");
+		for(String temp3 : temp) {
+			if(temp3.contains("-")) {
+				temp2 = temp3.split("-");
+				for(int i = Integer.valueOf(temp2[0]); i >= Integer.valueOf(temp2[1]); i++) {
+					al.add(i);
+				}
+			} else {
+				al.add(Integer.valueOf(temp3));
+			}
+		}
+	    int[] ports = new int[al.size()];
+	    for(int i = 0; i < al.size(); i++) {
+            ports[i] = al.get(i).intValue();
+        }
+	    for(int port : ports) {
+	    	System.out.print(port);
+	    }
+		return ports;
 		
 	}
+	
 	private void addServers(DefaultMutableTreeNode t) {
 		String[] networks = cop.getNetworks();
+		String[] tempN;
+		String[] tempS;
+		
+		osp = new ArrayList<OptionsServerPrefs>();
+		OptionsServerPrefs tempOsp;
+		String[] servers = cop.getServers();
+		
+		
+		int[] port;
+		
+		for(String server : servers) {
+			if(!server.isEmpty()) {
+				tempS = server.split(":");
+				port = toPort(tempS[2]);
+				tempOsp = new OptionsServerPrefs(tempS[1], tempS[1],tempS[3], port);
+				osp.add(tempOsp);
+				tempOsp = osp.get(0);
+				for(int portsss : tempOsp.getPort()) {
+					System.out.print(portsss);
+				}
+			}
+		}
 		
 		for(String network : networks) {
-			
-			DefaultMutableTreeNode i = new DefaultMutableTreeNode(network);
-			treeModel.insertNodeInto(i, t, 0);
-			i.add(new DefaultMutableTreeNode("Test1"));
+			if(!network.isEmpty()){
+				tempN = network.split("=");
+				DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(tempN[1]);
+				treeModel.insertNodeInto(dmtn, t, 0);
+				
+				for(int i = 0; i < osp.size(); i++ ) {
+					if(osp.get(i).getServerGroup().equals(tempN[1])) {
+						dmtn.add(new DefaultMutableTreeNode(osp.get(i).getServerName()));
+					}
+				}
+			}
 		}
-		DefaultMutableTreeNode first = new DefaultMutableTreeNode("Test1");
-		treeModel.insertNodeInto(first, t, 0);
-		first.add(new DefaultMutableTreeNode("Test1"));
 	}
 }

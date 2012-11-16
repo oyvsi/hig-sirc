@@ -2,12 +2,18 @@ Krav:
 
 -Andre
 -Støtte for ÆØÅ (utf-8)
+	check. Sett eclipse til utf8 på prosjektet (resource).
+-Sette inn nummber i tabvisning. Må evt endre til LinkedHashMap å hente index fra der.
 
 -Krav i RFC2812
 
 -Your IRC client will have to support multiple windows showing different channels simultaneously. 
--Private chats should also be shown in separate windows. 
+	check
+-Private chats should also be shown in separate windows.
+	check
+
 -There should also be a separate window for showing the list of available channels (should only be shown when the user requests it.)
+	IRC-kommando LIST, men tidenes dårligste ide. 
 
 -The windows showing a chat channel need to have a list of users shown in some way, 
 -and it should be possible to bring up a pop up window through right clicking in this list. The pop up menu should then give access to the most common tasks that a user would want to perform against a user in this list.

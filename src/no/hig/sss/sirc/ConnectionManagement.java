@@ -36,6 +36,7 @@ public class ConnectionManagement implements IRCEventListener {
 	public void receiveEvent(IRCEvent e) {
 		if (e.getType() == Type.CONNECT_COMPLETE) {
 			System.out.println("Connection Complete!");
+			sIRC.tabContainer.message("Connection complete!", "Console", TabComponent.CONSOLE);
 			isConnected = true;
 		}
 		else if (e.getType() == Type.CHANNEL_MESSAGE) {	
@@ -57,6 +58,9 @@ public class ConnectionManagement implements IRCEventListener {
 		
 		else if (e.getType() == Type.CTCP_EVENT) {
 			KickEvent ke = (KickEvent) e;
+		}
+		else if(e.getType() == Type.CONNECTION_LOST) {
+			isConnected = false;
 		}
 		
 		else {
@@ -95,6 +99,16 @@ public class ConnectionManagement implements IRCEventListener {
 		}
 	}
 	
+	public void closeChat(String identifier, int type, String partMsg) {
+		if(type == TabComponent.CHANNEL) {
+			session.getChannel(identifier).part(partMsg);
+			sIRC.tabContainer.closeTab(identifier);
+		}
+		else if(type == TabComponent.PM) {
+			sIRC.tabContainer.closeTab(identifier);
+		}
+	}
+	
 	private String buildSay(String nick, String msg) {
 		Date timeStamp = new Date();
 		SimpleDateFormat time = new SimpleDateFormat("HH:mm");
@@ -104,15 +118,5 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	public List<String> getUsers(String channelName) {
 		return session.getChannel(channelName).getNicks();
-	}
-
-	public void closeChat(String identifier, int type) {
-		if(type == TabComponent.CHANNEL) {
-			session.getChannel(identifier).part(null);
-			sIRC.tabContainer.closeTab(identifier);
-		}
-		else if(type == TabComponent.PM) {
-			sIRC.tabContainer.closeTab(identifier);
-		}
 	}
 }

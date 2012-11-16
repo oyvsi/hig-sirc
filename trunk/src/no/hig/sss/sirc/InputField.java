@@ -29,7 +29,16 @@ public class InputField extends JTextField  {
 	           }
 		});
 	}
-	//TODO: Needs cleanup
+	
+	private String restLine(String[] line, int startAt) {
+		String msg = "";
+		for(int i = startAt; i < line.length; i++)
+			msg = msg.concat(line[i] + " ");
+		msg = msg.substring(0, msg.length()-1);	// Remove last space
+		return msg;
+	}
+	
+	//TODO: Needs cleanup. Maybe do regexp. Now it does not support multiple spaces in output to irc
 	public void parseInput(String text) {
 		//System.out.println("Input: " + text);
 		if(text.charAt(0) == '/') {	// commands
@@ -48,15 +57,14 @@ public class InputField extends JTextField  {
 				}
 				else if(cmd.equals("msg")) {	// Private messages
 					if(line.length > 2) {
-						String msg = "";
-						for(int i = 2; i < line.length; i++)
-							msg = msg.concat(line[i] + " ");
-						msg = msg.substring(0, msg.length()-1);	// Remove last space
-						connectionManagement.privMsg(line[1], msg, TabComponent.PM);
+						connectionManagement.privMsg(line[1], restLine(line, 2), TabComponent.PM);
 					}
 				}
 				else if(cmd.equals("wc")) {	 // Close window
-					connectionManagement.closeChat(identifier, type);
+					String partMsg = null;
+					if(line.length > 1)
+						partMsg = restLine(line, 1);
+					connectionManagement.closeChat(identifier, type, partMsg);
 				}
 				else {
 					connectionManagement.channelMsg("Console", "Unknown command", TabComponent.CONSOLE); 

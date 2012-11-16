@@ -15,7 +15,6 @@ public class Options extends JPanel implements TreeSelectionListener {
 
 	  JTree tree;
 	  DefaultTreeModel treeModel;
-	
 	public Options() {
 
 		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
@@ -34,7 +33,6 @@ public class Options extends JPanel implements TreeSelectionListener {
 	    treeModel.insertNodeInto(tConn, tRoot, 0);
 	    tree.expandPath(tree.getPathForRow(0)); // expands path 1
 	    tree.setRootVisible(false); // Hides root node
-	    
 	    
 	    tConn.add(tPersonal);
 	    tConn.add(tServer);

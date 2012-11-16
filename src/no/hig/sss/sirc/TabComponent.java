@@ -10,13 +10,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import jerklib.Channel;
-import jerklib.Session;
-
 public class TabComponent extends JPanel {
 	public final static int CONSOLE = 0;
-	public final static int PM = 0;
-	public final static int CHANNEL = 1;
+	public final static int PM = 1;
+	public final static int CHANNEL = 2;
 	
 	private int type;
 	private String identifier;
@@ -49,7 +46,12 @@ public class TabComponent extends JPanel {
 		add(scrollPane);
 	}
 	
+	public void inFocus() {
+		inputArea.requestFocus();
+	}
+	
 	public void addText(String message) {
+		
 		chatArea.append(message + "\n");
 	    SwingUtilities.invokeLater(new Thread() {
 	    	public void run() {

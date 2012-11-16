@@ -7,18 +7,26 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class TabContainer extends JTabbedPane {
-	TabComponent tab;
-	Map<String, TabComponent> tabContainer = new HashMap<String, TabComponent>();
+	private Map<String, TabComponent> tabContainer = new HashMap<String, TabComponent>();
 
 	public TabContainer() {
 		super();
 		newTab("Console", TabComponent.CONSOLE);
 		setMnemonicAt(0, KeyEvent.VK_1);
+		//((TabComponent) getComponent(0)).inFocus(); // Does not work. Why?
+	
+		// We want to notify the tab it has been selected
+		addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				int index = getSelectedIndex();
+				((TabComponent) getComponent(index)).inFocus();
+			}
+		});
 	}	
-	
-	
 
 	public void message(String message, String identifier, int type) {
 		int index = getTabIndex(identifier);
@@ -43,11 +51,19 @@ public class TabContainer extends JTabbedPane {
 	
 	public int getTabIndex(String identifier) {
 		return indexOfTab(identifier);
+		
 	}
+	
 
 	private void newTab(String identifier, int type) {
-		tab = new TabComponent(type, identifier);
+		TabComponent tab = new TabComponent(type, identifier);
 		tabContainer.put(identifier, tab);
 		addTab(identifier, tab);	
 	}
+
+	public void closeTab(String identifier) {
+		remove(getTabIndex(identifier));
+		tabContainer.remove(identifier);
+	}
+	
 }

@@ -1,6 +1,5 @@
 package no.hig.sss.sirc;
 
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -10,9 +9,7 @@ import jerklib.Profile;
 import jerklib.Session;
 import jerklib.events.*;
 import jerklib.events.IRCEvent.Type;
-import jerklib.events.impl.MessageEventImpl;
 import jerklib.listeners.IRCEventListener;
-
 
 public class ConnectionManagement implements IRCEventListener {
 	private ConnectionManager manager;
@@ -35,7 +32,6 @@ public class ConnectionManagement implements IRCEventListener {
 		System.out.println("Fant " + session.getChannels().size() + " kanaler");
 		
 	}
-	
 	
 	public void receiveEvent(IRCEvent e) {
 		if (e.getType() == Type.CONNECT_COMPLETE) {
@@ -69,16 +65,20 @@ public class ConnectionManagement implements IRCEventListener {
 	}
 	
 	public void channelMsg(String channelName, String msg, int type) {
-		String message = buildSay(session.getNick(), msg);
-		sIRC.tabContainer.message(message, channelName, type);
-		session.getChannel(channelName).say(msg);
-
+		if(isConnected) {
+			String message = buildSay(session.getNick(), msg);
+			sIRC.tabContainer.message(message, channelName, type);
+			session.getChannel(channelName).say(msg);
+		}
 	}
 	
 	public void privMsg(String toNick, String msg, int type) {
-		String message = buildSay(session.getNick(), msg);
-		sIRC.tabContainer.message(message, toNick, type);
-		session.sayPrivate(toNick, msg);
+		if(isConnected) {
+			System.out.println("Got PM. Going to " + toNick + " Message was " + msg);
+			String message = buildSay(session.getNick(), msg);
+			sIRC.tabContainer.message(message, toNick, type);
+			session.sayPrivate(toNick, msg);
+		}
 	}
 	
 	public void newServer(String hostName) {
@@ -98,11 +98,21 @@ public class ConnectionManagement implements IRCEventListener {
 	private String buildSay(String nick, String msg) {
 		Date timeStamp = new Date();
 		SimpleDateFormat time = new SimpleDateFormat("HH:mm");
+		//session.getChannel("test").getUsersModes(nick);
 		return time.format(timeStamp) + "  " + nick + " " + msg;
 	}
 	
 	public List<String> getUsers(String channelName) {
 		return session.getChannel(channelName).getNicks();
 	}
-		
+
+	public void closeChat(String identifier, int type) {
+		if(type == TabComponent.CHANNEL) {
+			session.getChannel(identifier).part(null);
+			sIRC.tabContainer.closeTab(identifier);
+		}
+		else if(type == TabComponent.PM) {
+			sIRC.tabContainer.closeTab(identifier);
+		}
+	}
 }

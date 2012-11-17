@@ -27,10 +27,14 @@ public class sIRC extends JFrame {
 	private static Locale currentLocale;
 	public static ConnectionManagement conManagement;
 	public static TabContainer tabContainer;
+	public static Options options;
 	
 	public sIRC() {
 		conManagement = new ConnectionManagement(); 
 		tabContainer = new TabContainer();
+		options = new Options();
+		
+		
 		GUI gui = new GUI(messages);		       
         add(tabContainer);
 				
@@ -40,7 +44,9 @@ public class sIRC extends JFrame {
                   screenSize.width  - inset*2,
                   screenSize.height - inset*2);
 
-		setJMenuBar(gui.menu());				
+		setJMenuBar(gui.menu());
+		
+		options.createAndShowGUI();
 	}
 	
 	/**

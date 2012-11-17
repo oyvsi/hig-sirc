@@ -12,7 +12,7 @@ import java.util.*;
 public class Options extends JPanel implements TreeSelectionListener {
 	private JSplitPane splitPane;
 
-
+	JFrame jf;
 	  JTree tree;
 	  DefaultTreeModel treeModel;
 	public Options() {
@@ -54,6 +54,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		splitPane.setMinimumSize(new Dimension(600, 300));
 		
 		setViewPersonal();
+		
 	}
 	void setViewPersonal() {
 		OptionsPersonal.setMessages(ResourceBundle.getBundle("i18n/I18N"));
@@ -71,7 +72,6 @@ public class Options extends JPanel implements TreeSelectionListener {
 		JPanel to = new TextOptions();
 		to.setBorder(null);
 		to.setPreferredSize(new Dimension(800, 600));
-		// to.setVisible(true);
 		splitPane.setRightComponent(to);
 
 	}
@@ -79,8 +79,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 		JPanel to = new TextOptions();
 		to.setBorder(null);
 		to.setPreferredSize(new Dimension(800, 600));
-		// to.setVisible(true);
 		splitPane.setRightComponent(to);
+		
 
 	}
 
@@ -96,7 +96,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	 * Create the GUI and show it. For thread safety, this method should be
 	 * invoked from the event-dispatching thread.
 	 */
-	private static void createAndShowGUI() {
+	public void createAndShowGUI() {
 		 try {
 			UIManager.setLookAndFeel(
 			            UIManager.getCrossPlatformLookAndFeelClassName());
@@ -106,26 +106,27 @@ public class Options extends JPanel implements TreeSelectionListener {
 			e.printStackTrace();
 		}
 		// Create and set up the window.
-		JFrame frame = new JFrame("sIrc Options");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jf = new JFrame("sIrc Options");
+		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		Options sp = new Options();
-		frame.getContentPane().add(sp.getSplitPane());
+		jf.getContentPane().add(sp.getSplitPane());
 
 		// Display the window.
-		frame.pack();
-		frame.setVisible(true);
+		jf.pack();
+		jf.setVisible(true);
+		//jf.setAlwaysOnTop(true);
 	}
-
+/*
 	public static void main(String[] args) {
-		// Schedule a job for the event-dispatching thread:
-		// creating and showing this application's GUI.
+		//Schedule a job for the event-dispatching thread:
+		//creating and showing this application's GUI.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				createAndShowGUI();
+				Options.createAndShowGUI();
 			}
 		});
 	}
-
+*/
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
@@ -151,6 +152,10 @@ public class Options extends JPanel implements TreeSelectionListener {
     		}
       System.out.print(node.toString());
       }
+		
+	}
+	public void hideWindow() {
+		jf.setVisible(false);
 		
 	}
 }

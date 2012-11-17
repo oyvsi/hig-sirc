@@ -37,7 +37,7 @@ public class TextOptions extends JPanel {
 	private StyledDocument preview;
 		
 	public TextOptions() {
-		fontName = "serif";
+		fontName = "Serif";
 		italic = bold = false;
 		fontSize = 12;
 		color = new Color(0, 0, 0);	// Black
@@ -54,6 +54,7 @@ public class TextOptions extends JPanel {
 		text.setOpaque(false);	// Set transparent
 		
 		final JComboBox<String> selFontName = new JComboBox<String>(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
+		selFontName.setSelectedItem(fontName);
 		JLabel fontLabel = new JLabel("Font");	
 		final JCheckBox selBold = new JCheckBox("Bold");
 		final JCheckBox selItalic = new JCheckBox("Italic");

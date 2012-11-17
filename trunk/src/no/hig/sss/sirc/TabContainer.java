@@ -49,9 +49,13 @@ public class TabContainer extends JTabbedPane {
 		System.out.println("Got message: " + message);
 	}
 	
-	public int getTabIndex(String identifier) {
+	private int getTabIndex(String identifier) {
 		return indexOfTab(identifier);
 		
+	}
+	
+	private String getTabIdentifier(int index) {
+		return ((TabComponent) getComponent(index)).getIdentifier();
 	}
 	
 
@@ -64,6 +68,13 @@ public class TabContainer extends JTabbedPane {
 	public void closeTab(String identifier) {
 		remove(getTabIndex(identifier));
 		tabContainer.remove(identifier);
+	}
+	
+	public void closeAllTabs() {	// Close everything but the console
+		for(int i = getTabCount() - 1; i > 0; i--) {
+			tabContainer.remove(getTabIdentifier(i));
+			remove(i);
+		}
 	}
 
 	public void setTopText(String identifier, String text) {

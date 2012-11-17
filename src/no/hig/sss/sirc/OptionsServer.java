@@ -1,5 +1,6 @@
 package no.hig.sss.sirc;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -8,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.List;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -24,8 +26,12 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  * This class handles the dialog for getting the connection options for an IRC session.
@@ -34,15 +40,14 @@ import javax.swing.tree.DefaultTreeModel;
  *
  */
 @SuppressWarnings("serial")
-public class OptionsServer extends JPanel implements TreeSelectionListener {
+public class OptionsServer extends JPanel implements TreeSelectionListener, ActionListener{
 	private static ResourceBundle messages;
 	
-	JButton add, change, delete, sort, ok, cancel, help;
-	private JComboBox<String> networks, servers;
-	private GridBagLayout layout = new GridBagLayout();
-	private GridBagConstraints gbc = new GridBagConstraints();
+	JButton add, change, delete, ok, cancel, help;
 	private ConnectionOptionsPrefs cop;
 	private ArrayList<OptionsServerPrefs> osp;
+	
+	private BorderLayout bl;
 	
 	JTree tree;
 	DefaultTreeModel treeModel;
@@ -54,6 +59,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
 	
 	public OptionsServer () {
 		
+		bl = new BorderLayout();
 		cop = new ConnectionOptionsPrefs();
 		
 		cop.load();
@@ -61,8 +67,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
 		
 		
 		
-		
-		setLayout (layout);
+		setLayout(bl);
 		
 		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
 	    
@@ -74,77 +79,43 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
 	    tree.setRootVisible(false); // Hides root node
 	    
 	    tree.addTreeSelectionListener(this);
-		
-	    
 	    
 	    JScrollPane sp = new JScrollPane(tree);
-	    sp.setPreferredSize(new Dimension(200,200));
-	    //sp.setMaximumSize(new Dimension(150,200));
-	    add (1,1,1,1, sp);
-		
-	    gbc.anchor = GridBagConstraints.CENTER;
+	    sp.setPreferredSize(new Dimension(150,200));
+	    add(new JLabel("Server settings"), BorderLayout.NORTH);
+	    
+	    add(sp, BorderLayout.CENTER);
 		// Create the panel with the four buttons on the right
 		JPanel alterServerButtons = new JPanel ();
-		alterServerButtons.setLayout (new GridLayout (4,1));
+		alterServerButtons.setLayout (new GridLayout (3,1));
 		alterServerButtons.add (add = new JButton (messages.getString("connectionOptions.button.add.buttonText")));
+		add.addActionListener(this);
+
 		alterServerButtons.add (change= new JButton (messages.getString("connectionOptions.button.change.buttonText")));
+		change.addActionListener(this);
 		alterServerButtons.add (delete = new JButton (messages.getString("connectionOptions.button.delete.buttonText")));
-		alterServerButtons.add (sort = new JButton (messages.getString("connectionOptions.button.sort.buttonText")));
+		delete.addActionListener(this);
 		// Add the buttons on the right
-		add (2, 0, 1, 3, alterServerButtons);
-		
+		alterServerButtons.setSize(new Dimension(200,60));
+		add(alterServerButtons, BorderLayout.EAST);
 		// Add ok, cancel, help buttons
 		JPanel okCancelHelpPanel = new JPanel ();
-		okCancelHelpPanel.setLayout (new GridLayout(1, 3));
+		okCancelHelpPanel.setLayout (new GridLayout(1, 2));
 		okCancelHelpPanel.add (ok = new JButton (messages.getString("button.ok.buttonText")));
 		okCancelHelpPanel.add (cancel = new JButton (messages.getString("button.cancel.buttonText")));
 		okCancelHelpPanel.add (help = new JButton (messages.getString("button.help.buttonText")));
-		gbc.anchor = GridBagConstraints.CENTER;
-		add (0, 5, 3, 1, okCancelHelpPanel);
-		
+
+		add(okCancelHelpPanel, BorderLayout.SOUTH);
 		// Set all tooltip texts
 		add.setToolTipText(messages.getString("connectionOptions.button.add.tooltip"));
 		change.setToolTipText(messages.getString("connectionOptions.button.change.tooltip"));
 		delete.setToolTipText(messages.getString("connectionOptions.button.delete.tooltip"));
-		sort.setToolTipText(messages.getString("connectionOptions.button.sort.tooltip"));
 		ok.setToolTipText(messages.getString("connectionOptions.button.ok.tooltip"));
 		cancel.setToolTipText(messages.getString("connectionOptions.button.cancel.tooltip"));
 		help.setToolTipText(messages.getString("connectionOptions.button.help.tooltip"));
-		
-//		pack ();
 		setVisible(true);
 	}
 	
-	/**
-	 * Used to place components/panels in a single cell, take the x, y and component to be placed as a parameter
-	 * 
-	 * @param x the column for this component
-	 * @param y the row for this component
-	 * @param c the component to add to the layout
-	 */
-	private void add (int x, int y, Component c) {
-		add (x, y, 1, 1, c);
-	}
-	
-	/**
-	 * Used to add a panel/component to the layout, just take the x, y, width and height as well as the
-	 * component to be placed as a parameter
-	 * 
-	 * @param x the column for this component
-	 * @param y the row for this component
-	 * @param width the number of columns this component will spawn
-	 * @param height the number of rows this component will spawn
-	 * @param c the component to add to the layout
-	 */
-	private void add (int x, int y, int width, int height, Component c) {
-		gbc.gridx = x;
-		gbc.gridy = y;
-		gbc.gridwidth = width;
-		gbc.gridheight = height;
-		layout.setConstraints(c, gbc);
-		add (c);
-	}
-
 	/**
 	 * @param messages the messages to set
 	 */
@@ -178,7 +149,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
         	case "Color":
         		break;
     		}
-    	System.out.print(node.toString());
+    	//System.out.print(node.toString());
         }
 	}
 	
@@ -209,36 +180,37 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
             ports[i] = al.get(i).intValue();
         }
 	    for(int port : ports) {
-	    	System.out.print(port);
+	    	//System.out.print(port);
 	    }
 		return ports;
 		
 	}
 	
-	private void addServers(DefaultMutableTreeNode t) {
-		String[] networks = cop.getNetworks();
-		String[] tempN;
-		String[] tempS;
-		
-		osp = new ArrayList<OptionsServerPrefs>();
-		OptionsServerPrefs tempOsp;
-		String[] servers = cop.getServers();
-		
-		
-		int[] port;
-		
-		for(String server : servers) {
-			if(!server.isEmpty()) {
-				tempS = server.split(":");
-				port = toPort(tempS[2]);
-				tempOsp = new OptionsServerPrefs(tempS[1], tempS[1],tempS[3], port);
-				osp.add(tempOsp);
-				tempOsp = osp.get(0);
-				for(int portsss : tempOsp.getPort()) {
-					System.out.print(portsss);
+
+		private void addServers(DefaultMutableTreeNode t) {
+			String[] networks = cop.getNetworks();
+			String[] tempN;
+			String[] tempS;
+			
+			osp = new ArrayList<OptionsServerPrefs>();
+			OptionsServerPrefs tempOsp;
+			String[] servers = cop.getServers();
+			
+			
+			int[] port;
+			
+			for(String server : servers) {
+				if(!server.isEmpty()) {
+					tempS = server.split(":");
+					port = toPort(tempS[2]);
+					tempOsp = new OptionsServerPrefs(tempS[1], tempS[1],tempS[3], port);
+					osp.add(tempOsp);
+					tempOsp = osp.get(0);
+					for(int portsss : tempOsp.getPort()) {
+						System.out.print(portsss);
+					}
 				}
 			}
-		}
 		
 		for(String network : networks) {
 			if(!network.isEmpty()){
@@ -254,4 +226,36 @@ public class OptionsServer extends JPanel implements TreeSelectionListener {
 			}
 		}
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		System.out.println(ae.getActionCommand());
+		if (ae.getActionCommand().equals(messages.getString("connectionOptions.button.add.buttonText"))) {
+			
+		} else if(ae.getActionCommand().equals(messages.getString("connectionOptions.button.change.buttonText"))) {
+			 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent(); 
+			 System.out.println(node.toString());
+			 
+			 OptionsServerPrefs my = null;
+			 for(OptionsServerPrefs opfs : osp){
+				 if(node.toString().equals(opfs.getServerName())) {
+					 my = opfs;
+					 
+				 }
+			 }
+			 if(my != null)
+				 my.setServerName("hei!");
+		} else if(ae.getActionCommand().equals(messages.getString("connectionOptions.button.delete.buttonText"))) {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent(); 
+			System.out.println(node.toString());
+			for (int i = osp.size() - 1; i >= 0; --i) {
+				if (osp.get(i).getServerName().equals(node.toString())) {
+					osp.remove(i);
+					DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+					model.removeNodeFromParent(node);
+				}
+			}
+			
+		}
+	}	
 }

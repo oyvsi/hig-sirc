@@ -6,6 +6,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
 
 import javax.swing.JButton;
@@ -16,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public class OptionsPersonal extends JPanel {
+public class OptionsPersonal extends JPanel implements ActionListener {
 	private static ResourceBundle messages;
 	private JTextField fullName, email, nickname, altnick;
 	JButton connect, ok, cancel, help;
@@ -36,7 +38,7 @@ public class OptionsPersonal extends JPanel {
 		cop = new ConnectionOptionsPrefs();
 
 		cop.load();
-
+		
 		setLayout(layout);
 		JPanel networksPanel = new JPanel();
 		networksPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -46,7 +48,8 @@ public class OptionsPersonal extends JPanel {
 		gbc.anchor = GridBagConstraints.CENTER;
 		// Create the panel with the four buttons on the right
 		add(2,3,connect = new JButton(messages.getString("connectionOptions.button.connect.buttonText")));
-
+		connect.setActionCommand("connect");
+		connect.addActionListener(this);
 		// Add labels to text fields
 		gbc.anchor = GridBagConstraints.EAST;
 		add(1,
@@ -182,6 +185,17 @@ public class OptionsPersonal extends JPanel {
 	 */
 	public static void setMessages(ResourceBundle messages) {
 		OptionsPersonal.messages = messages;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		System.out.println(ae.getActionCommand());
+		if(ae.getActionCommand().equals("connect")) {
+			sIRC.conManagement.connect(cop.getNickname(), "irc.ifi.uio.no");
+			sIRC.options.hideWindow();
+		}
+		
+		
 	}
 
 }

@@ -62,9 +62,9 @@ public class ConnectionManagement implements IRCEventListener {
 
 		}
 		
-		else if (e.getType() == Type.CTCP_EVENT) {
-			KickEvent ke = (KickEvent) e;
-		}
+		//else if (e.getType() == Type.CTCP_EVENT) {
+		//	KickEvent ke = (KickEvent) e;
+		//}
 		else if(e.getType() == Type.CONNECTION_LOST) {
 			isConnected = false;
 		}

@@ -83,5 +83,9 @@ public class TabComponent extends JPanel {
 	    	}
 	    });
 	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
 	
 }

@@ -32,6 +32,7 @@ public class ConnectionManagement implements IRCEventListener {
 		if(isConnected) {
 			session.close(quitMsg);
 			isConnected = false;
+			sIRC.tabContainer.closeAllTabs();
 			sIRC.tabContainer.message("Disconnected from the server!", "Console", TabComponent.CONSOLE);
 		}
 	}

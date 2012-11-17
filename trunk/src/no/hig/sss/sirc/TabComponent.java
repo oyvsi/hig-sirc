@@ -1,13 +1,16 @@
 package no.hig.sss.sirc;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
+import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
 public class TabComponent extends JPanel {
@@ -21,13 +24,14 @@ public class TabComponent extends JPanel {
 	private JScrollPane scrollPane;
 	private UsersContainer userContainer;
 	private JList users;
-	JTextField inputArea;
-	ConnectionManagement cm = sIRC.conManagement;
+	private JTextField inputArea;
+	private ConnectionManagement cm = sIRC.conManagement;
+	private JTextField topText;
 	
 	public TabComponent(int type, String identifier) {
 		setLayout(new BorderLayout());
-		
 		this.identifier = identifier;
+		
 		if(type == PM) {
 			this.type = PM;
 		}
@@ -36,14 +40,33 @@ public class TabComponent extends JPanel {
 			userContainer = new UsersContainer(cm.getUsers(identifier));
 			users = new JList(userContainer);
 			add(users, BorderLayout.EAST);
-		}	
+		}			
 		chatArea = new JTextArea();
 		chatArea.setEditable(false);
 		inputArea = new InputField(type, identifier);
+
 		add(inputArea, BorderLayout.SOUTH);
 		add(chatArea, BorderLayout.NORTH);
+		if(type == CHANNEL || type == PM)
+			add(makeTopText(), BorderLayout.NORTH);
+
 		scrollPane = new JScrollPane(chatArea);
 		add(scrollPane);
+	}
+	
+	private JTextField makeTopText() {
+		topText = new JTextField(identifier);
+		topText.setBackground(null);
+		topText.setBorder(BorderFactory.createLineBorder(Color.white, 0));
+		topText.setEditable(false);
+		topText.setHorizontalAlignment(JTextField.CENTER);
+		
+		return topText;
+	}
+	
+	public void setTopText(String text) {
+		if(type == CHANNEL || type == PM)
+			topText.setText(text);
 	}
 	
 	public void inFocus() {

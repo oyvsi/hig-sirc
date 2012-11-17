@@ -58,6 +58,8 @@ public class ConnectionManagement implements IRCEventListener {
 		else if (e.getType() == Type.JOIN_COMPLETE) { 
 			JoinCompleteEvent je = (JoinCompleteEvent) e;
 			sIRC.tabContainer.message("", je.getChannel().getName(), TabComponent.CHANNEL);
+			sIRC.tabContainer.setTopText(je.getChannel().getName(), je.getChannel().getTopic());
+
 		}
 		
 		else if (e.getType() == Type.CTCP_EVENT) {
@@ -76,7 +78,6 @@ public class ConnectionManagement implements IRCEventListener {
 		if(isConnected) {
 			String message = buildSay(session.getNick(), msg);
 			sIRC.tabContainer.message(message, channelName, type);
-			sIRC.tabContainer.setTopText(session.getChannel(channelName).getTopic(), channelName);
 			session.getChannel(channelName).say(msg);
 		}
 	}

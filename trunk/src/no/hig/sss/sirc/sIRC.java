@@ -34,7 +34,6 @@ public class sIRC extends JFrame {
 		tabContainer = new TabContainer();
 		options = new Options();
 		
-		
 		GUI gui = new GUI(messages);		       
         add(tabContainer);
 				
@@ -45,7 +44,6 @@ public class sIRC extends JFrame {
                   screenSize.height - inset*2);
 
 		setJMenuBar(gui.menu());
-		
 		options.createAndShowGUI();
 	}
 	

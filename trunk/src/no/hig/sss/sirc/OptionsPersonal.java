@@ -1,5 +1,6 @@
 package no.hig.sss.sirc;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -27,45 +28,45 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private ConnectionOptionsPrefs cop;
 
+	private BorderLayout bl;
+	private String selectedServer;
 	/**
 	 * Constructor for the class, handle all GUI layout and fill inn initial
 	 * values
 	 * 
 	 */
 
-	public OptionsPersonal() {
+	public OptionsPersonal(String selectedServer) {
 
 		cop = new ConnectionOptionsPrefs();
 
 		cop.load();
-		
+		bl = new BorderLayout();
 		setLayout(layout);
 		JPanel networksPanel = new JPanel();
 		networksPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		networksPanel.add(new JLabel(messages
 				.getString("connectionOptions.label.networks")));
 
+		if(!(selectedServer == null)){
+			gbc.anchor = GridBagConstraints.NORTH;
+			add(6,6, new JLabel(selectedServer));
+			this.selectedServer = selectedServer;
+		}
 		gbc.anchor = GridBagConstraints.CENTER;
 		// Create the panel with the four buttons on the right
 		add(2,3,connect = new JButton(messages.getString("connectionOptions.button.connect.buttonText")));
+		//add(networksPanel, BorderLayout.SOUTH);
+		
+		
 		connect.setActionCommand("connect");
 		connect.addActionListener(this);
 		// Add labels to text fields
 		gbc.anchor = GridBagConstraints.EAST;
-		add(1,
-				4,
-				new JLabel(messages
-						.getString("connectionOptions.label.fullName")));
-		add(1, 5,
-				new JLabel(messages.getString("connectionOptions.label.email")));
-		add(1,
-				6,
-				new JLabel(messages
-						.getString("connectionOptions.label.nickname")));
-		add(1,
-				7,
-				new JLabel(messages
-						.getString("connectionOptions.label.altNick")));
+		add(1, 4, new JLabel(messages.getString("connectionOptions.label.fullName")));
+		add(1, 5,new JLabel(messages.getString("connectionOptions.label.email")));
+		add(1,6,new JLabel(messages.getString("connectionOptions.label.nickname")));
+		add(1,7,new JLabel(messages.getString("connectionOptions.label.altNick")));
 		// Add textfields
 		gbc.anchor = GridBagConstraints.WEST;
 		add(2, 4, fullName = new JTextField(cop.getFullName(), 20));
@@ -108,8 +109,8 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		help.setToolTipText(messages
 				.getString("connectionOptions.button.help.tooltip"));
 
-		// pack ();
-		//setVisible(true);
+	
+		setVisible(true);
 	}
 
 	/**
@@ -191,7 +192,8 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		System.out.println(ae.getActionCommand());
 		if(ae.getActionCommand().equals("connect")) {
-			sIRC.conManagement.connect(cop.getNickname(), "irc.ifi.uio.no");
+			sIRC.conManagement.connect(getFullName(), this.selectedServer);
+			cop.save();
 			sIRC.options.hideWindow();
 		}
 		

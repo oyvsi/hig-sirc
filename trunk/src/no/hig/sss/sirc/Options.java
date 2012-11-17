@@ -11,10 +11,12 @@ import java.util.*;
 //SplitPaneDemo itself is not a visible component.
 public class Options extends JPanel implements TreeSelectionListener {
 	private JSplitPane splitPane;
-
+	JPanel op;
+	OptionsServer os;
 	JFrame jf;
-	  JTree tree;
-	  DefaultTreeModel treeModel;
+	JTree tree;
+	DefaultTreeModel treeModel;
+	
 	public Options() {
 
 		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
@@ -53,18 +55,22 @@ public class Options extends JPanel implements TreeSelectionListener {
 		splitPane.setPreferredSize(new Dimension(600, 300));
 		splitPane.setMinimumSize(new Dimension(600, 300));
 		
-		setViewPersonal();
+		setViewPersonal(null);
 		
 	}
-	void setViewPersonal() {
+	void setViewPersonal(String selectedServer) {
 		OptionsPersonal.setMessages(ResourceBundle.getBundle("i18n/I18N"));
-		JPanel op = new OptionsPersonal();
+		if(os != null){
+			op = new OptionsPersonal(os.getSelectedServer());
+		} else {
+			op = new OptionsPersonal("irc.quakenet.org");
+		}
 		splitPane.setRightComponent(op);
 	}
 	
 	void setViewServer() {
 		OptionsServer.setMessages(ResourceBundle.getBundle("i18n/I18N"));
-		JPanel os = new OptionsServer();
+		os = new OptionsServer();
 		splitPane.setRightComponent(os);
 	}
 
@@ -97,7 +103,6 @@ public class Options extends JPanel implements TreeSelectionListener {
 	 * invoked from the event-dispatching thread.
 	 */
 	public void createAndShowGUI() {
-
 		// Create and set up the window.
 		jf = new JFrame("sIrc Options");
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -107,19 +112,20 @@ public class Options extends JPanel implements TreeSelectionListener {
 		// Display the window.
 		jf.pack();
 		jf.setVisible(true);
-		//jf.setAlwaysOnTop(true);
+		jf.setAlwaysOnTop(true);
 	}
-/*
+	/*
 	public static void main(String[] args) {
 		//Schedule a job for the event-dispatching thread:
 		//creating and showing this application's GUI.
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				Options.createAndShowGUI();
+				Options op = new Options();
+				op.createAndShowGUI();
 			}
 		});
 	}
-*/
+	*/
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
@@ -128,7 +134,7 @@ public class Options extends JPanel implements TreeSelectionListener {
         if (node.isLeaf()) {
     		switch (node.toString()) {
     		case "Personal":
-    			setViewPersonal();
+    			setViewPersonal(null);
     			break;
     			
     		case "Server":
@@ -150,5 +156,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 	public void hideWindow() {
 		jf.setVisible(false);
 		
+	}
+	public void showWindow() {
+		jf.setVisible(true);
 	}
 }

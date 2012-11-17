@@ -171,9 +171,11 @@ class GUI {
 			String event = e.getActionCommand();
 			if (event == "exit")
 				System.exit(0);
+			else if(event == "options")
+				sIRC.options.showWindow();
 			else
-				JOptionPane.showMessageDialog(null, messages.getString("sIRC.notFound.Text"));
+			JOptionPane.showMessageDialog(null, messages.getString("sIRC.notFound.Text"));
+		
 		}
-
 	}
 }

@@ -48,7 +48,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	private ArrayList<OptionsServerPrefs> osp;
 	
 	private BorderLayout bl;
-	
+	private String selectedServer;
 	JTree tree;
 	DefaultTreeModel treeModel;
 	
@@ -131,11 +131,13 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	 * @param args
 	 */
 	@Override
-	public void valueChanged(TreeSelectionEvent arg0) {
+	public void valueChanged(TreeSelectionEvent tse) {
+		
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
                 tree.getLastSelectedPathComponent();
 		if (node == null) return;
         if (node.isLeaf()) {
+        	setSelectedServer(node.toString());
     		switch (node.toString()) {
     		case "Personal":
     			break;
@@ -149,7 +151,6 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
         	case "Color":
         		break;
     		}
-    	//System.out.print(node.toString());
         }
 	}
 	
@@ -257,5 +258,19 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 			}
 			
 		}
+	}
+
+	/**
+	 * @return the selectedServer
+	 */
+	public String getSelectedServer() {
+		return selectedServer;
+	}
+
+	/**
+	 * @param selectedServer the selectedServer to set
+	 */
+	public void setSelectedServer(String selectedServer) {
+		this.selectedServer = selectedServer;
 	}	
 }

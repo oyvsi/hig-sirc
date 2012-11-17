@@ -92,6 +92,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		add.addActionListener(this);
 
 		alterServerButtons.add (change= new JButton (messages.getString("connectionOptions.button.change.buttonText")));
+		change.setActionCommand("change");
 		change.addActionListener(this);
 		alterServerButtons.add (delete = new JButton (messages.getString("connectionOptions.button.delete.buttonText")));
 		delete.addActionListener(this);
@@ -256,8 +257,11 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 					model.removeNodeFromParent(node);
 				}
 			}
-			
+		} else if(ae.getActionCommand().equals("change")) {
+			sIRC.options.setViewPersonal(null);
+			//System.out.println("nnono");
 		}
+		sIRC.options.setViewPersonal(null);
 	}
 
 	/**

@@ -8,6 +8,7 @@ import jerklib.ConnectionManager;
 import jerklib.Profile;
 import jerklib.Session;
 import jerklib.events.*;
+import jerklib.events.ErrorEvent.ErrorType;
 import jerklib.events.IRCEvent.Type;
 import jerklib.listeners.IRCEventListener;
 
@@ -22,10 +23,15 @@ public class ConnectionManagement implements IRCEventListener {
 	}
 	
 	public void connect(String nick, String server) {
-		profile = new Profile(nick);
-		manager = new ConnectionManager(profile);
-		session = manager.requestConnection(server);
-		session.addIRCEventListener(this);
+		if(isConnected == false) {
+			profile = new Profile(nick);
+			manager = new ConnectionManager(profile);
+			session = manager.requestConnection(server);
+			session.addIRCEventListener(this);
+		}
+		else {
+			sIRC.tabContainer.message("You are allready connected. Disconnect first", "Console", TabComponent.CONSOLE);
+		}
 	}
 	
 	public void disConnect(String quitMsg) {
@@ -59,6 +65,17 @@ public class ConnectionManagement implements IRCEventListener {
 			String message = buildSay(me.getNick(), me.getMessage());
 			sIRC.tabContainer.message(message, me.getNick(), TabComponent.PM);
 		}
+		
+		// TODO
+		/*else if(e.getType() == Type.ERROR) { 
+			ErrorEvent ee = (ErrorEvent) e;
+			if(ee.getErrorType() == ErrorType.NUMERIC_ERROR) {
+				NumericErrorEvent ne = (NumericErrorEvent) ee;
+				if(ne.getNumeric() == 401) // No such nick or channel
+					//sIRC.tabContainer.closeTab()	// NOES! need identifier
+					
+			}
+		}*/
 		
 		else if (e.getType() == Type.TOPIC) {
 			TopicEvent te = (TopicEvent) e;

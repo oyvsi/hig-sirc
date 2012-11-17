@@ -192,7 +192,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		System.out.println(ae.getActionCommand());
 		if(ae.getActionCommand().equals("connect")) {
-			sIRC.conManagement.connect(getFullName(), this.selectedServer);
+			sIRC.conManagement.connect(getNickname(), this.selectedServer);
 			cop.save();
 			sIRC.options.hideWindow();
 		}

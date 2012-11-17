@@ -1,6 +1,7 @@
 package no.hig.sss.sirc;
 
 import java.awt.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -16,6 +17,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 	JFrame jf;
 	JTree tree;
 	DefaultTreeModel treeModel;
+	
+	final int WHEIGHT = 300;
+	final int WWIDTH = 700;
 	
 	public Options() {
 
@@ -52,8 +56,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 		splitPane.setLeftComponent(tree);
 		
 		
-		splitPane.setPreferredSize(new Dimension(600, 300));
-		splitPane.setMinimumSize(new Dimension(600, 300));
+		splitPane.setPreferredSize(new Dimension(WWIDTH, WHEIGHT));
+		splitPane.setMinimumSize(new Dimension(WWIDTH, WHEIGHT));
 		
 		setViewPersonal(null);
 		
@@ -72,6 +76,17 @@ public class Options extends JPanel implements TreeSelectionListener {
 		OptionsServer.setMessages(ResourceBundle.getBundle("i18n/I18N"));
 		os = new OptionsServer();
 		splitPane.setRightComponent(os);
+	}
+	void setViewServerEdit() {
+		JPanel jp = new JPanel(); 
+		BorderLayout bl = new BorderLayout();
+		
+		bl.addLayoutComponent(new JLabel("Edit Server"), BorderLayout.NORTH);
+		bl.addLayoutComponent(new JLabel("Name"), BorderLayout.WEST);
+		jp.setLayout(bl);
+		jp.setVisible(true);
+		splitPane.setRightComponent(jp);
+		System.out.println("weee");
 	}
 
 	void setViewColor() {
@@ -108,7 +123,12 @@ public class Options extends JPanel implements TreeSelectionListener {
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		Options sp = new Options();
 		jf.getContentPane().add(sp.getSplitPane());
+		
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		int X = (screen.width / 2) - (WWIDTH / 2); // Center horizontally.
+		int Y = (screen.height / 2) - (WHEIGHT / 2); // Center vertically.
 
+		jf.setBounds(X,Y , WWIDTH,WHEIGHT);
 		// Display the window.
 		jf.pack();
 		jf.setVisible(true);

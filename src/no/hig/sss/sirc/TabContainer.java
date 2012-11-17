@@ -65,5 +65,9 @@ public class TabContainer extends JTabbedPane {
 		remove(getTabIndex(identifier));
 		tabContainer.remove(identifier);
 	}
+
+	public void setTopText(String identifier, String text) {
+		tabContainer.get(identifier).setTopText(text);
+	}
 	
 }

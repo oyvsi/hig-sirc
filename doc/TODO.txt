@@ -1,12 +1,13 @@
 Krav:
 
--Andre
--Støtte for ÆØÅ (utf-8)
-	check. Sett eclipse til utf8 på prosjektet (resource).
+-Fix at man ikke kan sende til console
+-Fix støtte for nickchange, både selv og person i kanal og snakker til i privmsg
+
 -Sette inn nummber i tabvisning. Må evt endre til LinkedHashMap å hente index fra der.
 
 -Krav i RFC2812
-
+-Støtte for ÆØÅ (utf-8)
+	check. Sett eclipse til utf8 på prosjektet (resource).
 -Your IRC client will have to support multiple windows showing different channels simultaneously. 
 	check
 -Private chats should also be shown in separate windows.

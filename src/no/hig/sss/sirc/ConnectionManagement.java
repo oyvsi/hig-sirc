@@ -28,6 +28,14 @@ public class ConnectionManagement implements IRCEventListener {
 		session.addIRCEventListener(this);
 	}
 	
+	public void disConnect(String quitMsg) {
+		if(isConnected) {
+			session.close(quitMsg);
+			isConnected = false;
+			sIRC.tabContainer.message("Disconnected from the server!", "Console", TabComponent.CONSOLE);
+		}
+	}
+	
 	public void ListChannels() {
 		System.out.println("Fant " + session.getChannels().size() + " kanaler");
 		
@@ -125,4 +133,6 @@ public class ConnectionManagement implements IRCEventListener {
 	public List<String> getUsers(String channelName) {
 		return session.getChannel(channelName).getNicks();
 	}
+
+
 }

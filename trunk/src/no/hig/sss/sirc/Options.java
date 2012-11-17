@@ -97,14 +97,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	 * invoked from the event-dispatching thread.
 	 */
 	public void createAndShowGUI() {
-		 try {
-			UIManager.setLookAndFeel(
-			            UIManager.getCrossPlatformLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		// Create and set up the window.
 		jf = new JFrame("sIrc Options");
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

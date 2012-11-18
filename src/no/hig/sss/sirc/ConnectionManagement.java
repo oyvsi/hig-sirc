@@ -97,24 +97,37 @@ public class ConnectionManagement implements IRCEventListener {
 			System.out.println(qe.toString());
 		}
 
-		else if (e.getType() == Type.TOPIC) {
+		else if (e.getType() == Type.TOPIC) {	// Sent on topic changes and channel joins (if topic is set)
+			String topicMsg;
 			TopicEvent te = (TopicEvent) e;
 			String channelName = te.getChannel().getName();
 			String topic = te.getTopic();
-			if(topic.equals(""))
-				topic = " ";
+			String[] topicSetBy = te.getSetBy().split("!~");
+
 			sIRC.tabContainer.setTopText(channelName, topic);
 			
-			String actionMsg = timeFormat.format(te.getSetWhen()) + "-!- " + te.getSetBy() + " " + 
-							   sIRC.i18n.getStr("topic.changed") + channelName + " " + 
-							   sIRC.i18n.getStr("topic.to") + " " + topic;
-			sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL);
+			Date now = new Date();
+			long timeDiff = now.getTime() - te.getSetWhen().getTime();
+			if(timeDiff > 3*1000) {	// We assume a join won't take longer than 3 seconds, and this is the existing topic 
+				topicMsg = timeFormat.format(now) + " -!- " + sIRC.i18n.getStr("topic.topicFor") 
+				+ " " + channelName + ": " +  topic;
+			}
+			else {	// We're already in channel. So the topic is changed
+				topicMsg = timeFormat.format(te.getSetWhen()) + " -!- " + topicSetBy[0] + " " + 
+						   sIRC.i18n.getStr("topic.changed") + " " + channelName + " " + 
+						   sIRC.i18n.getStr("topic.to") + " " + topic;
+			}
 			
+			sIRC.tabContainer.message(topicMsg, channelName, TabComponent.CHANNEL);			
 		}
 		else if (e.getType() == Type.JOIN_COMPLETE) { 
 			JoinCompleteEvent je = (JoinCompleteEvent) e;
-			sIRC.tabContainer.newTab(je.getChannel().getName(), TabComponent.CHANNEL);
-			sIRC.tabContainer.setTopText(je.getChannel().getName(), je.getChannel().getTopic());
+			String topic = je.getChannel().getTopic();
+			String channelName = je.getChannel().getName();
+			sIRC.tabContainer.newTab(channelName, TabComponent.CHANNEL);
+			if(topic.equals(""))	// No topic, we won't get a topic event
+				topic = " ";
+			sIRC.tabContainer.setTopText(channelName, topic);
 		}
 		
 		//else if (e.getType() == Type.CTCP_EVENT) {

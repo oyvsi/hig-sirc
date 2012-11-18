@@ -10,6 +10,7 @@ import jerklib.Session;
 import jerklib.events.*;
 import jerklib.events.ErrorEvent.ErrorType;
 import jerklib.events.IRCEvent.Type;
+import jerklib.events.modes.ModeAdjustment.Action;
 import jerklib.listeners.IRCEventListener;
 
 public class ConnectionManagement implements IRCEventListener {
@@ -174,7 +175,16 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	public List<String> getUsers(String channelName) {
 		return session.getChannel(channelName).getNicks();
+		
 	}
+	
+	public List<String> getUsersMode(String channelName, Action action, char mode) {
+		return session.getChannel(channelName).getNicksForMode(action, mode);
+	}
+	
+	/*public boolean checkModeForUser(String channelName, Action action, char mode, String nick) {
+		return session.getChannel(channelName).checkModeForUser(action, mode, nick);
+	}*/
 
 
 }

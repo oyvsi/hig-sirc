@@ -18,7 +18,7 @@ import java.util.Properties;
  * 
  */
 public class ConnectionOptionsPrefs {
-	private String fullName, email, nickname, altnick; 
+	private String fullName, email, nickname, altnick, server; 
 	private ArrayList<String> servers = new ArrayList<String>();
 	private ArrayList<String> networks = new ArrayList<String>();
 	File 	filePrefs,  	// Prefs file for ConnectionOptions preferences 
@@ -41,6 +41,7 @@ public class ConnectionOptionsPrefs {
 			pri.setProperty("email", "oyvsi@gmail.com");
 			pri.setProperty("nickname", "oyvsi");
 			pri.setProperty("altnick", "oyvsi_1");
+			pri.setProperty("server", "irc.quakenet.org");
 			pri.store(fos, "");
 			
 			fos.close();
@@ -61,6 +62,7 @@ public class ConnectionOptionsPrefs {
 			this.setEmail(pro.getProperty("email"));
 			this.setNickname(pro.getProperty("nickname"));
 			this.setAltnick(pro.getProperty("altnick"));
+			this.setServer(pro.getProperty("server"));
 			
 			fis.close();
 			
@@ -101,13 +103,13 @@ public class ConnectionOptionsPrefs {
 
 	public static void main(String[] args) {
 		ConnectionOptionsPrefs cop = new ConnectionOptionsPrefs();
-		cop.save();
 		cop.load();
+		cop.save();
 		System.out.print(cop.getNickname());
 		System.out.print(cop.getEmail());
 		System.out.print(cop.getFullName());
 		System.out.print(cop.getAltnick());
-		
+		System.out.print(cop.getServer());
 	}
 
 	/**
@@ -175,5 +177,19 @@ public class ConnectionOptionsPrefs {
 	 */
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	/**
+	 * @return the server
+	 */
+	public String getServer() {
+		return server;
+	}
+
+	/**
+	 * @param server the server to set
+	 */
+	public void setServer(String server) {
+		this.server = server;
 	}
 }

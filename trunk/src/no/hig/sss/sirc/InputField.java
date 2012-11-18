@@ -53,7 +53,7 @@ public class InputField extends JTextField  {
 					}
 				}
 				else if(cmd.equals("connect")) {
-						connectionManagement.connect("FlashSirc", line[1]);
+						connectionManagement.connect("GOLVSirc", line[1]);
 				}
 				else if(cmd.equals("msg")) {	// Private messages
 					if(line.length > 2) {
@@ -66,6 +66,7 @@ public class InputField extends JTextField  {
 						partMsg = restLine(line, 1);
 					connectionManagement.closeChat(identifier, type, partMsg);
 				}
+
 				else if(cmd.equals("disconnect") || cmd.equals("quit")) {	// Close server connection
 					String quitMsg = null;
 					if(line.length > 1)
@@ -75,6 +76,7 @@ public class InputField extends JTextField  {
 				else if(cmd.equals("nick")) {	// Nick change
 					
 				}
+
 				else {
 					connectionManagement.channelMsg("Console", "Unknown command", TabComponent.CONSOLE); 
 				}

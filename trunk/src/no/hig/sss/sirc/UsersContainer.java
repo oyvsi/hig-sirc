@@ -1,28 +1,47 @@
 package no.hig.sss.sirc;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
 
+import jerklib.events.modes.ModeAdjustment.Action;
+
 public class UsersContainer extends AbstractListModel {
-	List<String> users = new ArrayList<String>();
+	List<String> usersForView = new ArrayList<String>();
+	List<String> op;
+	List<String> voice;
+	ConnectionManagement cm = sIRC.conManagement;
 	
-	public UsersContainer(List<String> users) {
-		this.users = users;
+	public UsersContainer(String identifier) {
+		usersForView = new ArrayList<String>();
+		usersForView = cm.getUsers(identifier);
+		op = cm.getUsersMode(identifier, Action.PLUS, 'o');
+		voice = cm.getUsersMode(identifier, Action.PLUS, 'v');
 	}
 	
-	public void addUser(String nick) {
-		users.add(nick);
-		
+	public void addUser(Character mode, String nick) {
+		usersForView.add(nick);
 	}
 	
 	public Object getElementAt(int arg0) {
-		return users.get(arg0);
+		String user = usersForView.get(arg0);
+		if(op.contains(user)) return "@" + user;
+		if(voice.contains(user)) return "+" + user;
+		return user;
 	}
 
 	public int getSize() {
-		return users.size();
+		return usersForView.size();
 	}
-
-}
+	
+	public List<String> sortList(List<String> users) {
+		Iterator<String> user = users.iterator();
+		while(user.hasNext()) {
+			
+		}
+		return users;
+	
+		}
+	}

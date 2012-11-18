@@ -1,17 +1,27 @@
 package no.hig.sss.sirc;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.Color;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import jerklib.Channel;
+import jerklib.Session;
 
 public class TabComponent extends JPanel {
 	public final static int CONSOLE = 0;
@@ -27,6 +37,7 @@ public class TabComponent extends JPanel {
 	private JTextField inputArea;
 	private ConnectionManagement cm = sIRC.conManagement;
 	private JTextField topText;
+
 	
 	public TabComponent(int type, String identifier) {
 		setLayout(new BorderLayout());
@@ -37,8 +48,14 @@ public class TabComponent extends JPanel {
 		}
 		else if(type == CHANNEL) {
 			this.type = CHANNEL;
-			userContainer = new UsersContainer(cm.getUsers(identifier));
-			users = new JList(userContainer);
+			userContainer = new UsersContainer(identifier);
+			users = new JList<String>(userContainer);
+			users.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					if(SwingUtilities.isRightMouseButton(e))
+						showRightClickMenu(e);
+					}
+				});
 			add(users, BorderLayout.EAST);
 		}			
 		chatArea = new JTextArea();
@@ -88,4 +105,27 @@ public class TabComponent extends JPanel {
 		return identifier;
 	}
 	
+	private void showRightClickMenu(MouseEvent e) {
+		JPopupMenu rightClickMenu = new JPopupMenu();
+		JMenuItem kick = new JMenuItem("Kick");
+		kick.addActionListener(new popupListener());
+		kick.setActionCommand("Kick");
+		
+		rightClickMenu.add(kick);
+		rightClickMenu.show(e.getComponent(), e.getX(), e.getY());
+	}
+	
+	class popupListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+		String command = e.getActionCommand();
+		if(command == "Kick") {
+			//cm.getChannel(identifier).kick(userContainer.getElementAt(users.getSelectedIndex()).toString(), "LOL");
+		}
+	}
+	
+	}
+	
+	public JMenuItem createMenuItem(String name) {
+		return new JMenuItem(name);
+	}
 }

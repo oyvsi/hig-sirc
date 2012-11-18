@@ -23,18 +23,18 @@ import jerklib.ConnectionManager;
 
 
 public class sIRC extends JFrame {
-	private static ResourceBundle messages;
-	private static Locale currentLocale;
 	public static ConnectionManagement conManagement;
 	public static TabContainer tabContainer;
 	public static Options options;
+	public static I18n i18n;
 	
 	public sIRC() {
 		conManagement = new ConnectionManagement(); 
 		tabContainer = new TabContainer();
 		options = new Options();
+		i18n = new I18n();
 		
-		GUI gui = new GUI(messages);		       
+		GUI gui = new GUI();		       
         add(tabContainer);
 				
         int inset = 50;
@@ -51,9 +51,6 @@ public class sIRC extends JFrame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		currentLocale = Locale.getDefault();
-		messages = ResourceBundle.getBundle("i18n/I18N", currentLocale);
-		
 		sIRC irc = new sIRC();
 		irc.setVisible(true);
 		irc.setDefaultCloseOperation(EXIT_ON_CLOSE);

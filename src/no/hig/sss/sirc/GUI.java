@@ -16,11 +16,9 @@ import javax.swing.KeyStroke;
 import javax.swing.event.MenuListener;
 
 class GUI {
-	private ResourceBundle messages;
 	private ActionListener menuListener;
 	
-	public GUI(ResourceBundle messages) {
-		this.messages = messages;
+	public GUI() {
 		menuListener = new menuListener();
 	}
 	
@@ -33,21 +31,15 @@ class GUI {
 		// Create menu
 		JMenuBar menuBar = new JMenuBar();
 
-		JMenu fileMenu = new JMenu(messages.getString("sIRC.menuBar.File"));
-		JMenu toolsMenu = new JMenu(messages.getString("sIRC.menuBar.Tools"));
-		JMenu helpMenu = new JMenu(messages.getString("sIRC.menuBar.Help"));
+		JMenu fileMenu = new JMenu(sIRC.i18n.getStr("sIRC.menuBar.File"));
+		JMenu toolsMenu = new JMenu(sIRC.i18n.getStr("sIRC.menuBar.Tools"));
+		JMenu helpMenu = new JMenu(sIRC.i18n.getStr("sIRC.menuBar.Help"));
 
 		// Tooltip for menu items
-		fileMenu.setToolTipText(messages.getString("sIRC.tooltip.File"));
-		toolsMenu.setToolTipText(messages.getString("sIRC.tooltip.Tools"));
-		helpMenu.setToolTipText(messages.getString("sIRC.tooltip.Help"));
+		fileMenu.setToolTipText(sIRC.i18n.getStr("sIRC.tooltip.File"));
+		toolsMenu.setToolTipText(sIRC.i18n.getStr("sIRC.tooltip.Tools"));
+		helpMenu.setToolTipText(sIRC.i18n.getStr("sIRC.tooltip.Help"));
 
-		/*
-		// Set listeners for menu
-		fileMenu.setMnemonic(KeyEvent.VK_F);
-		editMenu.setMnemonic(KeyEvent.VK_E);
-		helpMenu.setMnemonic(KeyEvent.VK_H); 
-		*/
 
 		// Items for File
 		JMenuItem fileExit = createMenuItem("sIRC.fileMenu.Exit", "exit", "", "sIRC.tooltip.Exit");
@@ -134,7 +126,7 @@ class GUI {
 		}
 		if (tooltip.length() > 2) { // Set tooltip if the string tooltip
 									// contains something useful
-			button.setToolTipText(messages.getString(tooltip));
+			button.setToolTipText(sIRC.i18n.getStr(tooltip));
 		}
 		
 		return button;
@@ -151,7 +143,7 @@ class GUI {
 	 * @return item JMenuItem
 	 */
 	private JMenuItem createMenuItem(String name, String cmd, String icon, String tooltip) {
-		JMenuItem item = new JMenuItem(messages.getString(name));
+		JMenuItem item = new JMenuItem(sIRC.i18n.getStr(name));
 		item.addActionListener(menuListener);
 
 		if (icon.length() > 1) { // Set icon if we got one
@@ -160,7 +152,7 @@ class GUI {
 		item.setActionCommand(cmd);
 		if (tooltip.length() > 2) { // Set tooltip if the string tooltip
 									// contains something useful
-			item.setToolTipText(messages.getString(tooltip));
+			item.setToolTipText(sIRC.i18n.getStr(tooltip));
 		}
 
 		return item;
@@ -174,7 +166,7 @@ class GUI {
 			else if(event == "options")
 				sIRC.options.showWindow();
 			else
-			JOptionPane.showMessageDialog(null, messages.getString("sIRC.notFound.Text"));
+			JOptionPane.showMessageDialog(null, sIRC.i18n.getStr("sIRC.notFound.Text"));
 		
 		}
 	}

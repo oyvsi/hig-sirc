@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 
 import javax.swing.JTextField;
 
-public class InputField extends JTextField  {
+public class InputField extends JTextField {
 	private ConnectionManagement connectionManagement;
 	private int type;
 	private String identifier;
@@ -78,7 +78,7 @@ public class InputField extends JTextField  {
 				}
 
 				else {
-					connectionManagement.channelMsg("Console", "Unknown command", TabComponent.CONSOLE); 
+					sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.unknownCommand"));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

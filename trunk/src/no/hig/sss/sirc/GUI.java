@@ -31,26 +31,26 @@ class GUI {
 		// Create menu
 		JMenuBar menuBar = new JMenuBar();
 
-		JMenu fileMenu = new JMenu(sIRC.i18n.getStr("sIRC.menuBar.File"));
-		JMenu toolsMenu = new JMenu(sIRC.i18n.getStr("sIRC.menuBar.Tools"));
-		JMenu helpMenu = new JMenu(sIRC.i18n.getStr("sIRC.menuBar.Help"));
+		JMenu fileMenu = new JMenu(sIRC.i18n.getStr("menuBar.File"));
+		JMenu toolsMenu = new JMenu(sIRC.i18n.getStr("menuBar.Tools"));
+		JMenu helpMenu = new JMenu(sIRC.i18n.getStr("menuBar.Help"));
 
 		// Tooltip for menu items
-		fileMenu.setToolTipText(sIRC.i18n.getStr("sIRC.tooltip.File"));
-		toolsMenu.setToolTipText(sIRC.i18n.getStr("sIRC.tooltip.Tools"));
-		helpMenu.setToolTipText(sIRC.i18n.getStr("sIRC.tooltip.Help"));
+		fileMenu.setToolTipText(sIRC.i18n.getStr("tooltip.File"));
+		toolsMenu.setToolTipText(sIRC.i18n.getStr("tooltip.Tools"));
+		helpMenu.setToolTipText(sIRC.i18n.getStr("tooltip.Help"));
 
 
 		// Items for File
-		JMenuItem fileExit = createMenuItem("sIRC.fileMenu.Exit", "exit", "", "sIRC.tooltip.Exit");
+		JMenuItem fileExit = createMenuItem("fileMenu.Exit", "exit", "", "tooltip.Exit");
 
 
 		// Items for Edit menu bar
-		JMenuItem editOptions = createMenuItem("sIRC.editMenu.Options", "options", "", "sIRC.tooltip.Options");
+		JMenuItem editOptions = createMenuItem("editMenu.Options", "options", "", "tooltip.Options");
 	
 		// Items for help
-		JMenuItem helpHelp = createMenuItem("sIRC.helpMenu.Help", "help", "", "sIRC.tooltip.Help");
-		JMenuItem helpAbout = createMenuItem("sIRC.helpMenu.About", "about", "", "sIRC.tooltip.About");
+		JMenuItem helpHelp = createMenuItem("helpMenu.Help", "help", "", "tooltip.Help");
+		JMenuItem helpAbout = createMenuItem("helpMenu.About", "about", "", "tooltip.About");
 	
 		//Mnemonics	
 		fileExit.setMnemonic(KeyEvent.VK_Q);
@@ -166,8 +166,7 @@ class GUI {
 			else if(event == "options")
 				sIRC.options.showWindow();
 			else
-			JOptionPane.showMessageDialog(null, sIRC.i18n.getStr("sIRC.notFound.Text"));
-		
+				JOptionPane.showMessageDialog(null, sIRC.i18n.getStr("notFound.Text"));
 		}
 	}
 }

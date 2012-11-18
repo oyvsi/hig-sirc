@@ -17,8 +17,11 @@ public class ConnectionManagement implements IRCEventListener {
 	private Session session;
 	private Profile profile;
 	private Boolean isConnected;
+	private SimpleDateFormat timeFormat;
+
 	
 	public ConnectionManagement() {
+		timeFormat = new SimpleDateFormat("HH:mm");
 		isConnected = false;
 	}
 	
@@ -28,6 +31,7 @@ public class ConnectionManagement implements IRCEventListener {
 			manager = new ConnectionManager(profile);
 			session = manager.requestConnection(server);
 			session.addIRCEventListener(this);
+			sIRC.tabContainer.message("Connecting...", "Console", TabComponent.CONSOLE);
 		}
 		else {
 			sIRC.tabContainer.message("You are allready connected. Disconnect first", "Console", TabComponent.CONSOLE);
@@ -79,13 +83,21 @@ public class ConnectionManagement implements IRCEventListener {
 		
 		else if (e.getType() == Type.TOPIC) {
 			TopicEvent te = (TopicEvent) e;
-			sIRC.tabContainer.setTopText(te.getChannel().getName(), te.getTopic());
+			String channelName = te.getChannel().getName();
+			String topic = te.getTopic();
+			if(topic.equals(""))
+				topic = " ";
+			sIRC.tabContainer.setTopText(channelName, topic);
+			
+			String actionMsg = timeFormat.format(te.getSetWhen()) + "-!- " + te.getSetBy() + 
+							   " changed the topic of " + channelName + " to " + topic;
+			sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL);
+			
 		}
 		else if (e.getType() == Type.JOIN_COMPLETE) { 
 			JoinCompleteEvent je = (JoinCompleteEvent) e;
 			sIRC.tabContainer.message("", je.getChannel().getName(), TabComponent.CHANNEL);
 			sIRC.tabContainer.setTopText(je.getChannel().getName(), je.getChannel().getTopic());
-
 		}
 		
 		//else if (e.getType() == Type.CTCP_EVENT) {
@@ -143,9 +155,7 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	private String buildSay(String nick, String msg) {
 		Date timeStamp = new Date();
-		SimpleDateFormat time = new SimpleDateFormat("HH:mm");
-		//session.getChannel("test").getUsersModes(nick);
-		return time.format(timeStamp) + "  " + nick + " " + msg;
+		return timeFormat.format(timeStamp) + "  " + nick + " " + msg;
 	}
 	
 	public List<String> getUsers(String channelName) {

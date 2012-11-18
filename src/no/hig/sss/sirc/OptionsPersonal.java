@@ -19,6 +19,7 @@ import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -34,7 +35,6 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	private JCheckBox invisible;
 	private GridBagLayout layout = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
-	private ConnectionOptionsPrefs cop;
 
 	private BorderLayout bl;
 	private JLabel selectedServer;
@@ -51,14 +51,9 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 
 
 	public OptionsPersonal(String selectedServer) {
-
-		cop = new ConnectionOptionsPrefs();
-
 		filePrefs = new File("connetionoptionsprefs.ini");
 		fileServers = new File("servers.ini");
 
-		
-		cop.load();
 		bl = new BorderLayout();
 		setLayout(layout);
 		JPanel networksPanel = new JPanel();
@@ -73,12 +68,9 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		}
 		gbc.anchor = GridBagConstraints.CENTER;
 		// Create the panel with the four buttons on the right
-		add(2,3,connect = new JButton(messages.getString("connectionOptions.button.connect.buttonText")));
-		//add(networksPanel, BorderLayout.SOUTH);
 		
-		
-		connect.setActionCommand("connect");
-		connect.addActionListener(this);
+		connect = createButton("connect", "", "", "connectionOptions.button.connect.buttonText");
+		add(2,8, connect);
 		// Add labels to text fields
 		gbc.anchor = GridBagConstraints.EAST;
 		add(1, 4, new JLabel(messages.getString("connectionOptions.label.fullName")));
@@ -92,21 +84,17 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		add(2, 6, nickname = new JTextField("", 15));
 		add(2, 7, altnick = new JTextField("", 15));
 
-		// Add invisible checkbox
-		add(2,
-				8,
-				invisible = new JCheckBox(
-						messages.getString("connectionOptions.checkbox.invisible.label")));
 		// Add ok, cancel, help buttons
 		JPanel okCancelHelpPanel = new JPanel();
 		okCancelHelpPanel.setLayout(new GridLayout(1, 3));
-		okCancelHelpPanel.add(ok = new JButton(messages
-				.getString("button.ok.buttonText")));
-		okCancelHelpPanel.add(cancel = new JButton(messages
-				.getString("button.cancel.buttonText")));
-		okCancelHelpPanel.add(help = new JButton(messages
-				.getString("button.help.buttonText")));
-		gbc.anchor = GridBagConstraints.CENTER;
+		
+		ok = createButton("ok", "", "connectionOptions.button.ok.tooltip", "button.ok.buttonText");
+		okCancelHelpPanel.add(ok);
+		
+		cancel = createButton("cancel", "", "connectionOptions.button.cancel.tooltip", "button.cancel.buttonText");
+		okCancelHelpPanel.add(cancel);
+		gbc.anchor = GridBagConstraints.SOUTH;
+		gbc.insets = new Insets (10,10,10,10);
 		add(1, 9, 3, 1, okCancelHelpPanel);
 
 		// Set all tooltip texts
@@ -118,15 +106,6 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 				.getString("connectionOptions.textfield.nickname.tooltip"));
 		altnick.setToolTipText(messages
 				.getString("connectionOptions.textfield.altNick.tooltip"));
-		invisible.setToolTipText(messages
-				.getString("connectionOptions.checkbox.invisible.tooltip"));
-		ok.setToolTipText(messages
-				.getString("connectionOptions.button.ok.tooltip"));
-		cancel.setToolTipText(messages
-				.getString("connectionOptions.button.cancel.tooltip"));
-		help.setToolTipText(messages
-				.getString("connectionOptions.button.help.tooltip"));
-
 		this.load();
 		setVisible(true);
 	}
@@ -214,6 +193,11 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 			this.save();
 			sIRC.options.hideWindow();
 			
+		} else if(ae.getActionCommand().equals("ok")) {
+			this.save();
+			sIRC.options.hideWindow();
+		} else if(ae.getActionCommand().equals("cancel")) {
+			sIRC.options.hideWindow();
 		}
 		
 		
@@ -297,6 +281,22 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	 */
 	public void setSelectedServer(String selectedServer) {
 		this.selectedServer.setText(selectedServer);
-	}	
+	}
+	private JButton createButton(String cmd, String icon, String tooltip, String name) {
+		JButton button = new JButton(messages.getString(name));
+		button.setActionCommand(cmd);
+		button.addActionListener(this);
+
+		if (icon.length() > 1) {  // Set icon if we got one
+			button.setIcon(new ImageIcon(getClass().getResource(
+					"Images/Icons/" + icon)));
+		}
+		if (tooltip.length() > 2) { // Set tooltip if the string tooltip
+									// contains something useful
+			button.setToolTipText(messages.getString(tooltip));
+		}
+		
+		return button;
+	}
 
 }

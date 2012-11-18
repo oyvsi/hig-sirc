@@ -49,6 +49,10 @@ public class TabContainer extends JTabbedPane {
 		System.out.println("Got message: " + message);
 	}
 	
+	public void consoleMsg(String msg) {
+		tabContainer.get("Console").addText(msg);
+	}
+	
 	private int getTabIndex(String identifier) {
 		return indexOfTab(identifier);
 		
@@ -59,7 +63,7 @@ public class TabContainer extends JTabbedPane {
 	}
 	
 
-	private void newTab(String identifier, int type) {
+	public void newTab(String identifier, int type) {
 		TabComponent tab = new TabComponent(type, identifier);
 		tabContainer.put(identifier, tab);
 		addTab(identifier, tab);	

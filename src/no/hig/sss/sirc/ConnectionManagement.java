@@ -32,10 +32,10 @@ public class ConnectionManagement implements IRCEventListener {
 			manager = new ConnectionManager(profile);
 			session = manager.requestConnection(server);
 			session.addIRCEventListener(this);
-			sIRC.tabContainer.message("Connecting...", "Console", TabComponent.CONSOLE);
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.connecting"));
 		}
 		else {
-			sIRC.tabContainer.message("You are allready connected. Disconnect first", "Console", TabComponent.CONSOLE);
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.alreadyConnected"));
 		}
 	}
 	
@@ -44,7 +44,7 @@ public class ConnectionManagement implements IRCEventListener {
 			session.close(quitMsg);
 			isConnected = false;
 			sIRC.tabContainer.closeAllTabs();
-			sIRC.tabContainer.message("Disconnected from the server!", "Console", TabComponent.CONSOLE);
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.disconnected"));
 		}
 	}
 	
@@ -55,8 +55,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	public void receiveEvent(IRCEvent e) {
 		if (e.getType() == Type.CONNECT_COMPLETE) {
-			System.out.println("Connection Complete!");
-			sIRC.tabContainer.message("Connection complete!", "Console", TabComponent.CONSOLE);
+			String server = session.getServerInformation().getServerName();
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionMangement.connected") + " " + server);
 			isConnected = true;
 		}
 		else if (e.getType() == Type.CHANNEL_MESSAGE) {	
@@ -87,7 +87,8 @@ public class ConnectionManagement implements IRCEventListener {
 			Date date = new Date();
 			String time = timeFormat.format(date);
 			// username != nick
-			String actionMsg = time + "-!- " + pe.getUserName() + " " + pe.getHostName() + "  has left  " + pe.getPartMessage();
+			String actionMsg = time + "-!- " + pe.getUserName() + " " + pe.getHostName() 
+							   + "  " + sIRC.i18n.getStr("channel.userPart") + "  " + pe.getPartMessage();
 			sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL);
 		}
 		
@@ -104,14 +105,15 @@ public class ConnectionManagement implements IRCEventListener {
 				topic = " ";
 			sIRC.tabContainer.setTopText(channelName, topic);
 			
-			String actionMsg = timeFormat.format(te.getSetWhen()) + "-!- " + te.getSetBy() + 
-							   " changed the topic of " + channelName + " to " + topic;
+			String actionMsg = timeFormat.format(te.getSetWhen()) + "-!- " + te.getSetBy() + " " + 
+							   sIRC.i18n.getStr("topic.changed") + channelName + " " + 
+							   sIRC.i18n.getStr("topic.to") + " " + topic;
 			sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL);
 			
 		}
 		else if (e.getType() == Type.JOIN_COMPLETE) { 
 			JoinCompleteEvent je = (JoinCompleteEvent) e;
-			sIRC.tabContainer.message("", je.getChannel().getName(), TabComponent.CHANNEL);
+			sIRC.tabContainer.newTab(je.getChannel().getName(), TabComponent.CHANNEL);
 			sIRC.tabContainer.setTopText(je.getChannel().getName(), je.getChannel().getTopic());
 		}
 		
@@ -123,7 +125,7 @@ public class ConnectionManagement implements IRCEventListener {
 		}
 		
 		else {
-			sIRC.tabContainer.message(e.getRawEventData(), "Console", TabComponent.CONSOLE);
+			sIRC.tabContainer.consoleMsg(e.getRawEventData());
 		}
 	}
 	
@@ -151,10 +153,12 @@ public class ConnectionManagement implements IRCEventListener {
 	public void joinChannel(String channelName) {
 		System.out.println("Asked to join " + channelName);
 		if(isConnected) {
-			System.out.println("Connected, trying");
-			session.join(channelName);
+			if(session.isChannelToken(channelName))
+				session.join(channelName);
+			else
+				sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.invalidChannelName") + " " + channelName);
 		} else {
-			sIRC.tabContainer.message("Can't join channel when not connected.", "Console", TabComponent.CONSOLE);
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.joinDisconnected"));
 		}
 	}
 	

@@ -80,7 +80,21 @@ public class ConnectionManagement implements IRCEventListener {
 					
 			}
 		}*/
+		else if (e.getType() == Type.PART) {
+			PartEvent pe = (PartEvent) e;
+			String channelName = pe.getChannelName();
+			Date date = new Date();
+			String time = timeFormat.format(date);
+			// username != nick
+			String actionMsg = time + "-!- " + pe.getUserName() + " " + pe.getHostName() + "  has left  " + pe.getPartMessage();
+			sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL);
+		}
 		
+		else if(e.getType() == Type.QUIT) {
+			QuitEvent qe = (QuitEvent) e;
+			System.out.println(qe.toString());
+		}
+
 		else if (e.getType() == Type.TOPIC) {
 			TopicEvent te = (TopicEvent) e;
 			String channelName = te.getChannel().getName();

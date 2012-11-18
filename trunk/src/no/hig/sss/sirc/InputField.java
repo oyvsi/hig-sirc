@@ -81,7 +81,6 @@ public class InputField extends JTextField  {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
 		} else {	// Just normal chat
 			if(type == TabComponent.CHANNEL)
 				connectionManagement.channelMsg(identifier, text, type);

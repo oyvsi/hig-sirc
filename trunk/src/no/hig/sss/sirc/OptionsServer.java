@@ -22,6 +22,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -255,13 +256,23 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 					osp.remove(i);
 					DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 					model.removeNodeFromParent(node);
+					
 				}
 			}
 		} else if(ae.getActionCommand().equals("change")) {
-			sIRC.options.setViewPersonal(null);
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent(); 
+			System.out.println(node.toString());
+			sIRC.options.setViewServerEdit();
+			for (int i = osp.size() - 1; i >= 0; --i) {
+				if (osp.get(i).getServerName().equals(node.toString())) {
+					osp.remove(i);
+					DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+					model.removeNodeFromParent(node);
+					
+				}
+			}
 			//System.out.println("nnono");
 		}
-		sIRC.options.setViewPersonal(null);
 	}
 
 	/**

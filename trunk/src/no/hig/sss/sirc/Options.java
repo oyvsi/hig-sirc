@@ -12,7 +12,7 @@ import java.util.*;
 //SplitPaneDemo itself is not a visible component.
 public class Options extends JPanel implements TreeSelectionListener {
 	private JSplitPane splitPane;
-	JPanel op;
+	OptionsPersonal op;
 	OptionsServer os;
 	JFrame jf;
 	JTree tree;
@@ -60,12 +60,12 @@ public class Options extends JPanel implements TreeSelectionListener {
 		splitPane.setMinimumSize(new Dimension(WWIDTH, WHEIGHT));
 		
 		setViewPersonal(null);
-		
 	}
 	void setViewPersonal(String selectedServer) {
 		OptionsPersonal.setMessages(ResourceBundle.getBundle("i18n/I18N"));
 		if(os != null){
-			op = new OptionsPersonal(os.getSelectedServer());
+			
+			op.setSelectedServer(os.getSelectedServer());
 		} else {
 			op = new OptionsPersonal("irc.quakenet.org");
 		}
@@ -80,13 +80,12 @@ public class Options extends JPanel implements TreeSelectionListener {
 	void setViewServerEdit() {
 		JPanel jp = new JPanel(); 
 		BorderLayout bl = new BorderLayout();
-		
-		bl.addLayoutComponent(new JLabel("Edit Server"), BorderLayout.NORTH);
-		bl.addLayoutComponent(new JLabel("Name"), BorderLayout.WEST);
 		jp.setLayout(bl);
-		jp.setVisible(true);
+		jp.add(new JLabel("Edit Server"), BorderLayout.NORTH);
+		jp.add(new JLabel("Name"), BorderLayout.WEST);
+		jp.add(new JButton("test"), BorderLayout.EAST);
+		
 		splitPane.setRightComponent(jp);
-		System.out.println("weee");
 	}
 
 	void setViewColor() {
@@ -121,9 +120,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 		// Create and set up the window.
 		jf = new JFrame("sIrc Options");
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		Options sp = new Options();
-		jf.getContentPane().add(sp.getSplitPane());
+		//sIRC.options  = new Options();
 		
+		jf.getContentPane().add(sIRC.options.getSplitPane());
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int X = (screen.width / 2) - (WWIDTH / 2); // Center horizontally.
 		int Y = (screen.height / 2) - (WHEIGHT / 2); // Center vertically.
@@ -169,13 +168,11 @@ public class Options extends JPanel implements TreeSelectionListener {
         		setViewColor();
         		break;
     		}
-      System.out.print(node.toString());
-      }
-		
+    		System.out.print(node.toString());
+        }
 	}
 	public void hideWindow() {
 		jf.setVisible(false);
-		
 	}
 	public void showWindow() {
 		jf.setVisible(true);

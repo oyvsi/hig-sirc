@@ -241,34 +241,6 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
-		/*
-		try {
-			FileInputStream fis = new FileInputStream(fileServers);
-			BufferedReader br = new BufferedReader(new InputStreamReader(fis, Charset.forName("UTF-8")));
-			
-			String line;
-			String[] split;
-			while (((line = br.readLine()) != null )) {
-				if(line.contains("[networks]"))
-					break;
-				
-			}
-			
-			while (((line = br.readLine()) != null )) {
-				if(line.equals("[servers]"))
-					break;
-				split = line.split("=");
-				networks.add(line);
-			}
-			while (((line = br.readLine()) != null )){
-				split = line.split("");
-				servers.add(line);
-			}
-			fis.close();
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		}
-		*/
 	}
 	/**
 	 * @return the selectedServer

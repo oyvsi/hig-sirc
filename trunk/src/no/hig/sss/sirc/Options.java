@@ -81,12 +81,19 @@ public class Options extends JPanel implements TreeSelectionListener {
 		JPanel jp = new JPanel(); 
 		BorderLayout bl = new BorderLayout();
 		jp.setLayout(bl);
-		jp.add(new JLabel("Edit Server"), BorderLayout.NORTH);
-		jp.add(new JLabel("Name"), BorderLayout.WEST);
-		jp.add(new JButton("test"), BorderLayout.EAST);
 		
-		splitPane.setRightComponent(jp);
+		
+		jp.setLayout(new GridLayout(1,2));
+		jp.add(new JLabel("Edit Server"));
+		jp.add(new JLabel("Name"));
+		jp.add(new JButton("test"));
+		//jp.add(new JButton("Save"), );
+		jp.add(new JButton("Cancel"));
+		os.remove(os.tree);
+		os.add(jp, BorderLayout.CENTER);
+		
 	}
+	
 
 	void setViewColor() {
 		JPanel to = new TextOptions();

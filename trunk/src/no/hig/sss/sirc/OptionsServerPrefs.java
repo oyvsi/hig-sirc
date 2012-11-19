@@ -71,6 +71,11 @@ public class OptionsServerPrefs {
 	 */
 	public void setPort(int[] port) {
 		this.port = port;
+		
+		for(int ports : this.port){
+			System.out.print("\n");
+			System.out.print(ports);
+		}
 	}
 	
 }

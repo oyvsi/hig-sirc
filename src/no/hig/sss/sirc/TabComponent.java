@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Color;
+import java.util.ArrayList;
 
 
 import javax.swing.BorderFactory;
@@ -33,7 +34,7 @@ public class TabComponent extends JPanel {
 	private JTextArea chatArea;
 	private JScrollPane scrollPane;
 	private UsersContainer userContainer;
-	private JList users;
+	private JList<String> users;
 	private JTextField inputArea;
 	private ConnectionManagement cm = sIRC.conManagement;
 	private JTextField topText;
@@ -49,7 +50,9 @@ public class TabComponent extends JPanel {
 		else if(type == CHANNEL) {
 			this.type = CHANNEL;
 			userContainer = new UsersContainer(identifier);
-			users = new JList<String>(userContainer);
+			users = new JList<String>();
+			users.setCellRenderer(new MyCellRenderer(userContainer));
+			users.setListData(userContainer.getList());
 			users.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					if(SwingUtilities.isRightMouseButton(e))

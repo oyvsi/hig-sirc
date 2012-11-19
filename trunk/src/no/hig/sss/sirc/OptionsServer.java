@@ -172,7 +172,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 		if (node == null)
 			return;
 		if (node.isLeaf()) {
-			setSelectedServer(node.toString());
+			setSelectedServer(node.toString(), node.getParent().toString());
 			switch (node.toString()) {
 			case "Personal":
 				break;
@@ -461,7 +461,14 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 	 * @param selectedServer
 	 *            the selectedServer to set
 	 */
-	public void setSelectedServer(String selectedServer) {
-		this.selectedServer = selectedServer;
+	public void setSelectedServer(String selectedServer, String group) {
+		for(OptionsServerPrefs osp : this.osp) {
+			
+			if(osp.getServerName().equals(selectedServer) && osp.getServerGroup().equals(group)) {
+				this.selectedServer = osp.getServerUrl();
+			}
+		}
+		
+		//this.selectedServer = selectedServer;
 	}
 }

@@ -12,10 +12,15 @@ import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -52,14 +57,22 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 		ActionListener {
 	private static ResourceBundle messages;
 
-	JButton add, change, delete, ok, cancel, help;
+	JButton add, change, delete, ok, cancel, help, addServer;
 	private ArrayList<OptionsServerPrefs> osp;
 	private String[] networks;
-	private BorderLayout bl;
+	BorderLayout bl;
+	JScrollPane sp;
+	JPanel action, server;
 	private String selectedServer;
 	JTree tree;
 	DefaultTreeModel treeModel;
 	File fileServers;
+	JTextField editServerName, editServerUrl, editServerGroup, editServerPorts; // for
+																				// edit
+																				// and
+																				// add
+																				// server
+
 	/**
 	 * Constructor for the class, handle all GUI layout and fill inn initial
 	 * values
@@ -83,30 +96,30 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 
 		tree.addTreeSelectionListener(this);
 
-		JScrollPane sp = new JScrollPane(tree);
+		sp = new JScrollPane(tree);
 		sp.setPreferredSize(new Dimension(150, 200));
 		add(new JLabel("Server settings"), BorderLayout.NORTH);
 
 		add(sp, BorderLayout.CENTER);
 		// Create the panel with the four buttons on the right
-		JPanel alterServerButtons = new JPanel();
-		alterServerButtons.setLayout(new GridLayout(3, 1));
-		alterServerButtons.add(add = new JButton(messages
+		action = new JPanel();
+		action.setLayout(new GridLayout(3, 1));
+		action.add(add = new JButton(messages
 				.getString("connectionOptions.button.add.buttonText")));
 		add.setActionCommand("add");
 		add.addActionListener(this);
 
-		alterServerButtons.add(change = new JButton(messages
+		action.add(change = new JButton(messages
 				.getString("connectionOptions.button.change.buttonText")));
 		change.setActionCommand("change");
 		change.addActionListener(this);
-		alterServerButtons.add(delete = new JButton(messages
+		action.add(delete = new JButton(messages
 				.getString("connectionOptions.button.delete.buttonText")));
 		delete.setActionCommand("delete");
 		delete.addActionListener(this);
 		// Add the buttons on the right
-		alterServerButtons.setSize(new Dimension(200, 60));
-		add(alterServerButtons, BorderLayout.EAST);
+		action.setSize(new Dimension(200, 60));
+		add(action, BorderLayout.EAST);
 		// Add ok, cancel, help buttons
 		JPanel okCancelHelpPanel = new JPanel();
 		okCancelHelpPanel.setLayout(new GridLayout(1, 2));
@@ -186,13 +199,15 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 		ArrayList<Integer> al = new ArrayList<Integer>();
 		String[] temp;
 		String[] temp2;
+		//raw = raw.substring(0, (raw.length()-5));
 		temp = raw.split("G");
 
 		temp = temp[0].split(",");
 		for (String temp3 : temp) {
+			//System.out.println(temp3);
 			if (temp3.contains("-")) {
 				temp2 = temp3.split("-");
-				for (int i = Integer.valueOf(temp2[0]); i >= Integer
+				for (int i = Integer.valueOf(temp2[0]); i <= Integer
 						.valueOf(temp2[1]); i++) {
 					al.add(i);
 				}
@@ -205,27 +220,20 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 			ports[i] = al.get(i).intValue();
 		}
 		for (int port : ports) {
-			// System.out.print(port);
+			//System.out.print(port);
 		}
 		return ports;
 
 	}
 
 	private void addServers(DefaultMutableTreeNode t) {
-		String[] tempN;
-		String[] tempS;
-
-		
-
 		for (String network : this.networks) {
 			if (!network.isEmpty()) {
-				tempN = network.split("=");
 				DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(
-						tempN[1]);
+						network);
 				treeModel.insertNodeInto(dmtn, t, 0);
-
 				for (int i = 0; i < osp.size(); i++) {
-					if (osp.get(i).getServerGroup().equals(tempN[1])) {
+					if (osp.get(i).getServerGroup().equals(network)) {
 						dmtn.add(new DefaultMutableTreeNode(osp.get(i)
 								.getServerName()));
 					}
@@ -237,29 +245,14 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		System.out.println(ae.getActionCommand());
-		if (ae.getActionCommand().equals(
-				messages.getString("connectionOptions.button.add.buttonText"))) {
+		if (ae.getActionCommand().equals("add")) {
+			addServer(null);
+		} else if (ae.getActionCommand().equals("addServer")) {
+			saveServer();
+			saveServers();
+			sIRC.options.setViewServer();
 
-		} else if (ae
-				.getActionCommand()
-				.equals(messages
-						.getString("connectionOptions.button.change.buttonText"))) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
-					.getLastSelectedPathComponent();
-			System.out.println(node.toString());
-
-			OptionsServerPrefs my = null;
-			for (OptionsServerPrefs opfs : osp) {
-				if (node.toString().equals(opfs.getServerName())) {
-					my = opfs;
-
-				}
-			}
-			if (my != null)
-				my.setServerName("hei!");
-		} else if (ae
-				.getActionCommand()
-				.equals("delete")) {
+		} else if (ae.getActionCommand().equals("delete")) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
 					.getLastSelectedPathComponent();
 			System.out.println(node.toString());
@@ -268,46 +261,88 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 					osp.remove(i);
 					DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
 					model.removeNodeFromParent(node);
-
 				}
 			}
 		} else if (ae.getActionCommand().equals("change")) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
 					.getLastSelectedPathComponent();
-			System.out.println(node.toString());
-			sIRC.options.setViewServerEdit();
 			for (int i = osp.size() - 1; i >= 0; --i) {
 				if (osp.get(i).getServerName().equals(node.toString())) {
-					osp.remove(i);
-					DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-					model.removeNodeFromParent(node);
-
+					OptionsServerPrefs osp = this.osp.get(i);
+					addServer(osp);
+					// this.osp.remove(i));
+					// DefaultTreeModel model = (DefaultTreeModel)
+					// tree.getModel();
+					// model.removeNodeFromParent(node);
 				}
 			}
 			// System.out.println("nnono");
-		} else if(ae.getActionCommand().equals("ok")) {
-			sIRC.options.hideWindow();
-			sIRC.options.op.save();
-		} else if(ae.getActionCommand().equals("cancel")) {
-			sIRC.options.hideWindow();
+		} else if (ae.getActionCommand().equals("ok")) {
+			sIRC.options.hideWindow(); // Hides window
+			sIRC.options.op.save(); // Saves prefs to ini
+		} else if (ae.getActionCommand().equals("cancel")) {
+			sIRC.options.hideWindow(); // Hides window
+			sIRC.options.op.load(); // Loads prefs again
 		}
+	}
+
+	public void saveServers() {
+		fileServers = new File("servers2.ini");
+		FileWriter fos;
+		try {
+			fos = new FileWriter(fileServers);
+			BufferedWriter bw = new BufferedWriter(fos);
+
+			bw.write("[networks]");
+			bw.newLine();
+			int i = 0;
+			for (String network : networks) {
+				i++;
+				bw.write("n" + i + "=" + network);
+				bw.newLine();
+			}
+			bw.newLine();
+			bw.write("[servers]");
+			bw.newLine();
+			i = 0;
+			for (OptionsServerPrefs osp : this.osp) {
+				i++;
+				
+				int [] ports = osp.getPort();
+				String tempPorts = "";
+				for(int port : ports) {
+					tempPorts = tempPorts + port + ",";
+				}
+				tempPorts = tempPorts.substring(0, tempPorts.length()-1);
+				
+				bw.write("n" + i + "=" + osp.getServerName() + "SERVER:"
+						+ osp.getServerUrl() + ":" + tempPorts + 
+						"GROUP:" + osp.getServerGroup());
+				bw.newLine();
+				//System.out.println(osp.getServerGroup());
+			}
+
+			fos.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public void loadServers() {
 		fileServers = new File("servers.ini");
-		
-		
-		ArrayList<String> servers = new ArrayList<String>();
-		ArrayList<String> networks = new ArrayList<String>();
-			
-		
+
+		ArrayList<String> tempServers = new ArrayList<String>();
+		ArrayList<String> tempNetworks = new ArrayList<String>();
+
 		String line;
 		String[] split;
 		try {
 			FileInputStream fis;
 			fis = new FileInputStream(fileServers);
-		BufferedReader br = new BufferedReader(new InputStreamReader(fis,
-				Charset.forName("UTF-8")));
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis,
+					Charset.forName("UTF-8")));
 			while (((line = br.readLine()) != null)) {
 				if (line.contains("[networks]"))
 					break;
@@ -315,28 +350,32 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 			}
 
 			while (((line = br.readLine()) != null)) {
-				if (line.equals("[servers]"))
+				if (line.contains("[servers]"))
 					break;
-				split = line.split("=");
-				networks.add(line);
-				//System.out.println("Read network");
+				if (line.contains("=")) {
+					split = line.split("=");
+					tempNetworks.add(split[1]);
+				}
 			}
+			//System.out.println(line);
+			//System.out.println("wtf is this");
 			while (((line = br.readLine()) != null)) {
-				split = line.split("");
-				servers.add(line);
-				//System.out.println("Read server");
+				// split = line.split("");
+				System.out.println(line);
+				System.out.println("Read server");
+				tempServers.add(line);
+
 			}
 			fis.close();
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
 
-		this.networks = new String[networks.size()];
-		this.networks = networks.toArray(this.networks);
-		
-		String[] serv = new String[servers.size()];
-		serv = servers.toArray(serv);
+		networks = new String[tempNetworks.size()];
+		networks = tempNetworks.toArray(networks);
 
+		String[] serv = new String[tempServers.size()];
+		serv = tempServers.toArray(serv);
 
 		String[] tempN;
 		String[] tempS;
@@ -347,18 +386,68 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 		int[] port;
 
 		for (String server : serv) {
-			if (!server.isEmpty()) {
-				tempS = server.split(":");
-				port = toPort(tempS[2]);
-				tempOsp = new OptionsServerPrefs(tempS[1], tempS[1], tempS[3],
-						port);
-				osp.add(tempOsp);
-				tempOsp = osp.get(0);
-				for (int portsss : tempOsp.getPort()) {
-					System.out.print(portsss);
+			if (server.length() > 8) {
+				if (server.contains((":"))) {
+					tempS = server.split(":");
+					port = toPort(tempS[2]);
+					String edit = tempS[0].split("=")[1];
+					if(edit.contains("SERVER")) {
+						edit = edit.substring(0, (edit.length()-6)); // remove SERVER
+					}
+					tempOsp = new OptionsServerPrefs(edit, tempS[1], tempS[3], port);
+					osp.add(tempOsp);
+					tempOsp = osp.get(0);
+					for (int portsss : tempOsp.getPort()) {
+						//System.out.print(portsss);
+					}
 				}
 			}
 		}
+	}
+
+	public void addServer(OptionsServerPrefs osp) {
+		remove(sp);
+		remove(action);
+		// revalidate();
+		repaint();
+
+		server = new JPanel();
+		server.setLayout(new GridLayout(5, 2));
+		server.setSize(new Dimension(100, 100));
+		server.add(new JLabel("Server Name"));
+		server.add(editServerName = new JTextField(osp != null ? osp
+				.getServerName() : ""));
+		server.add(new JLabel("Url"));
+		server.add(editServerUrl = new JTextField(osp != null ? osp
+				.getServerUrl() : ""));
+		server.add(new JLabel("Ports"));
+		server.add(editServerPorts = new JTextField(osp != null ? osp.getPort()
+				.toString() : ""));
+		server.add(new JLabel("Group"));
+		server.add(editServerGroup = new JTextField(osp != null ? osp
+				.getServerGroup() : ""));
+		server.add(addServer = new JButton("AddServer"));
+		addServer.setActionCommand("addServer");
+		addServer.addActionListener(this);
+		if (osp == null) {
+			osp = new OptionsServerPrefs();
+		}
+
+		add(server, BorderLayout.CENTER);
+		revalidate();
+		repaint();
+	}
+
+	public void saveServer() {
+		OptionsServerPrefs osp = new OptionsServerPrefs(
+				editServerName.getText(), editServerUrl.getText(),
+				editServerGroup.getText(), toPort(editServerPorts.getText()));
+		this.osp.add(osp);
+		this.saveServers();
+	}
+
+	public void changeServer(OptionsServerPrefs osp) {
+
 	}
 
 	/**

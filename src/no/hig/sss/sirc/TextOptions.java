@@ -127,13 +127,14 @@ public class TextOptions extends JPanel {
 	private void updatePreview() {
 		try {
 			preview.remove(0, preview.getLength());
-			preview.insertString(0, fontName, format(fontName));
+			preview.insertString(0, fontName, format());
+			//preview.insertString(offset, str, a)
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}	
 	}
 	
-	private SimpleAttributeSet format(String fontName) {
+	public SimpleAttributeSet format() {
 		SimpleAttributeSet sas = new SimpleAttributeSet();
 		StyleConstants.setFontFamily(sas, fontName);
 		StyleConstants.setBold(sas, bold);

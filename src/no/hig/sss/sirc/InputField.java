@@ -57,7 +57,7 @@ public class InputField extends JTextField {
 				}
 				else if(cmd.equals("msg")) {	// Private messages
 					if(line.length > 2) {
-						connectionManagement.privMsg(line[1], restLine(line, 2), TabComponent.PM);
+						connectionManagement.privMsg(line[1], restLine(line, 2));
 					}
 				}
 				else if(cmd.equals("wc")) {	 // Close window
@@ -85,9 +85,9 @@ public class InputField extends JTextField {
 			}
 		} else {	// Just normal chat
 			if(type == TabComponent.CHANNEL)
-				connectionManagement.channelMsg(identifier, text, type);
+				connectionManagement.channelMsg(identifier, text);
 			else
-				connectionManagement.privMsg(identifier, text, type);		
+				connectionManagement.privMsg(identifier, text);		
 		}	
 	}	 
 }

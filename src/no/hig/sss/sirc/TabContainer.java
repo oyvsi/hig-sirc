@@ -85,4 +85,12 @@ public class TabContainer extends JTabbedPane {
 		tabContainer.get(identifier).setTopText(text);
 	}
 	
+	public int getType(String identifier) {
+		int index = getTabIndex(identifier);
+		if(index > -1)	// Found tab
+			return tabContainer.get(identifier).getType();
+		else
+			return -1;
+
+	}
 }

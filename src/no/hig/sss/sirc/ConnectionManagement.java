@@ -44,7 +44,6 @@ public class ConnectionManagement implements IRCEventListener {
 			session.close(quitMsg);
 			isConnected = false;
 			sIRC.tabContainer.closeAllTabs();
-			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.disconnected"));
 		}
 	}
 	
@@ -58,7 +57,7 @@ public class ConnectionManagement implements IRCEventListener {
 			String server = session.getServerInformation().getServerName();
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionMangement.connected") + " " + server);
 			isConnected = true;
-		}
+		} 
 		else if (e.getType() == Type.CHANNEL_MESSAGE) {	
 			MessageEvent me = (MessageEvent) e;
 			String message = buildSay(me.getNick(), me.getMessage());
@@ -131,11 +130,30 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.setTopText(channelName, topic);
 		}
 		
-		//else if (e.getType() == Type.CTCP_EVENT) {
+		else if (e.getType() == Type.CTCP_EVENT) {
+			CtcpEvent ce = (CtcpEvent) e;
+			String ctcp = ce.getCtcpString();
+			String identifier = ce.getNick();
+			if(ce.getChannel() != null)
+				identifier = ce.getChannel().getName();
+			
+			if(ctcp.startsWith("ACTION")) {
+				String actionMsg = ctcp.substring("ACTION".length() + 1);
+				String printMsg = buildSay("* " + ce.getNick(), actionMsg);
+				int type = sIRC.tabContainer.getType(identifier);
+				
+				if(type == TabComponent.CHANNEL)
+					sIRC.tabContainer.message(printMsg, identifier, type, TabComponent.INFO);
+				else if(type == TabComponent.PM)
+					sIRC.tabContainer.message(printMsg, identifier, type, TabComponent.INFO);
+			}
+			
 		//	KickEvent ke = (KickEvent) e;
-		//}
+		}
+	
 		else if(e.getType() == Type.CONNECTION_LOST) {
 			isConnected = false;
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.disconnected"));
 		}
 		
 		else {
@@ -148,6 +166,14 @@ public class ConnectionManagement implements IRCEventListener {
 			String message = buildSay(session.getNick(), msg);
 			sIRC.tabContainer.message(message, channelName, TabComponent.CHANNEL, TabComponent.CHANNEL);
 			session.getChannel(channelName).say(msg);
+		}
+	}
+	
+	public void actionMsg(String identifier, String msg, int type) {
+		if(isConnected && (type == TabComponent.PM || type == TabComponent.CHANNEL)) {
+			String printMsg = buildSay("* " + session.getNick(), msg);
+			session.action(identifier, "ACTION " + msg);	
+			sIRC.tabContainer.message(printMsg, identifier, type, TabComponent.INFO);
 		}
 	}
 	

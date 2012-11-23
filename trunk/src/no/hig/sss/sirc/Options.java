@@ -18,6 +18,11 @@ public class Options extends JPanel implements TreeSelectionListener {
 	JTree tree;
 	DefaultTreeModel treeModel;
 	
+	public static TextOptions channelFormat;
+	public static TextOptions pmFormat;
+	public static TextOptions infoFormat;
+	
+	
 	final int WHEIGHT = 300;
 	final int WWIDTH = 700;
 	
@@ -28,8 +33,10 @@ public class Options extends JPanel implements TreeSelectionListener {
 	    DefaultMutableTreeNode tStyle = new DefaultMutableTreeNode("Style");
 	    DefaultMutableTreeNode tPersonal = new DefaultMutableTreeNode("Personal");
 	    DefaultMutableTreeNode tServer = new DefaultMutableTreeNode("Server");
-	    DefaultMutableTreeNode tColor = new DefaultMutableTreeNode("Color");
-	    DefaultMutableTreeNode tText = new DefaultMutableTreeNode("Text");
+	    DefaultMutableTreeNode tCmFormat = new DefaultMutableTreeNode("Channel messages");
+	    DefaultMutableTreeNode tPmFormat = new DefaultMutableTreeNode("Private messages");
+	    DefaultMutableTreeNode tInfoFormat = new DefaultMutableTreeNode("Info messages");
+
 	    
 	    treeModel = new DefaultTreeModel(tRoot);
 	    
@@ -42,8 +49,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 	    
 	    tConn.add(tPersonal);
 	    tConn.add(tServer);
-	    tStyle.add(tColor);
-	    tStyle.add(tText);	    
+	    tStyle.add(tCmFormat);
+	    tStyle.add(tPmFormat);
+	    tStyle.add(tInfoFormat);
 	    tree.addTreeSelectionListener(this);
 	    
 
@@ -60,6 +68,18 @@ public class Options extends JPanel implements TreeSelectionListener {
 		splitPane.setMinimumSize(new Dimension(WWIDTH, WHEIGHT));
 		
 		setViewPersonal(null);
+		
+		infoFormat = new TextOptions();
+		infoFormat.setBorder(null);
+		infoFormat.setPreferredSize(new Dimension(800, 600));
+		
+		pmFormat = new TextOptions();
+		pmFormat.setBorder(null);
+		pmFormat.setPreferredSize(new Dimension(800, 600));
+		
+		channelFormat = new TextOptions();
+		channelFormat.setBorder(null);
+		channelFormat.setPreferredSize(new Dimension(800, 600));
 	}
 	void setViewPersonal(String selectedServer) {
 		OptionsPersonal.setMessages(ResourceBundle.getBundle("i18n/I18N"));
@@ -95,24 +115,16 @@ public class Options extends JPanel implements TreeSelectionListener {
 	}
 	
 
-	void setViewColor() {
-		JPanel to = new TextOptions();
-		to.setBorder(null);
-		to.setPreferredSize(new Dimension(800, 600));
-		splitPane.setRightComponent(to);
+	void setViewCmFormat() {
+		splitPane.setRightComponent(channelFormat);
 
 	}
-	void setViewText() {
-		JPanel to = new TextOptions();
-		to.setBorder(null);
-		to.setPreferredSize(new Dimension(800, 600));
-		splitPane.setRightComponent(to);
-		
-
+	void setViewPmFormat() {
+		splitPane.setRightComponent(pmFormat);
 	}
 
-	void setViewFontOptions() {
-
+	void setViewInfoFormat() {
+		splitPane.setRightComponent(infoFormat);
 	}
 	
 	public JSplitPane getSplitPane() {
@@ -167,13 +179,15 @@ public class Options extends JPanel implements TreeSelectionListener {
     			setViewServer();
     			break;
 
-    		case "Text":
-    			setViewText();
+    		case "Channel messages":
+    			setViewCmFormat();
     			break;
     		
-        	case "Color":
-        		setViewColor();
+        	case "Private messages":
+        		setViewPmFormat();
         		break;
+        	case "Info messages":
+        		setViewInfoFormat();
     		}
     		System.out.print(node.toString());
         }

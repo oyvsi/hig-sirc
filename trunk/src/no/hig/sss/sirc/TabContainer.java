@@ -28,7 +28,7 @@ public class TabContainer extends JTabbedPane {
 		});
 	}	
 
-	public void message(String message, String identifier, int type) {
+	public void message(String message, String identifier, int type, int format) {
 		int index = getTabIndex(identifier);
 		if(index == -1) {
 			newTab(identifier, type);
@@ -45,12 +45,12 @@ public class TabContainer extends JTabbedPane {
 				case 8:  setMnemonicAt(index, KeyEvent.VK_9); break;
 			}
 		}
-		tabContainer.get(identifier).addText(message);
+		tabContainer.get(identifier).addText(message, format);
 		System.out.println("Got message: " + message);
 	}
 	
 	public void consoleMsg(String msg) {
-		tabContainer.get("Console").addText(msg);
+		tabContainer.get("Console").addText(msg, TabComponent.INFO);
 	}
 	
 	private int getTabIndex(String identifier) {

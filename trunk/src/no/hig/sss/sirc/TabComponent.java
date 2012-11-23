@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Color;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -21,17 +22,24 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.SimpleAttributeSet;
+
 import jerklib.Channel;
 import jerklib.Session;
 
 public class TabComponent extends JPanel {
 	public final static int CONSOLE = 0;
 	public final static int PM = 1;
-	public final static int CHANNEL = 2;
+	public final static int CHANNEL = 2;	
+	public final static int INFO = 3;
+	
 	
 	private int type;
 	private String identifier;
-	private JTextArea chatArea;
+	private JTextPane chatArea;
 	private JScrollPane scrollPane;
 	private UsersContainer userContainer;
 	private JList<String> users;
@@ -61,7 +69,7 @@ public class TabComponent extends JPanel {
 				});
 			add(users, BorderLayout.EAST);
 		}			
-		chatArea = new JTextArea();
+		chatArea = new JTextPane();
 		chatArea.setEditable(false);
 		inputArea = new InputField(type, identifier);
 
@@ -93,9 +101,26 @@ public class TabComponent extends JPanel {
 		inputArea.requestFocus();
 	}
 	
-	public void addText(String message) {
+	public void addText(String message, int type) {
+	//	Options.pmFormat.format(message);
+		Document document = chatArea.getDocument();
+		SimpleAttributeSet format;
+		if(type == INFO)
+			format = Options.infoFormat.format();
+		else if(type == PM)
+			format = Options.pmFormat.format();
+		else
+			format = Options.channelFormat.format();
 		
-		chatArea.append(message + "\n");
+		try {
+			document.insertString(document.getLength(), message + "\n", format);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		//chatArea.append(message + "\n");
+		
 	    SwingUtilities.invokeLater(new Thread() {
 	    	public void run() {
 	    		JScrollBar scrollBar = scrollPane.getVerticalScrollBar();

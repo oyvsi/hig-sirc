@@ -109,7 +109,7 @@ class RequestGenerator
 	 */
 	public void ctcp(String target, String request)
 	{
-		write(new WriteRequest("\001" + request.toUpperCase() + "\001", session, target));
+		write(new WriteRequest("\001" + request + "\001", session, target));
 	}
 
 	

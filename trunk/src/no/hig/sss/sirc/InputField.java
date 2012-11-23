@@ -76,6 +76,13 @@ public class InputField extends JTextField {
 				else if(cmd.equals("nick")) {	// Nick change
 					
 				}
+				
+				else if(cmd.equals("me")) {
+					String actionMsg = null;
+					if(line.length > 1) 
+						actionMsg = restLine(line, 1);
+					connectionManagement.actionMsg(identifier, actionMsg, type);
+				}
 
 				else {
 					sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.unknownCommand"));

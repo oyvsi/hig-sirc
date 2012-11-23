@@ -133,6 +133,10 @@ public class TabComponent extends JPanel {
 		return identifier;
 	}
 	
+	public int getType() {
+		return type;
+	}
+	
 	private void showRightClickMenu(MouseEvent e) {
 		JPopupMenu rightClickMenu = new JPopupMenu();
 		JMenuItem kick = new JMenuItem("Kick");

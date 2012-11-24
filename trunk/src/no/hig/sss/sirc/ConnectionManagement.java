@@ -173,8 +173,12 @@ public class ConnectionManagement implements IRCEventListener {
 			String nick = je.getNick();
 			String channelName = je.getChannelName();
 			sIRC.tabContainer.userJoined(channelName, nick);
-			
-			
+			Date date = new Date();
+
+			String message = timeFormat.format(date) + " -!- " + 
+							 nick + " [" + je.getUserName() + "@" + je.getHostName() + "] " + 
+							 sIRC.i18n.getStr("channel.userJoin") + " " + channelName;
+			sIRC.tabContainer.message(message, channelName, TabComponent.CHANNEL, TabComponent.INFO);
 		}
 		
 		//else if (e.getType() == Type.CTCP_EVENT) {

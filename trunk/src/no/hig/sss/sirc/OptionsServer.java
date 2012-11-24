@@ -249,7 +249,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		for(OptionsServerPrefs temposp : osp){
 			boolean isNetwork = false;
 			for(String network : this.networks) {
-				if((network.equals(temposp.getServerGroup()))) {
+				if((network.equalsIgnoreCase(temposp.getServerGroup()))) {
 					isNetwork = true;
 				}
 			}
@@ -313,12 +313,12 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 				}
 			}
 		} else if (ae.getActionCommand().equals("ok")) {
-			sIRC.options.hideWindow(); // Hides window
+			sIRC.options.hideWindow(true); // Hides window and save prefs
 			sIRC.options.os.saveServers();
-			sIRC.options.op.save(); // Saves prefs to ini
+		//	sIRC.options.op.save(); // Saves prefs to ini
 		} else if (ae.getActionCommand().equals("cancel")) {
-			sIRC.options.hideWindow(); // Hides window
-			sIRC.options.op.load(); // Loads prefs again
+			sIRC.options.hideWindow(false); // Hides window, don't save prefs
+		//	sIRC.options.op.load(); // Loads prefs again
 		} else if (ae.getActionCommand().equals("back")) {
 			sIRC.options.os = new OptionsServer();
 			sIRC.options.setViewServer();

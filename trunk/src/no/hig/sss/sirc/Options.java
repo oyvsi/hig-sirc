@@ -1,6 +1,11 @@
 package no.hig.sss.sirc;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -21,6 +26,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	public static TextOptions channelFormat;
 	public static TextOptions pmFormat;
 	public static TextOptions infoFormat;
+	public static TextOptions consoleFormat;
 	
 	
 	final int WHEIGHT = 300;
@@ -36,10 +42,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 	    DefaultMutableTreeNode tCmFormat = new DefaultMutableTreeNode("Channel messages");
 	    DefaultMutableTreeNode tPmFormat = new DefaultMutableTreeNode("Private messages");
 	    DefaultMutableTreeNode tInfoFormat = new DefaultMutableTreeNode("Info messages");
+	    DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode("Console messages");
 
-	    
-	    treeModel = new DefaultTreeModel(tRoot);
-	    
+	    treeModel = new DefaultTreeModel(tRoot);    
 	    tree = new JTree(treeModel);
 	    
 	    treeModel.insertNodeInto(tStyle, tRoot, 0);
@@ -52,9 +57,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 	    tStyle.add(tCmFormat);
 	    tStyle.add(tPmFormat);
 	    tStyle.add(tInfoFormat);
+	    tStyle.add(tConFormat);
 	    tree.addTreeSelectionListener(this);
 	    
-
 		// Create a split pane with the two scroll panes in it.
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setOneTouchExpandable(true);
@@ -62,28 +67,34 @@ public class Options extends JPanel implements TreeSelectionListener {
 
 		tree.setMinimumSize(new Dimension(150, 300));
 		splitPane.setLeftComponent(tree);
-		
-		
+				
 		splitPane.setPreferredSize(new Dimension(WWIDTH, WHEIGHT));
 		splitPane.setMinimumSize(new Dimension(WWIDTH, WHEIGHT));
 		
 		setViewPersonal(null);
 		
-		infoFormat = new TextOptions();
+		os = new OptionsServer();		
+		
+		infoFormat = new TextOptions("Info");
 		infoFormat.setBorder(null);
 		infoFormat.setPreferredSize(new Dimension(800, 600));
 		
-		pmFormat = new TextOptions();
+		pmFormat = new TextOptions("PM");
 		pmFormat.setBorder(null);
 		pmFormat.setPreferredSize(new Dimension(800, 600));
 		
-		channelFormat = new TextOptions();
+		channelFormat = new TextOptions("Channel");
 		channelFormat.setBorder(null);
 		channelFormat.setPreferredSize(new Dimension(800, 600));
 		
-		os = new OptionsServer();
+		consoleFormat = new TextOptions("Console");
+		consoleFormat.setBorder(null);
+		consoleFormat.setPreferredSize(new Dimension(800, 600));
+		
+		loadOptions();
 		
 	}
+	
 	void setViewPersonal(String selectedServer) {
 		if(os != null){
 			if(os.getSelectedServer() != null) { // Don't want new server if its nothing
@@ -115,17 +126,15 @@ public class Options extends JPanel implements TreeSelectionListener {
 		
 	}
 	
-
-	void setViewCmFormat() {
-		splitPane.setRightComponent(channelFormat);
-
-	}
-	void setViewPmFormat() {
-		splitPane.setRightComponent(pmFormat);
-	}
-
-	void setViewInfoFormat() {
-		splitPane.setRightComponent(infoFormat);
+	private void setFormatView(int view) {
+		if(view == TabComponent.CHANNEL)
+			splitPane.setRightComponent(channelFormat);
+		else if(view == TabComponent.PM)
+			splitPane.setRightComponent(pmFormat);
+		else if(view == TabComponent.CONSOLE)
+			splitPane.setRightComponent(consoleFormat);
+		else if(view == TabComponent.INFO)
+			splitPane.setRightComponent(infoFormat);			
 	}
 	
 	public JSplitPane getSplitPane() {
@@ -153,18 +162,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		jf.setVisible(true);
 		jf.setAlwaysOnTop(true);
 	}
-	/*
-	public static void main(String[] args) {
-		//Schedule a job for the event-dispatching thread:
-		//creating and showing this application's GUI.
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				Options op = new Options();
-				op.createAndShowGUI();
-			}
-		});
-	}
-	*/
+
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
@@ -181,22 +179,72 @@ public class Options extends JPanel implements TreeSelectionListener {
     			break;
 
     		case "Channel messages":
-    			setViewCmFormat();
+    			setFormatView(TabComponent.CHANNEL);
     			break;
     		
         	case "Private messages":
-        		setViewPmFormat();
+        		setFormatView(TabComponent.PM);
         		break;
         	case "Info messages":
-        		setViewInfoFormat();
+        		setFormatView(TabComponent.INFO);
+        		break;
+        	case "Console messages":
+        		setFormatView(TabComponent.CONSOLE);
     		}
     		System.out.print(node.toString());
         }
 	}
-	public void hideWindow() {
+	public void hideWindow(Boolean saveOptions) {
 		jf.setVisible(false);
+		if(saveOptions)
+			saveOptions();
 	}
 	public void showWindow() {
 		jf.setVisible(true);
+		loadOptions();
+	}
+	
+	private void saveOptions() {
+		File file = new File("config.ini");
+		FileOutputStream fos;
+		Properties pro = new Properties();
+		try {
+			fos = new FileOutputStream(file);
+			op.save().store(fos, "Personal Settings");
+			channelFormat.save().store(fos, "Channel Messages");
+			pmFormat.save().store(fos, "Private Messages");
+			infoFormat.save().store(fos, "Info Messages");
+			consoleFormat.save().store(fos, "Console Messages");
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void loadOptions() {
+		File file = new File("config.ini");
+		FileInputStream fis;
+		Properties pro;
+		try {
+			fis = new FileInputStream(file);
+			pro = new Properties();
+			pro.load(fis);
+			op.load(pro);
+			channelFormat.load(pro);
+			pmFormat.load(pro);
+			infoFormat.load(pro);
+			consoleFormat.load(pro);
+			fis.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

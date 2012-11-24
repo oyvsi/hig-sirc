@@ -101,7 +101,6 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		email.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.email.tooltip"));
 		nickname.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.nickname.tooltip"));
 		altnick.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.altNick.tooltip"));
-		this.load();
 		setVisible(true);
 	}
 
@@ -178,57 +177,33 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		System.out.println(ae.getActionCommand());
 		if(ae.getActionCommand().equals("connect")) {
 			sIRC.conManagement.connect(getNickname(), this.selectedServer.getText());
-			this.save();
-			sIRC.options.hideWindow();
+			sIRC.options.hideWindow(true);
 			
 		} else if(ae.getActionCommand().equals("ok")) {
-			this.save();
-			sIRC.options.hideWindow();
+			sIRC.options.hideWindow(true);
 		} else if(ae.getActionCommand().equals("cancel")) {
-			sIRC.options.hideWindow();
-			this.load();
+			sIRC.options.hideWindow(false);
 		}
 		
 		
 	}
-	public void save() {
-		// Try to update values
-		try {			
-			FileOutputStream fos = new FileOutputStream(filePrefs);
-			Properties pri = new Properties();
-			
-			pri.store(fos, "");
-			pri.setProperty("fullname", fullName.getText());
-			pri.setProperty("email", email.getText());
-			pri.setProperty("nickname", nickname.getText());
-			pri.setProperty("altnick", altnick.getText());
-			pri.setProperty("server", selectedServer.getText());
-			pri.store(fos, "");
-			
-			fos.close();
-			
-		} catch (IOException ioe) {
-			System.out.println(ioe.getMessage());
-		}
+	public Properties save() {
+		Properties pro = new Properties();
+		pro.setProperty("fullname", fullName.getText());
+		pro.setProperty("email", email.getText());
+		pro.setProperty("nickname", nickname.getText());
+		pro.setProperty("altnick", altnick.getText());
+		pro.setProperty("server", selectedServer.getText());
+		
+		return pro;
 	}
-	public void load() {
-		try {
-			FileInputStream fis = new FileInputStream(filePrefs);
-			Properties pro = new Properties();
-			
-			pro.load(fis);
-			// Try to display them
-			fullName.setText(pro.getProperty("fullname"));
-			email.setText(pro.getProperty("email"));
-			nickname.setText(pro.getProperty("nickname"));
-			altnick.setText(pro.getProperty("altnick"));
-			selectedServer.setText(pro.getProperty("server"));
-			
-			fis.close();
-			
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-		}
+	
+	public void load(Properties pro) {		
+		fullName.setText(pro.getProperty("fullname"));
+		email.setText(pro.getProperty("email"));
+		nickname.setText(pro.getProperty("nickname"));
+		altnick.setText(pro.getProperty("altnick"));
+		selectedServer.setText(pro.getProperty("server"));
 	}
 	/**
 	 * @return the selectedServer

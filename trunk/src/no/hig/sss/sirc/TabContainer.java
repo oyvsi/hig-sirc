@@ -52,7 +52,7 @@ public class TabContainer extends JTabbedPane {
 	}
 	
 	public void consoleMsg(String msg) {
-		tabContainer.get("Console").addText(msg, TabComponent.INFO);
+		tabContainer.get("Console").addText(msg, TabComponent.CONSOLE);
 	}
 	
 	private int getTabIndex(String identifier) {

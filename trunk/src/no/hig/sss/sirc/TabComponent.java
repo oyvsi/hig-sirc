@@ -58,9 +58,7 @@ public class TabComponent extends JPanel {
 		else if(type == CHANNEL) {
 			this.type = CHANNEL;
 			userContainer = new UsersContainer(identifier);
-			users = new JList<String>();
-			users.setCellRenderer(new MyCellRenderer(userContainer));
-			users.setListData(userContainer.getList());
+			users = new JList<String>(userContainer);
 			users.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					if(SwingUtilities.isRightMouseButton(e))
@@ -160,4 +158,9 @@ public class TabComponent extends JPanel {
 	public JMenuItem createMenuItem(String name) {
 		return new JMenuItem(name);
 	}
+	
+	public UsersContainer getUserContainer() {
+		return userContainer;
+	}
+	
 }

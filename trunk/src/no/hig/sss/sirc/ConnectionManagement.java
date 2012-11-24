@@ -1,16 +1,22 @@
 package no.hig.sss.sirc;
 
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import jerklib.Channel;
 import jerklib.ConnectionManager;
 import jerklib.Profile;
 import jerklib.Session;
 import jerklib.events.*;
 import jerklib.events.ErrorEvent.ErrorType;
 import jerklib.events.IRCEvent.Type;
+import jerklib.events.modes.ModeAdjustment;
 import jerklib.events.modes.ModeAdjustment.Action;
+import jerklib.events.modes.ModeEvent.ModeType;
+import jerklib.events.modes.ModeEvent;
 import jerklib.listeners.IRCEventListener;
 
 public class ConnectionManagement implements IRCEventListener {
@@ -85,10 +91,41 @@ public class ConnectionManagement implements IRCEventListener {
 			String channelName = pe.getChannelName();
 			Date date = new Date();
 			String time = timeFormat.format(date);
-			String[] nickName = pe.getHostName().split("~");
-			String actionMsg = time + "-!- " + nickName[0] + " " + pe.getHostName() 
+			String userName = pe.getUserName();
+			String nickName = pe.getWho();
+			String actionMsg = time + "-!- " + userName + '@' + pe.getHostName() 
 							   + "  " + sIRC.i18n.getStr("channel.userPart") + "  " + pe.getPartMessage();
 			sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL, TabComponent.INFO);
+			sIRC.tabContainer.userLeft(channelName, nickName);
+		}
+		
+		else if (e.getType() == Type.MODE_EVENT) {
+			
+			ModeEvent me = (ModeEvent) e;
+			
+			List<ModeAdjustment> modeList = me.getModeAdjustments();
+			if(me.getModeType() == ModeType.CHANNEL) {
+				String channelName = me.getChannel().getName();
+				me.getModeAdjustments().iterator().next();
+				Iterator<ModeAdjustment> modeIter = modeList.iterator();
+				while(modeIter.hasNext()) {
+					ModeAdjustment ma = modeIter.next();
+					char mode = ma.getMode();
+					Action action = ma.getAction();
+					if(mode == 'o') {
+							System.out.println("OP");
+							sIRC.tabContainer.opMode(channelName, ma.getArgument(), action);
+					}
+					if(mode == 'v') {
+							System.out.println("VOICE");
+							sIRC.tabContainer.voiceMode(channelName, ma.getArgument(), action);
+						
+				
+					}
+				
+				}
+				
+			}
 		}
 		
 		else if(e.getType() == Type.QUIT) {
@@ -130,6 +167,18 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.setTopText(channelName, topic);
 		}
 		
+
+		else if (e.getType() == Type.JOIN) {
+			JoinEvent je = (JoinEvent) e;
+			String nick = je.getNick();
+			String channelName = je.getChannelName();
+			sIRC.tabContainer.userJoined(channelName, nick);
+			
+			
+		}
+		
+		//else if (e.getType() == Type.CTCP_EVENT) {
+
 		else if (e.getType() == Type.CTCP_EVENT) {
 			CtcpEvent ce = (CtcpEvent) e;
 			String ctcp = ce.getCtcpString();
@@ -148,6 +197,7 @@ public class ConnectionManagement implements IRCEventListener {
 					sIRC.tabContainer.message(printMsg, identifier, type, TabComponent.INFO);
 			}
 			
+
 		//	KickEvent ke = (KickEvent) e;
 		}
 	

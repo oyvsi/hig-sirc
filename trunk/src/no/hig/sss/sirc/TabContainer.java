@@ -10,6 +10,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import jerklib.events.modes.ModeAdjustment.Action;
+
 public class TabContainer extends JTabbedPane {
 	private Map<String, TabComponent> tabContainer = new HashMap<String, TabComponent>();
 
@@ -85,6 +87,24 @@ public class TabContainer extends JTabbedPane {
 		tabContainer.get(identifier).setTopText(text);
 	}
 	
+
+	public void userJoined(String identifier, String nick) {
+		tabContainer.get(identifier).getUserContainer().addUser(nick);
+	
+	}
+	
+	public void userLeft(String identifier, String nick) {
+		tabContainer.get(identifier).getUserContainer().removeUser(identifier, nick);
+	}
+	
+	public void opMode(String channelName, String nick, Action action) {
+		tabContainer.get(channelName).getUserContainer().opMode(nick, action);
+	}
+	
+	public void voiceMode(String channelName, String nick, Action action) {
+		tabContainer.get(channelName).getUserContainer().voiceMode(nick, action);
+	}
+
 	public int getType(String identifier) {
 		int index = getTabIndex(identifier);
 		if(index > -1)	// Found tab
@@ -93,4 +113,5 @@ public class TabContainer extends JTabbedPane {
 			return -1;
 
 	}
+
 }

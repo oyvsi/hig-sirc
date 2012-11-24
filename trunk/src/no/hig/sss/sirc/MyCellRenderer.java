@@ -18,12 +18,12 @@ class MyCellRenderer extends JLabel implements ListCellRenderer<String> {
 	public Component getListCellRendererComponent(JList list, String value,
 			int index, boolean isSelected, boolean cellHasFocus) {
 		
-		if(!userContainer.getOpList().isEmpty() && userContainer.getOpList().contains(value)) {
+		if(userContainer.getOpList().contains(value)) {
 			setText('@' + value.toString());
 			return this;
 		}
 		
-		if(!userContainer.getVoiceList().isEmpty() && userContainer.getVoiceList().contains(value)) {
+		if(userContainer.getVoiceList().contains(value)) {
 			setText('+' + value.toString());
 			return this;
 		}
@@ -35,3 +35,4 @@ class MyCellRenderer extends JLabel implements ListCellRenderer<String> {
 
 	
 }
+

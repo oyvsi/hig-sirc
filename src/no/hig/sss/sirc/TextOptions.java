@@ -10,6 +10,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -28,15 +32,27 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import com.apple.jobjc.Coder.SELCoder;
+import com.sun.org.apache.xpath.internal.axes.SelfIteratorNoPredicate;
+
 public class TextOptions extends JPanel {
+	private String optionName;
 	private String fontName;
 	private Boolean italic;
 	private Boolean bold;
 	private Color color;
 	private Integer fontSize;
 	private StyledDocument preview;
+	
+	private final JComboBox<String> selFontName;
+	private final JCheckBox selBold;
+	private final JCheckBox selItalic;
+	private final JSpinner selFontSize;
+	private final ColorSelector selColor;
+	
 		
-	public TextOptions() {
+	public TextOptions(String optionName) {
+		this.optionName = optionName;
 		fontName = "Serif";
 		italic = bold = false;
 		fontSize = 12;
@@ -53,15 +69,14 @@ public class TextOptions extends JPanel {
 		text.setEditable(false);
 		text.setOpaque(false);	// Set transparent
 		
-		final JComboBox<String> selFontName = new JComboBox<String>(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
+		selFontName = new JComboBox<String>(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
 		selFontName.setSelectedItem(fontName);
 		JLabel fontLabel = new JLabel("Font");	
-		final JCheckBox selBold = new JCheckBox("Bold");
-		final JCheckBox selItalic = new JCheckBox("Italic");
-		final JSpinner selFontSize = new JSpinner(new SpinnerListModel(fontSizeValues));
+		selBold = new JCheckBox("Bold");
+		selItalic = new JCheckBox("Italic");
+		selFontSize = new JSpinner(new SpinnerListModel(fontSizeValues));
 		selFontSize.setValue(fontSize);
-
-		final ColorSelector selColor = new ColorSelector();	
+		selColor = new ColorSelector();	
 		JLabel selColorLabel = new JLabel("Color");
 
 		previewPanel.add(text);
@@ -143,5 +158,52 @@ public class TextOptions extends JPanel {
 		StyleConstants.setForeground(sas, color);
 		
 		return sas;
-	}	
+	}
+	
+	public Properties save() {
+		Properties pro = new Properties();
+		String rgbColor = Integer.toString(color.getRed()) + " " + 
+						  Integer.toString(color.getGreen()) + " " +
+						  Integer.toString(color.getBlue());
+		
+		pro.setProperty(optionName + "FontName", fontName);
+		pro.setProperty(optionName + "Italic", italic.toString());
+		pro.setProperty(optionName + "Bold", bold.toString());
+		pro.setProperty(optionName + "FontSize", fontSize.toString());
+		pro.setProperty(optionName + "RGBColor", rgbColor);
+		
+		return pro;
+			
+	}
+	
+	public void load(Properties pro) {
+		try {
+			fontName = pro.getProperty(optionName + "FontName");
+			italic = pro.getProperty(optionName + "Italic").equals("true");
+			bold = pro.getProperty(optionName + "Bold").equals("true");
+			
+			String fontSizeRead = pro.getProperty(optionName + "FontSize");
+			fontSize = Integer.parseInt(fontSizeRead);
+			
+			String rgbColor = pro.getProperty(optionName + "RGBColor");
+			String[] rgb = rgbColor.split(" ");
+			int red = Integer.parseInt(rgb[0]);
+			int green = Integer.parseInt(rgb[1]);
+			int blue = Integer.parseInt(rgb[2]);
+			color = new Color(red, green, blue);
+			
+			selItalic.setSelected(italic);
+			selBold.setSelected(bold);
+			selFontSize.setValue(fontSize);
+			selFontName.setSelectedItem(fontName);
+			selColor.setColor(color);
+			
+			
+			updatePreview();
+		
+		} catch (Exception e) {
+			System.out.println("Error loading TextOptions");
+			e.printStackTrace();
+		}
+	}
 }

@@ -93,8 +93,8 @@ public class ConnectionManagement implements IRCEventListener {
 			String time = timeFormat.format(date);
 			String userName = pe.getUserName();
 			String nickName = pe.getWho();
-			String actionMsg = time + "-!- " + userName + '@' + pe.getHostName() 
-							   + "  " + sIRC.i18n.getStr("channel.userPart") + "  " + pe.getPartMessage();
+			String actionMsg = time + "-!- " + nickName + " [~" + userName + '@' + pe.getHostName() 
+							   + "]  " + sIRC.i18n.getStr("channel.userPart") + "  " + pe.getPartMessage();
 			sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL, TabComponent.INFO);
 			sIRC.tabContainer.userLeft(channelName, nickName);
 		}

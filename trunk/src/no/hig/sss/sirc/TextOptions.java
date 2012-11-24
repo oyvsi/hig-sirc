@@ -3,16 +3,12 @@ package no.hig.sss.sirc;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -31,9 +27,6 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-
-import com.apple.jobjc.Coder.SELCoder;
-import com.sun.org.apache.xpath.internal.axes.SelfIteratorNoPredicate;
 
 public class TextOptions extends JPanel {
 	private String optionName;
@@ -89,7 +82,7 @@ public class TextOptions extends JPanel {
 		settingsPanel.add(selColorLabel);
 		
 		updatePreview();
-
+		mainPanel.add(new JLabel(optionName), BorderLayout.NORTH);
 		mainPanel.add(previewPanel, BorderLayout.SOUTH);
 		mainPanel.add(settingsPanel, BorderLayout.WEST);
 		add(mainPanel);

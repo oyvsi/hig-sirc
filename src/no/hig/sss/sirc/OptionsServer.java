@@ -247,13 +247,13 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		Collections.reverse(osp);		// Safe?
 		//Collections.reverse(networks);	// Can only be used on list
 		for(OptionsServerPrefs temposp : osp){
-			boolean hasNetwork = false;
+			boolean isNetwork = false;
 			for(String network : this.networks) {
-				if(!(network.equals(temposp.getServerGroup()))) {
-					hasNetwork = true;
+				if((network.equals(temposp.getServerGroup()))) {
+					isNetwork = true;
 				}
 			}
-			if(hasNetwork) {
+			if(!isNetwork) {
 				DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(temposp.getServerGroup());
 				treeModel.insertNodeInto(dmtn, t, 0);
 				dmtn.add(new DefaultMutableTreeNode(temposp.getServerName()));

@@ -27,7 +27,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	final int WWIDTH = 700;
 	
 	public Options() {
-
+				
 		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
 		DefaultMutableTreeNode tConn = new DefaultMutableTreeNode("Connection");
 	    DefaultMutableTreeNode tStyle = new DefaultMutableTreeNode("Style");
@@ -44,7 +44,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	    
 	    treeModel.insertNodeInto(tStyle, tRoot, 0);
 	    treeModel.insertNodeInto(tConn, tRoot, 0);
-	    tree.expandPath(tree.getPathForRow(0)); // expands path 1
+	    tree.expandPath(tree.getPathForRow(0)); // expands first level
 	    tree.setRootVisible(false); // Hides root node
 	    
 	    tConn.add(tPersonal);
@@ -80,28 +80,29 @@ public class Options extends JPanel implements TreeSelectionListener {
 		channelFormat = new TextOptions();
 		channelFormat.setBorder(null);
 		channelFormat.setPreferredSize(new Dimension(800, 600));
+		
+		os = new OptionsServer();
+		
 	}
 	void setViewPersonal(String selectedServer) {
-		OptionsPersonal.setMessages(ResourceBundle.getBundle("i18n/I18N"));
 		if(os != null){
-			
-			op.setSelectedServer(os.getSelectedServer());
+			if(os.getSelectedServer() != null) { // Don't want new server if its nothing
+				op.setSelectedServer(os.getSelectedServer());	// Set server
+			}
 		} else {
-			op = new OptionsPersonal("irc.quakenet.org");
+			op = new OptionsPersonal("irc.quakenet.org");	// Std server
 		}
 		splitPane.setRightComponent(op);
 	}
 	
 	void setViewServer() {
-		OptionsServer.setMessages(ResourceBundle.getBundle("i18n/I18N"));
-		os = new OptionsServer();
+		os.loadServers();
 		splitPane.setRightComponent(os);
 	}
 	void setViewServerEdit() {
 		JPanel jp = new JPanel(); 
 		BorderLayout bl = new BorderLayout();
 		jp.setLayout(bl);
-		
 		
 		jp.setLayout(new GridLayout(1,2));
 		jp.add(new JLabel("Edit Server"));

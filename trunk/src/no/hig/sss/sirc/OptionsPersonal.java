@@ -29,7 +29,7 @@ import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class OptionsPersonal extends JPanel implements ActionListener {
-	private static ResourceBundle messages;
+	//private static ResourceBundle messages;
 	private JTextField fullName, email, nickname, altnick;
 	JButton connect, ok, cancel, help;
 	private JCheckBox invisible;
@@ -58,12 +58,11 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		setLayout(layout);
 		JPanel networksPanel = new JPanel();
 		networksPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-		networksPanel.add(new JLabel(messages
-				.getString("connectionOptions.label.networks")));
+		networksPanel.add(new JLabel(sIRC.i18n.getStr("connectionOptions.label.networks")));
 
 		if(!(selectedServer == null)){
 			gbc.anchor = GridBagConstraints.NORTH;
-			add(6,6, this.selectedServer = new JLabel(""));
+			add(1,8, 1, 1, this.selectedServer = new JLabel(""));
 			//this.selectedServer = selectedServer;
 		}
 		gbc.anchor = GridBagConstraints.CENTER;
@@ -73,16 +72,16 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		add(2,8, connect);
 		// Add labels to text fields
 		gbc.anchor = GridBagConstraints.EAST;
-		add(1, 4, new JLabel(messages.getString("connectionOptions.label.fullName")));
-		add(1, 5,new JLabel(messages.getString("connectionOptions.label.email")));
-		add(1,6,new JLabel(messages.getString("connectionOptions.label.nickname")));
-		add(1,7,new JLabel(messages.getString("connectionOptions.label.altNick")));
+		add(1, 2, new JLabel(sIRC.i18n.getStr("connectionOptions.label.fullName")));
+		add(1, 3,new JLabel(sIRC.i18n.getStr("connectionOptions.label.email")));
+		add(1,4,new JLabel(sIRC.i18n.getStr("connectionOptions.label.nickname")));
+		add(1,5,new JLabel(sIRC.i18n.getStr("connectionOptions.label.altNick")));
 		// Add textfields
 		gbc.anchor = GridBagConstraints.WEST;
-		add(2, 4, fullName = new JTextField("", 20));
-		add(2, 5, email = new JTextField("", 20));
-		add(2, 6, nickname = new JTextField("", 15));
-		add(2, 7, altnick = new JTextField("", 15));
+		add(2, 2, fullName = new JTextField("", 20));
+		add(2, 3, email = new JTextField("", 20));
+		add(2, 4, nickname = new JTextField("", 15));
+		add(2, 5, altnick = new JTextField("", 15));
 
 		// Add ok, cancel, help buttons
 		JPanel okCancelHelpPanel = new JPanel();
@@ -98,14 +97,10 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		add(1, 9, 3, 1, okCancelHelpPanel);
 
 		// Set all tooltip texts
-		fullName.setToolTipText(messages
-				.getString("connectionOptions.textfield.fullName.tooltip"));
-		email.setToolTipText(messages
-				.getString("connectionOptions.textfield.email.tooltip"));
-		nickname.setToolTipText(messages
-				.getString("connectionOptions.textfield.nickname.tooltip"));
-		altnick.setToolTipText(messages
-				.getString("connectionOptions.textfield.altNick.tooltip"));
+		fullName.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.fullName.tooltip"));
+		email.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.email.tooltip"));
+		nickname.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.nickname.tooltip"));
+		altnick.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.altNick.tooltip"));
 		this.load();
 		setVisible(true);
 	}
@@ -177,13 +172,6 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		return altnick.getText();
 	}
 
-	/**
-	 * @param messages
-	 *            the messages to set
-	 */
-	public static void setMessages(ResourceBundle messages) {
-		OptionsPersonal.messages = messages;
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
@@ -256,7 +244,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		this.selectedServer.setText(selectedServer);
 	}
 	private JButton createButton(String cmd, String icon, String tooltip, String name) {
-		JButton button = new JButton(messages.getString(name));
+		JButton button = new JButton(sIRC.i18n.getStr(name));
 		button.setActionCommand(cmd);
 		button.addActionListener(this);
 
@@ -266,7 +254,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		}
 		if (tooltip.length() > 2) { // Set tooltip if the string tooltip
 									// contains something useful
-			button.setToolTipText(messages.getString(tooltip));
+			button.setToolTipText(sIRC.i18n.getStr(tooltip));
 		}
 		
 		return button;

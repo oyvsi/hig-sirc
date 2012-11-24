@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 import javax.swing.JButton;
@@ -53,11 +54,9 @@ import javax.swing.tree.TreePath;
  * 
  */
 @SuppressWarnings("serial")
-public class OptionsServer extends JPanel implements TreeSelectionListener,
-		ActionListener {
-	private static ResourceBundle messages;
+public class OptionsServer extends JPanel implements TreeSelectionListener, ActionListener {
 
-	JButton add, change, delete, ok, cancel, help, addServer;
+	JButton add, change, delete, ok, cancel, help, addServer, back;
 	private ArrayList<OptionsServerPrefs> osp;
 	private String[] networks;
 	BorderLayout bl;
@@ -67,11 +66,10 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 	JTree tree;
 	DefaultTreeModel treeModel;
 	File fileServers;
-	JTextField editServerName, editServerUrl, editServerGroup, editServerPorts; // for
-																				// edit
-																				// and
-																				// add
-																				// server
+	JTextField editServerName, editServerUrl, editServerGroup, editServerPorts; 
+	
+	
+	// for edit and add server
 
 	/**
 	 * Constructor for the class, handle all GUI layout and fill inn initial
@@ -104,17 +102,14 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 		// Create the panel with the four buttons on the right
 		action = new JPanel();
 		action.setLayout(new GridLayout(3, 1));
-		action.add(add = new JButton(messages
-				.getString("connectionOptions.button.add.buttonText")));
+		action.add(add = new JButton(sIRC.i18n.getStr("connectionOptions.button.add.buttonText")));
 		add.setActionCommand("add");
 		add.addActionListener(this);
 
-		action.add(change = new JButton(messages
-				.getString("connectionOptions.button.change.buttonText")));
+		action.add(change = new JButton(sIRC.i18n.getStr("connectionOptions.button.change.buttonText")));
 		change.setActionCommand("change");
 		change.addActionListener(this);
-		action.add(delete = new JButton(messages
-				.getString("connectionOptions.button.delete.buttonText")));
+		action.add(delete = new JButton(sIRC.i18n.getStr("connectionOptions.button.delete.buttonText")));
 		delete.setActionCommand("delete");
 		delete.addActionListener(this);
 		// Add the buttons on the right
@@ -123,42 +118,59 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 		// Add ok, cancel, help buttons
 		JPanel okCancelHelpPanel = new JPanel();
 		okCancelHelpPanel.setLayout(new GridLayout(1, 2));
-		okCancelHelpPanel.add(ok = new JButton(messages
-				.getString("button.ok.buttonText")));
+		okCancelHelpPanel.add(ok = new JButton(sIRC.i18n.getStr("button.ok.buttonText")));
 		ok.setActionCommand("ok");
 		ok.addActionListener(this);
-		okCancelHelpPanel.add(cancel = new JButton(messages
-				.getString("button.cancel.buttonText")));
+		okCancelHelpPanel.add(cancel = new JButton(sIRC.i18n.getStr("button.cancel.buttonText")));
 		cancel.setActionCommand("cancel");
 		cancel.addActionListener(this);
-		okCancelHelpPanel.add(help = new JButton(messages
-				.getString("button.help.buttonText")));
+		okCancelHelpPanel.add(help = new JButton(sIRC.i18n.getStr("button.help.buttonText")));
 
 		add(okCancelHelpPanel, BorderLayout.SOUTH);
 		// Set all tooltip texts
-		add.setToolTipText(messages
-				.getString("connectionOptions.button.add.tooltip"));
-		change.setToolTipText(messages
-				.getString("connectionOptions.button.change.tooltip"));
-		delete.setToolTipText(messages
-				.getString("connectionOptions.button.delete.tooltip"));
-		ok.setToolTipText(messages
-				.getString("connectionOptions.button.ok.tooltip"));
-		cancel.setToolTipText(messages
-				.getString("connectionOptions.button.cancel.tooltip"));
-		help.setToolTipText(messages
-				.getString("connectionOptions.button.help.tooltip"));
+		add.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.add.tooltip"));
+		change.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.change.tooltip"));
+		delete.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.delete.tooltip"));
+		ok.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.ok.tooltip"));
+		cancel.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.cancel.tooltip"));
+		help.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.help.tooltip"));
 		setVisible(true);
 	}
+	void init() {
+		bl = new BorderLayout();
+		this.loadServers();
+		setLayout(bl);
 
-	/**
-	 * @param messages
-	 *            the messages to set
-	 */
-	public static void setMessages(ResourceBundle messages) {
-		OptionsServer.messages = messages;
+		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
+
+		treeModel = new DefaultTreeModel(tRoot);
+		tree = new JTree(treeModel);
+
+		addServers(tRoot);
+		// Create the panel with the four buttons on the right
+		add(action, BorderLayout.EAST);
+		// Add ok, cancel, help buttons
+		JPanel okCancelHelpPanel = new JPanel();
+		okCancelHelpPanel.setLayout(new GridLayout(1, 2));
+		okCancelHelpPanel.add(ok = new JButton(sIRC.i18n.getStr("button.ok.buttonText")));
+		ok.setActionCommand("ok");
+		ok.addActionListener(this);
+		okCancelHelpPanel.add(cancel = new JButton(sIRC.i18n.getStr("button.cancel.buttonText")));
+		cancel.setActionCommand("cancel");
+		cancel.addActionListener(this);
+		okCancelHelpPanel.add(help = new JButton(sIRC.i18n.getStr("button.help.buttonText")));
+
+		add(okCancelHelpPanel, BorderLayout.SOUTH);
+		// Set all tooltip texts
+		add.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.add.tooltip"));
+		change.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.change.tooltip"));
+		delete.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.delete.tooltip"));
+		ok.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.ok.tooltip"));
+		cancel.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.cancel.tooltip"));
+		help.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.help.tooltip"));
+		setVisible(true);
 	}
-
+	
 	/**
 	 * Test function for the class.
 	 * 
@@ -188,7 +200,15 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 			}
 		}
 	}
-
+	private String portsToString(int[] ports) {
+		String tempPorts = "";
+		for(int port : ports) {
+			tempPorts = tempPorts + port + ",";
+		}
+		return(tempPorts.substring(0, tempPorts.length()-1));
+	}
+	
+	
 	/**
 	 * Takes string that looks like 6661-6669GROUP, or 6665-6668,7000GROUP
 	 * 
@@ -219,23 +239,33 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 		for (int i = 0; i < al.size(); i++) {
 			ports[i] = al.get(i).intValue();
 		}
-		for (int port : ports) {
-			//System.out.print(port);
-		}
 		return ports;
 
 	}
 
 	private void addServers(DefaultMutableTreeNode t) {
+		Collections.reverse(osp);		// Safe?
+		//Collections.reverse(networks);	// Can only be used on list
+		for(OptionsServerPrefs temposp : osp){
+			boolean hasNetwork = false;
+			for(String network : this.networks) {
+				if(!(network.equals(temposp.getServerGroup()))) {
+					hasNetwork = true;
+				}
+			}
+			if(hasNetwork) {
+				DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(temposp.getServerGroup());
+				treeModel.insertNodeInto(dmtn, t, 0);
+				dmtn.add(new DefaultMutableTreeNode(temposp.getServerName()));
+			}
+		}
 		for (String network : this.networks) {
 			if (!network.isEmpty()) {
-				DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(
-						network);
+				DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(network);
 				treeModel.insertNodeInto(dmtn, t, 0);
 				for (int i = 0; i < osp.size(); i++) {
 					if (osp.get(i).getServerGroup().equals(network)) {
-						dmtn.add(new DefaultMutableTreeNode(osp.get(i)
-								.getServerName()));
+						dmtn.add(new DefaultMutableTreeNode(osp.get(i).getServerName()));
 					}
 				}
 			}
@@ -250,6 +280,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 		} else if (ae.getActionCommand().equals("addServer")) {
 			saveServer();
 			saveServers();
+			sIRC.options.os = new OptionsServer();
 			sIRC.options.setViewServer();
 
 		} else if (ae.getActionCommand().equals("delete")) {
@@ -258,9 +289,14 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 			System.out.println(node.toString());
 			for (int i = osp.size() - 1; i >= 0; --i) {
 				if (osp.get(i).getServerName().equals(node.toString())) {
-					osp.remove(i);
-					DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-					model.removeNodeFromParent(node);
+					
+					
+					if(node.getParent() != null) {
+						DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+						model.removeNodeFromParent(node);
+						osp.remove(i);
+					
+					}
 				}
 			}
 		} else if (ae.getActionCommand().equals("change")) {
@@ -276,14 +312,19 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 					// model.removeNodeFromParent(node);
 				}
 			}
-			// System.out.println("nnono");
 		} else if (ae.getActionCommand().equals("ok")) {
 			sIRC.options.hideWindow(); // Hides window
+			sIRC.options.os.saveServers();
 			sIRC.options.op.save(); // Saves prefs to ini
 		} else if (ae.getActionCommand().equals("cancel")) {
 			sIRC.options.hideWindow(); // Hides window
 			sIRC.options.op.load(); // Loads prefs again
+		} else if (ae.getActionCommand().equals("back")) {
+			sIRC.options.os = new OptionsServer();
+			sIRC.options.setViewServer();
+			
 		}
+		
 	}
 
 	public void saveServers() {
@@ -319,9 +360,12 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 						+ osp.getServerUrl() + ":" + tempPorts + 
 						"GROUP:" + osp.getServerGroup());
 				bw.newLine();
-				//System.out.println(osp.getServerGroup());
+				
+				//System.out.println("n" + i + "=" + osp.getServerName() + "SERVER:"
+				//		+ osp.getServerUrl() + ":" + tempPorts + 
+				//		"GROUP:" + osp.getServerGroup() + "\n");
 			}
-
+			bw.close();
 			fos.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -331,7 +375,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 	}
 
 	public void loadServers() {
-		fileServers = new File("servers.ini");
+		fileServers = new File("servers2.ini");
 
 		ArrayList<String> tempServers = new ArrayList<String>();
 		ArrayList<String> tempNetworks = new ArrayList<String>();
@@ -357,12 +401,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 					tempNetworks.add(split[1]);
 				}
 			}
-			//System.out.println(line);
-			//System.out.println("wtf is this");
 			while (((line = br.readLine()) != null)) {
-				// split = line.split("");
-				System.out.println(line);
-				System.out.println("Read server");
 				tempServers.add(line);
 
 			}
@@ -377,7 +416,6 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 		String[] serv = new String[tempServers.size()];
 		serv = tempServers.toArray(serv);
 
-		String[] tempN;
 		String[] tempS;
 
 		osp = new ArrayList<OptionsServerPrefs>();
@@ -397,9 +435,6 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 					tempOsp = new OptionsServerPrefs(edit, tempS[1], tempS[3], port);
 					osp.add(tempOsp);
 					tempOsp = osp.get(0);
-					for (int portsss : tempOsp.getPort()) {
-						//System.out.print(portsss);
-					}
 				}
 			}
 		}
@@ -408,9 +443,10 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 	public void addServer(OptionsServerPrefs osp) {
 		remove(sp);
 		remove(action);
-		// revalidate();
-		repaint();
-
+		if(server != null) {
+			remove(server);
+		}
+		
 		server = new JPanel();
 		server.setLayout(new GridLayout(5, 2));
 		server.setSize(new Dimension(100, 100));
@@ -421,13 +457,17 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 		server.add(editServerUrl = new JTextField(osp != null ? osp
 				.getServerUrl() : ""));
 		server.add(new JLabel("Ports"));
-		server.add(editServerPorts = new JTextField(osp != null ? osp.getPort()
-				.toString() : ""));
+		server.add(editServerPorts = new JTextField(osp != null ? 
+				portsToString(osp.getPort()) : ""));
 		server.add(new JLabel("Group"));
 		server.add(editServerGroup = new JTextField(osp != null ? osp
 				.getServerGroup() : ""));
+		
 		server.add(addServer = new JButton("AddServer"));
 		addServer.setActionCommand("addServer");
+		server.add(back = new JButton("Back"));
+		back.setActionCommand("back");
+		back.addActionListener(this);
 		addServer.addActionListener(this);
 		if (osp == null) {
 			osp = new OptionsServerPrefs();
@@ -463,12 +503,9 @@ public class OptionsServer extends JPanel implements TreeSelectionListener,
 	 */
 	public void setSelectedServer(String selectedServer, String group) {
 		for(OptionsServerPrefs osp : this.osp) {
-			
 			if(osp.getServerName().equals(selectedServer) && osp.getServerGroup().equals(group)) {
 				this.selectedServer = osp.getServerUrl();
 			}
 		}
-		
-		//this.selectedServer = selectedServer;
 	}
 }

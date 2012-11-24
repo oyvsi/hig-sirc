@@ -29,10 +29,10 @@ public class sIRC extends JFrame {
 	public static I18n i18n;
 	
 	public sIRC() {
+		i18n = new I18n();
 		conManagement = new ConnectionManagement(); 
 		tabContainer = new TabContainer();
 		options = new Options();
-		i18n = new I18n();
 		
 		GUI gui = new GUI();		       
         add(tabContainer);

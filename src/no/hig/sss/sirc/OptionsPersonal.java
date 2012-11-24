@@ -9,20 +9,10 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.Properties;
-import java.util.ResourceBundle;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -32,56 +22,52 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	//private static ResourceBundle messages;
 	private JTextField fullName, email, nickname, altnick;
 	JButton connect, ok, cancel, help;
-	private JCheckBox invisible;
+	private JPanel gridLayout = new JPanel();
 	private GridBagLayout layout = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
 
 	private BorderLayout bl;
-	private JLabel selectedServer;
+	private JTextField selectedServer;
 	
-	File 	filePrefs,  	// Prefs file for ConnectionOptions preferences 
-	fileServers; 	// List of known servers
+	File filePrefs;  	// Prefs file for ConnectionOptions preferences 
 
 	/**
 	 * Constructor for the class, handle all GUI layout and fill inn initial
 	 * values
 	 * 
 	 */
-	
-
 
 	public OptionsPersonal(String selectedServer) {
 		filePrefs = new File("connetionoptionsprefs.ini");
-		fileServers = new File("servers.ini");
-
 		bl = new BorderLayout();
-		setLayout(layout);
+		setLayout(bl);
+		
+		gridLayout.setLayout(layout);
 		JPanel networksPanel = new JPanel();
 		networksPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		networksPanel.add(new JLabel(sIRC.i18n.getStr("connectionOptions.label.networks")));
-
-		if(!(selectedServer == null)){
-			gbc.anchor = GridBagConstraints.NORTH;
-			add(1,8, 1, 1, this.selectedServer = new JLabel(""));
-			//this.selectedServer = selectedServer;
-		}
 		gbc.anchor = GridBagConstraints.CENTER;
 		// Create the panel with the four buttons on the right
 		
 		connect = createButton("connect", "", "", "connectionOptions.button.connect.buttonText");
-		add(2,8, connect);
+		add(2,6,10,1, connect);
 		// Add labels to text fields
-		gbc.anchor = GridBagConstraints.EAST;
+		
+		gbc.anchor = GridBagConstraints.WEST;
+		add(1,1, 2, 1, new JLabel("Server"));
 		add(1, 2, new JLabel(sIRC.i18n.getStr("connectionOptions.label.fullName")));
 		add(1, 3,new JLabel(sIRC.i18n.getStr("connectionOptions.label.email")));
 		add(1,4,new JLabel(sIRC.i18n.getStr("connectionOptions.label.nickname")));
 		add(1,5,new JLabel(sIRC.i18n.getStr("connectionOptions.label.altNick")));
 		// Add textfields
 		gbc.anchor = GridBagConstraints.WEST;
-		add(2, 2, fullName = new JTextField("", 20));
-		add(2, 3, email = new JTextField("", 20));
-		add(2, 4, nickname = new JTextField("", 15));
-		add(2, 5, altnick = new JTextField("", 15));
+		if(!(selectedServer == null)){
+			add(2,1, 2, 1, this.selectedServer = new JTextField("", 20));
+		}
+		add(2, 2,2,1, fullName = new JTextField("", 20));
+		add(2, 3,2,1, email = new JTextField("", 20));
+		add(2, 4,2,1, nickname = new JTextField("", 15));
+		add(2, 5,2,1, altnick = new JTextField("", 15));
 
 		// Add ok, cancel, help buttons
 		JPanel okCancelHelpPanel = new JPanel();
@@ -92,15 +78,21 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		
 		cancel = createButton("cancel", "", "connectionOptions.button.cancel.tooltip", "button.cancel.buttonText");
 		okCancelHelpPanel.add(cancel);
+		help = createButton("help", "", "connectionOptions.button.help.tooltip", "button.help.buttonText");
+		okCancelHelpPanel.add(help);
+		
 		gbc.anchor = GridBagConstraints.SOUTH;
 		gbc.insets = new Insets (10,10,10,10);
-		add(1, 9, 3, 1, okCancelHelpPanel);
 
 		// Set all tooltip texts
 		fullName.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.fullName.tooltip"));
 		email.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.email.tooltip"));
 		nickname.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.nickname.tooltip"));
 		altnick.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.altNick.tooltip"));
+		
+		add(new JLabel("Personal"), BorderLayout.NORTH);
+		add(gridLayout, BorderLayout.CENTER);
+		add(okCancelHelpPanel, BorderLayout.SOUTH);
 		setVisible(true);
 	}
 
@@ -140,7 +132,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		gbc.gridwidth = width;
 		gbc.gridheight = height;
 		layout.setConstraints(c, gbc);
-		add(c);
+		gridLayout.add(c);
 	}
 
 	/**

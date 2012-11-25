@@ -203,7 +203,6 @@ public class ConnectionManagement implements IRCEventListener {
 			String hostName = we.getHost();
 			String realName = we.getRealName();
 			String userName = we.getUser();
-			
 			String message = nick;
 			
 			
@@ -212,6 +211,7 @@ public class ConnectionManagement implements IRCEventListener {
 			NickChangeEvent nce = (NickChangeEvent) e;
 			String oldNick = nce.getOldNick();
 			String newNick = nce.getNewNick();
+
 			String msg;
 			if(newNick.equals(session.getNick())) 	// We changed our own nick
 				msg = buildInfoPrefix() + " " + sIRC.i18n.getStr("channel.selfNickChange") + " " + newNick;
@@ -220,6 +220,7 @@ public class ConnectionManagement implements IRCEventListener {
 					  + sIRC.i18n.getStr("channel.nickChange") + " " + newNick;	
 	
 			sIRC.tabContainer.nickChange(oldNick, newNick, msg);
+
 		}
 
 		else if (e.getType() == Type.CTCP_EVENT) {
@@ -359,5 +360,6 @@ public class ConnectionManagement implements IRCEventListener {
 		return session.getChannel(channelName).checkModeForUser(action, mode, nick);
 	}*/
 
+	
 
 }

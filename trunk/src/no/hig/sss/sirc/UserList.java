@@ -1,12 +1,9 @@
 package no.hig.sss.sirc;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -14,8 +11,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
-public class UserList extends JList {
+public class UserList extends JList<String> implements MouseListener {
 	
+	TabContainer tabContainer = sIRC.tabContainer;
 	String channel;
 	JPopupMenu popupMenu;
 	ConnectionManagement cm = sIRC.conManagement;
@@ -25,14 +23,7 @@ public class UserList extends JList {
 		channel = identifier;
 		popupMenu = new JPopupMenu();
 		this.add(popupMenu);
-		this.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if(SwingUtilities.isRightMouseButton(e)) {
-					setSelectedIndex(locationToIndex(e.getPoint()) );
-					showMenu(e);
-				}
-				}
-		});
+		this.addMouseListener(this);
 		
 		JMenu control = new JMenu("Control");
 		JMenu ctcp = new JMenu("CTCP");
@@ -139,8 +130,8 @@ public class UserList extends JList {
 		popupMenu.add(ctcp);
 	}
 	
-	public void showMenu(MouseEvent e) {
-		popupMenu.show(e.getComponent(), e.getX(), e.getY());
+	public void showMenu(MouseEvent me) {
+		popupMenu.show(this, me.getX(), me.getY());
 	}
 	
 	public String parseNick(String nick) {
@@ -148,5 +139,48 @@ public class UserList extends JList {
 			return nick.substring(1);
 		} else 
 		return nick;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent me) {
+		
+		if(me.getClickCount() == 2) {
+			String user = getSelectedValue().toString();
+			if(tabContainer.containsUser(user)) {
+				tabContainer.setSelectedIndex(tabContainer.getTabIndex(user));
+			} else {
+				tabContainer.newTab(user, TabComponent.PM);
+			}
+		}
+		
+		if(SwingUtilities.isRightMouseButton(me)) {
+			setSelectedIndex(locationToIndex(me.getPoint()) );
+			showMenu(me);
+		}
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

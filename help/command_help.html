@@ -9,15 +9,18 @@
 		<h1>Different Console Commands</h1>
 		The following commands are available in the sIRC input-field.
 		
-		<ul>
+		<p><ul>
 			<li>/connect "serverurl"</li>
 			Connects you to the server specified.
 			
 			<li>/join #"channelname" or /j #"channelname"</li>
 			Joins the channel specified
 			
-			<li>/disconnect or /quit</li>
-			Disconnects you from the server.
+			<li>/disconnect ["quitMsg"] or /quit ["quitMsg"]</li>
+			Disconnects you from the server. Sends quit message "quitMsg" if given.
+			
+			<li>/part ["partMsg"]</li>
+			Leaves the current channel. Sends part message "partMsg" if given.
 			
 			<li>/nick "nickname"</li>
 			Changes your nickname
@@ -32,8 +35,11 @@
 			Sends an action message
 			
 			<li>/wc</li>
-			Close the current window.	
-		</ul>
+			Close the current window.
+			
+			<li>/away ["awayMsg"]</li>
+			Sets you away if "awayMsg" is provided, otherwise away is unset.
+		</ul></p>
 		
 	</body>	
 </html>

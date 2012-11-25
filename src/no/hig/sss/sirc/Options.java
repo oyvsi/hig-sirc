@@ -30,7 +30,6 @@ public class Options extends JPanel implements TreeSelectionListener {
 	public static TextOptions infoFormat;
 	public static TextOptions consoleFormat;
 
-	DefaultMutableTreeNode tHelpStyle;
 	final int WHEIGHT = 300;
 	final int WWIDTH = 700;
 
@@ -39,27 +38,19 @@ public class Options extends JPanel implements TreeSelectionListener {
 		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
 		DefaultMutableTreeNode tConn = new DefaultMutableTreeNode("Connection");
 		DefaultMutableTreeNode tStyle = new DefaultMutableTreeNode("Style");
-		DefaultMutableTreeNode tPersonal = new DefaultMutableTreeNode(
-				"Personal");
+		DefaultMutableTreeNode tPersonal = new DefaultMutableTreeNode("Personal");
 		DefaultMutableTreeNode tServer = new DefaultMutableTreeNode("Server");
-		DefaultMutableTreeNode tCmFormat = new DefaultMutableTreeNode(
-				"Channel messages");
-		DefaultMutableTreeNode tPmFormat = new DefaultMutableTreeNode(
-				"Private messages");
-		DefaultMutableTreeNode tInfoFormat = new DefaultMutableTreeNode(
-				"Info messages");
-		DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode(
-				"Console messages");
+		DefaultMutableTreeNode tCmFormat = new DefaultMutableTreeNode("Channel messages");
+		DefaultMutableTreeNode tPmFormat = new DefaultMutableTreeNode("Private messages");
+		DefaultMutableTreeNode tInfoFormat = new DefaultMutableTreeNode("Info messages");
+		DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode("Console messages");
 
 		DefaultMutableTreeNode tHelp = new DefaultMutableTreeNode("Help");
-		DefaultMutableTreeNode tHelpConn = new DefaultMutableTreeNode(
-				"Connection Help");
-		DefaultMutableTreeNode tHelpUsage = new DefaultMutableTreeNode(
-				"Usage Help");
-		DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode(
-				"Console Commands");
-		tHelpStyle = new DefaultMutableTreeNode("Style");
-		// DefaultMutableTreeNode tConFormat = new
+		DefaultMutableTreeNode tHelpConn = new DefaultMutableTreeNode("Connection Help");
+		DefaultMutableTreeNode tHelpUsage = new DefaultMutableTreeNode("Usage Help");
+		DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode("Console Commands");
+		DefaultMutableTreeNode tHelpStyle = new DefaultMutableTreeNode("Style");
+		DefaultMutableTreeNode tHelpServer = new DefaultMutableTreeNode("Server Help");
 		// DefaultMutableTreeNode("Console messages");
 
 		treeModel = new DefaultTreeModel(tRoot);
@@ -82,6 +73,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		tHelp.add(tHelpUsage);
 		tHelp.add(tHelpCommands);
 		tHelp.add(tHelpStyle);
+		tHelp.add(tHelpServer);
 
 		expandAll(tree, new TreePath(tRoot));
 
@@ -169,7 +161,11 @@ public class Options extends JPanel implements TreeSelectionListener {
 	public void setViewHelp(String url) {
 		splitPane.setRightComponent(new SIRCHelp(url));
 		if(url.contains("style"))
-			selectNode(tree, new TreePath(treeModel.getRoot()));
+			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Style]");
+		else if(url.contains("conn"))
+			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Connection Help]");
+		else if(url.contains("server"))
+			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Server Help]");
 	}
 
 	public JSplitPane getSplitPane() {
@@ -186,7 +182,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		// sIRC.options = new Options();
 
-		jf.getContentPane().add(sIRC.options.getSplitPane());
+		jf.getContentPane().add(getSplitPane());
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int X = (screen.width / 2) - (WWIDTH / 2); // Center horizontally.
 		int Y = (screen.height / 2) - (WHEIGHT / 2); // Center vertically.
@@ -239,6 +235,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 				break;
 			case "Style":
 				setViewHelp("File:help/style_help.html");
+				break;
+			case "Server Help":
+				setViewHelp("File:help/server_help.html");
 				break;
 			}
 			System.out.print(node.toString());
@@ -327,15 +326,15 @@ public class Options extends JPanel implements TreeSelectionListener {
 		// tree.collapsePath(parent);
 	}
 
-	private void selectNode(JTree tree, TreePath parent) {
+	private void selectNode(JTree tree, TreePath parent, String exp) {
 		TreeNode node = (TreeNode) parent.getLastPathComponent();
 		if (node.getChildCount() >= 0) {
 			for (Enumeration e = node.children(); e.hasMoreElements();) {
 				TreeNode n = (TreeNode) e.nextElement();
 				TreePath path = parent.pathByAddingChild(n);
-				selectNode(tree, path);
+				selectNode(tree, path, exp);
 				System.out.println(path.toString());
-				if(path.toString().equals("[root, Help, Style]")) {
+				if(path.toString().equals(exp)) {
 					tree.setSelectionPath(path);
 				}
 			}

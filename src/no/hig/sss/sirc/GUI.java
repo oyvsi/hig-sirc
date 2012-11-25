@@ -165,6 +165,8 @@ class GUI {
 				System.exit(0);
 			else if(event == "options")
 				sIRC.options.showWindow();
+			else if(event == "help")
+				sIRC.options.setViewHelp("File:help/conn_help.html");
 			else
 				JOptionPane.showMessageDialog(null, sIRC.i18n.getStr("notFound.Text"));
 		}

@@ -168,8 +168,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 
 	public void setViewHelp(String url) {
 		splitPane.setRightComponent(new SIRCHelp(url));
-		selectNode(tree, new TreePath(treeModel.getRoot()));
-
+		if(url.contains("style"))
+			selectNode(tree, new TreePath(treeModel.getRoot()));
 	}
 
 	public JSplitPane getSplitPane() {

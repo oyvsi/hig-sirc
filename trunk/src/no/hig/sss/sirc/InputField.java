@@ -30,6 +30,10 @@ public class InputField extends JTextField {
 		});
 	}
 	
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
+	}
+	
 	private String restLine(String[] line, int startAt) {
 		String msg = "";
 		for(int i = startAt; i < line.length; i++)
@@ -74,10 +78,14 @@ public class InputField extends JTextField {
 					connectionManagement.disConnect(quitMsg);
 				}
 				else if(cmd.equals("nick")) {	// Nick change
-					
+					if(line.length == 2) {
+						String newNick = restLine(line, 1);
+						connectionManagement.changeNick(newNick);
+					}
+						
 				}
 				
-				else if(cmd.equals("me")) {
+				else if(cmd.equals("me")) {	// Action msg
 					String actionMsg = null;
 					if(line.length > 1) 
 						actionMsg = restLine(line, 1);

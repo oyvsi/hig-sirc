@@ -104,6 +104,15 @@ public class InputField extends JTextField {
 						connectionManagement.setTopic(identifier, topicMsg);
 					}
 				}
+				
+				else if(cmd.equals("away")) {
+					if(line.length > 1) {
+						String awayMsg = restLine(line, 1);
+						connectionManagement.away(awayMsg);
+					} else {
+						connectionManagement.away(null);
+					}
+				}
 
 				else {
 					sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.unknownCommand"));

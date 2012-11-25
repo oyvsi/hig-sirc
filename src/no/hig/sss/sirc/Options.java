@@ -11,6 +11,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import java.util.*;
 
@@ -22,57 +24,69 @@ public class Options extends JPanel implements TreeSelectionListener {
 	JFrame jf;
 	JTree tree;
 	DefaultTreeModel treeModel;
-	
+
 	public static TextOptions channelFormat;
 	public static TextOptions pmFormat;
 	public static TextOptions infoFormat;
 	public static TextOptions consoleFormat;
-	
-	
+
+	DefaultMutableTreeNode tHelpStyle;
 	final int WHEIGHT = 300;
 	final int WWIDTH = 700;
-	
+
 	public Options() {
-				
+
 		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
 		DefaultMutableTreeNode tConn = new DefaultMutableTreeNode("Connection");
-	    DefaultMutableTreeNode tStyle = new DefaultMutableTreeNode("Style");
-	    DefaultMutableTreeNode tPersonal = new DefaultMutableTreeNode("Personal");
-	    DefaultMutableTreeNode tServer = new DefaultMutableTreeNode("Server");
-	    DefaultMutableTreeNode tCmFormat = new DefaultMutableTreeNode("Channel messages");
-	    DefaultMutableTreeNode tPmFormat = new DefaultMutableTreeNode("Private messages");
-	    DefaultMutableTreeNode tInfoFormat = new DefaultMutableTreeNode("Info messages");
-	    DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode("Console messages");
-	    
-	    DefaultMutableTreeNode tHelp = new DefaultMutableTreeNode("Help");
-	    DefaultMutableTreeNode tHelpConn = new DefaultMutableTreeNode("Connection Help");
-	    DefaultMutableTreeNode tHelpUsage = new DefaultMutableTreeNode("Usage Help");
-	    DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode("Console Commands");
-	    DefaultMutableTreeNode tHelpStyle = new DefaultMutableTreeNode("Style");
-	    //DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode("Console messages");
+		DefaultMutableTreeNode tStyle = new DefaultMutableTreeNode("Style");
+		DefaultMutableTreeNode tPersonal = new DefaultMutableTreeNode(
+				"Personal");
+		DefaultMutableTreeNode tServer = new DefaultMutableTreeNode("Server");
+		DefaultMutableTreeNode tCmFormat = new DefaultMutableTreeNode(
+				"Channel messages");
+		DefaultMutableTreeNode tPmFormat = new DefaultMutableTreeNode(
+				"Private messages");
+		DefaultMutableTreeNode tInfoFormat = new DefaultMutableTreeNode(
+				"Info messages");
+		DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode(
+				"Console messages");
 
-	    treeModel = new DefaultTreeModel(tRoot);    
-	    tree = new JTree(treeModel);
-	    
-	    treeModel.insertNodeInto(tHelp, tRoot, 0);
-	    treeModel.insertNodeInto(tStyle, tRoot, 0);
-	    treeModel.insertNodeInto(tConn, tRoot, 0);
-	    tree.expandPath(tree.getPathForRow(0)); // expands first level
-	    tree.setRootVisible(false); // Hides root node
-	    
-	    tConn.add(tPersonal);
-	    tConn.add(tServer);
-	    tStyle.add(tCmFormat);
-	    tStyle.add(tPmFormat);
-	    tStyle.add(tInfoFormat);
-	    tStyle.add(tConFormat);
-	    tHelp.add(tHelpConn);
-	    tHelp.add(tHelpUsage);
-	    tHelp.add(tHelpCommands);
-	    tHelp.add(tHelpStyle);
-	    
-	    tree.addTreeSelectionListener(this);
-	    
+		DefaultMutableTreeNode tHelp = new DefaultMutableTreeNode("Help");
+		DefaultMutableTreeNode tHelpConn = new DefaultMutableTreeNode(
+				"Connection Help");
+		DefaultMutableTreeNode tHelpUsage = new DefaultMutableTreeNode(
+				"Usage Help");
+		DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode(
+				"Console Commands");
+		tHelpStyle = new DefaultMutableTreeNode("Style");
+		// DefaultMutableTreeNode tConFormat = new
+		// DefaultMutableTreeNode("Console messages");
+
+		treeModel = new DefaultTreeModel(tRoot);
+		tree = new JTree(treeModel);
+
+		treeModel.insertNodeInto(tHelp, tRoot, 0);
+		treeModel.insertNodeInto(tStyle, tRoot, 0);
+		treeModel.insertNodeInto(tConn, tRoot, 0);
+
+		tree.expandPath(tree.getPathForRow(0)); // expands first level
+		tree.setRootVisible(false); // Hides root node
+
+		tConn.add(tPersonal);
+		tConn.add(tServer);
+		tStyle.add(tCmFormat);
+		tStyle.add(tPmFormat);
+		tStyle.add(tInfoFormat);
+		tStyle.add(tConFormat);
+		tHelp.add(tHelpConn);
+		tHelp.add(tHelpUsage);
+		tHelp.add(tHelpCommands);
+		tHelp.add(tHelpStyle);
+
+		expandAll(tree, new TreePath(tRoot));
+
+		tree.addTreeSelectionListener(this);
+
 		// Create a split pane with the two scroll panes in it.
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setOneTouchExpandable(true);
@@ -80,83 +94,88 @@ public class Options extends JPanel implements TreeSelectionListener {
 
 		tree.setMinimumSize(new Dimension(150, 300));
 		splitPane.setLeftComponent(tree);
-				
+
 		splitPane.setPreferredSize(new Dimension(WWIDTH, WHEIGHT));
 		splitPane.setMinimumSize(new Dimension(WWIDTH, WHEIGHT));
-		
+
 		setViewPersonal(null);
-		
-		os = new OptionsServer();		
-		
+
+		os = new OptionsServer();
+
 		infoFormat = new TextOptions("Info");
 		infoFormat.setBorder(null);
 		infoFormat.setPreferredSize(new Dimension(800, 600));
-		
+
 		pmFormat = new TextOptions("PM");
 		pmFormat.setBorder(null);
 		pmFormat.setPreferredSize(new Dimension(800, 600));
-		
+
 		channelFormat = new TextOptions("Channel");
 		channelFormat.setBorder(null);
 		channelFormat.setPreferredSize(new Dimension(800, 600));
-		
+
 		consoleFormat = new TextOptions("Console");
 		consoleFormat.setBorder(null);
 		consoleFormat.setPreferredSize(new Dimension(800, 600));
-		
+
 		loadOptions();
-		
+
 	}
-	
+
 	void setViewPersonal(String selectedServer) {
-		if(os != null){
-			if(os.getSelectedServer() != null) { // Don't want new server if its nothing
-				op.setSelectedServer(os.getSelectedServer());	// Set server
+		if (os != null) {
+			if (os.getSelectedServer() != null) { // Don't want new server if
+													// its nothing
+				op.setSelectedServer(os.getSelectedServer()); // Set server
 			}
 		} else {
-			op = new OptionsPersonal("irc.quakenet.org");	// Std server
+			op = new OptionsPersonal("irc.quakenet.org"); // Std server
 		}
 		splitPane.setRightComponent(op);
 	}
-	
+
 	void setViewServer() {
 		os.loadServers();
 		splitPane.setRightComponent(os);
 	}
-	
+
 	void setViewServerEdit() {
-		JPanel jp = new JPanel(); 
+		JPanel jp = new JPanel();
 		BorderLayout bl = new BorderLayout();
 		jp.setLayout(bl);
-		
-		jp.setLayout(new GridLayout(1,2));
+
+		jp.setLayout(new GridLayout(1, 2));
 		jp.add(new JLabel("Edit Server"));
 		jp.add(new JLabel("Name"));
 		jp.add(new JButton("test"));
-		//jp.add(new JButton("Save"), );
+		// jp.add(new JButton("Save"), );
 		jp.add(new JButton("Cancel"));
 		os.remove(os.tree);
 		os.add(jp, BorderLayout.CENTER);
-		
+
 	}
-	
+
 	private void setViewFormat(int view) {
-		if(view == TabComponent.CHANNEL)
+		if (view == TabComponent.CHANNEL)
 			splitPane.setRightComponent(channelFormat);
-		else if(view == TabComponent.PM)
+		else if (view == TabComponent.PM)
 			splitPane.setRightComponent(pmFormat);
-		else if(view == TabComponent.CONSOLE)
+		else if (view == TabComponent.CONSOLE)
 			splitPane.setRightComponent(consoleFormat);
-		else if(view == TabComponent.INFO)
-			splitPane.setRightComponent(infoFormat);			
+		else if (view == TabComponent.INFO)
+			splitPane.setRightComponent(infoFormat);
 	}
-	
+
 	public void setViewHelp(String url) {
 		splitPane.setRightComponent(new SIRCHelp(url));
+		selectNode(tree, new TreePath(treeModel.getRoot()));
+
 	}
+
 	public JSplitPane getSplitPane() {
 		return splitPane;
 	}
+
 	/**
 	 * Create the GUI and show it. For thread safety, this method should be
 	 * invoked from the event-dispatching thread.
@@ -165,14 +184,14 @@ public class Options extends JPanel implements TreeSelectionListener {
 		// Create and set up the window.
 		jf = new JFrame("sIrc Options");
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		//sIRC.options  = new Options();
-		
+		// sIRC.options = new Options();
+
 		jf.getContentPane().add(sIRC.options.getSplitPane());
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int X = (screen.width / 2) - (WWIDTH / 2); // Center horizontally.
 		int Y = (screen.height / 2) - (WHEIGHT / 2); // Center vertically.
 
-		jf.setBounds(X,Y , WWIDTH,WHEIGHT);
+		jf.setBounds(X, Y, WWIDTH, WHEIGHT);
 		// Display the window.
 		jf.pack();
 		jf.setResizable(false);
@@ -182,60 +201,63 @@ public class Options extends JPanel implements TreeSelectionListener {
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                tree.getLastSelectedPathComponent();
-		if (node == null) return;
-        if (node.isLeaf()) {
-    		switch (node.toString()) {
-    		case "Personal":
-    			setViewPersonal(null);
-    			break;
-    			
-    		case "Server":
-    			setViewServer();
-    			break;
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+				.getLastSelectedPathComponent();
+		if (node == null)
+			return;
+		if (node.isLeaf()) {
+			switch (node.toString()) {
+			case "Personal":
+				setViewPersonal(null);
+				break;
 
-    		case "Channel messages":
-    			setViewFormat(TabComponent.CHANNEL);
-    			break;
-    		
-        	case "Private messages":
-        		setViewFormat(TabComponent.PM);
-        		break;
-        	case "Info messages":
-        		setViewFormat(TabComponent.INFO);
-        		break;
-        	case "Console messages":
-        		setViewFormat(TabComponent.CONSOLE);
-        		break;
-    		case "Connection Help":
-    			setViewHelp("File:help/conn_help.html");
-    			break;
-    		case "Usage Help":
-    			setViewHelp("File:help/usage_help.html");
-    			break;
-    		case "Console Commands":
-    			setViewHelp("File:help/command_help.html");
-    			break;
-    		case "Style":
-    			setViewHelp("File:help/style_help.html");
-    			break;
-    		}
-    		System.out.print(node.toString());
-        }
+			case "Server":
+				setViewServer();
+				break;
+
+			case "Channel messages":
+				setViewFormat(TabComponent.CHANNEL);
+				break;
+
+			case "Private messages":
+				setViewFormat(TabComponent.PM);
+				break;
+			case "Info messages":
+				setViewFormat(TabComponent.INFO);
+				break;
+			case "Console messages":
+				setViewFormat(TabComponent.CONSOLE);
+				break;
+			case "Connection Help":
+				setViewHelp("File:help/conn_help.html");
+				break;
+			case "Usage Help":
+				setViewHelp("File:help/usage_help.html");
+				break;
+			case "Console Commands":
+				setViewHelp("File:help/command_help.html");
+				break;
+			case "Style":
+				setViewHelp("File:help/style_help.html");
+				break;
+			}
+			System.out.print(node.toString());
+		}
 	}
+
 	public void hideWindow(Boolean saveOptions) {
 		jf.setVisible(false);
-		if(saveOptions)
+		if (saveOptions)
 			saveOptions();
-		else 
+		else
 			loadOptions();
 	}
+
 	public void showWindow() {
 		loadOptions();
 		jf.setVisible(true);
 	}
-	
+
 	private void saveOptions() {
 		File file = new File("config.ini");
 		FileOutputStream fos;
@@ -247,7 +269,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 			pmFormat.save().store(fos, "Private Messages");
 			infoFormat.save().store(fos, "Info Messages");
 			consoleFormat.save().store(fos, "Console Messages");
-			
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -256,7 +278,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void loadOptions() {
 		File file = new File("config.ini");
 		FileInputStream fis;
@@ -279,13 +301,46 @@ public class Options extends JPanel implements TreeSelectionListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String getNick() {
 		return op.getNickname();
 	}
-	
+
 	public void setNick(String nick) {
 		op.setNick(nick);
 		saveOptions();
+	}
+
+	private void expandAll(JTree tree, TreePath parent) {
+		TreeNode node = (TreeNode) parent.getLastPathComponent();
+		if (node.getChildCount() >= 0) {
+			for (Enumeration e = node.children(); e.hasMoreElements();) {
+				TreeNode n = (TreeNode) e.nextElement();
+				TreePath path = parent.pathByAddingChild(n);
+				expandAll(tree, path);
+				if(path.toString().equals("[root, Connection, Personal]")) {
+					tree.setSelectionPath(path);
+				}
+			}
+		}
+		tree.expandPath(parent);
+		// tree.collapsePath(parent);
+	}
+
+	private void selectNode(JTree tree, TreePath parent) {
+		TreeNode node = (TreeNode) parent.getLastPathComponent();
+		if (node.getChildCount() >= 0) {
+			for (Enumeration e = node.children(); e.hasMoreElements();) {
+				TreeNode n = (TreeNode) e.nextElement();
+				TreePath path = parent.pathByAddingChild(n);
+				selectNode(tree, path);
+				System.out.println(path.toString());
+				if(path.toString().equals("[root, Help, Style]")) {
+					tree.setSelectionPath(path);
+				}
+			}
+		}
+		//tree.expandPath(parent);
+		// tree.collapsePath(parent);
 	}
 }

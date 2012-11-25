@@ -55,7 +55,7 @@ public class TabContainer extends JTabbedPane {
 		tabContainer.get("Console").addText(msg, TabComponent.CONSOLE);
 	}
 	
-	private int getTabIndex(String identifier) {
+	public int getTabIndex(String identifier) {
 		return indexOfTab(identifier);
 		
 	}
@@ -69,6 +69,8 @@ public class TabContainer extends JTabbedPane {
 		TabComponent tab = new TabComponent(type, identifier);
 		tabContainer.put(identifier, tab);
 		addTab(identifier, tab);	
+		int index = getTabIndex(identifier);
+		setSelectedIndex(index);
 	}
 
 	public void closeTab(String identifier) {
@@ -141,6 +143,7 @@ public class TabContainer extends JTabbedPane {
 				tabContainer.put(newNick, tab);
 			}
 		}
+		
 	}
 
 	public int getType(String identifier) {
@@ -151,5 +154,8 @@ public class TabContainer extends JTabbedPane {
 			return -1;
 
 	}
-
+	
+	public boolean containsUser(String identifier) {
+		return tabContainer.containsKey(identifier);
+	}
 }

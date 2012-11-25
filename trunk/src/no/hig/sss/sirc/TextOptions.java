@@ -4,7 +4,12 @@ import java.awt.BorderLayout;
 
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
@@ -12,6 +17,8 @@ import java.awt.event.ItemListener;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -28,8 +35,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+public class TextOptions extends JPanel implements ActionListener {
 
-public class TextOptions extends JPanel {
 	private String optionName;
 	private String fontName;
 	private Boolean italic;
@@ -44,6 +51,8 @@ public class TextOptions extends JPanel {
 	private final JSpinner selFontSize;
 	private final ColorSelector selColor;
 	
+	private JButton ok, cancel, help;
+	
 		
 	public TextOptions(String optionName) {
 		this.optionName = optionName;
@@ -52,8 +61,8 @@ public class TextOptions extends JPanel {
 		fontSize = 12;
 		color = new Color(0, 0, 0);	// Black
 		Integer[] fontSizeValues = {8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72};
-
-		JPanel mainPanel = new JPanel(new BorderLayout(10, 15));		
+		
+		setLayout(new BorderLayout(10,15));
 		JPanel previewPanel = new JPanel();
 		previewPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED), "Preview"));
 		JPanel settingsPanel = new JPanel();				
@@ -83,11 +92,30 @@ public class TextOptions extends JPanel {
 		settingsPanel.add(selColorLabel);
 		
 		updatePreview();
-		mainPanel.add(new JLabel(optionName), BorderLayout.NORTH);
-		mainPanel.add(previewPanel, BorderLayout.SOUTH);
-		mainPanel.add(settingsPanel, BorderLayout.WEST);
-		add(mainPanel);
 		
+		JPanel edit = new JPanel();
+		edit.setLayout(new GridLayout(2,1));
+		edit.add(new JLabel(optionName));
+		
+		//previewPanel.setPreferredSize(new Dimension(300,100));
+		edit.add(settingsPanel);
+
+		
+		ok = createButton("ok", "", "connectionOptions.button.ok.tooltip", "button.ok.buttonText");
+		cancel = createButton("cancel", "", "connectionOptions.button.cancel.tooltip", "button.cancel.buttonText");
+		help = createButton("help", "", "connectionOptions.button.help.tooltip", "button.help.buttonText");
+
+		JPanel navigate = new JPanel();
+		navigate.setLayout(new GridLayout(1, 3));
+		navigate.add(ok);
+		navigate.add(cancel);
+		navigate.add(help);
+		
+		add(edit, BorderLayout.NORTH);
+		add(previewPanel, BorderLayout.CENTER);
+		add(navigate, BorderLayout.SOUTH);
+		
+		//add(mainPanel);
 		/* Listeneres */
 		
 		selBold.addItemListener(new ItemListener() {
@@ -198,6 +226,32 @@ public class TextOptions extends JPanel {
 		} catch (Exception e) {
 			System.out.println("Error loading TextOptions");
 			e.printStackTrace();
+		}
+	}
+	private JButton createButton(String cmd, String icon, String tooltip, String name) {
+		JButton button = new JButton(sIRC.i18n.getStr(name));
+		button.setActionCommand(cmd);
+		button.addActionListener(this);
+
+		if (icon.length() > 1) {  // Set icon if we got one
+			button.setIcon(new ImageIcon(getClass().getResource(
+					"Images/Icons/" + icon)));
+		}
+		if (tooltip.length() > 2) { // Set tooltip if the string tooltip
+									// contains something useful
+			button.setToolTipText(sIRC.i18n.getStr(tooltip));
+		}
+		
+		return button;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		System.out.println(ae.getActionCommand());
+		if(ae.getActionCommand().equals("ok")) {
+			sIRC.options.hideWindow(true);
+		} else if(ae.getActionCommand().equals("cancel")) {
+			sIRC.options.hideWindow(false);
 		}
 	}
 }

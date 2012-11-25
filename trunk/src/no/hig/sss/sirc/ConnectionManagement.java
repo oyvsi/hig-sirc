@@ -95,6 +95,7 @@ public class ConnectionManagement implements IRCEventListener {
 			session.unsetAway();
 		else
 			session.setAway(awayMsg);
+		sIRC.tabContainer.away(awayMsg != null);	// Toggle away in tabs, so we can remind user
 	}
 	
 	public void receiveEvent(IRCEvent e) {

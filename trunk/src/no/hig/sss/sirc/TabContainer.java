@@ -14,9 +14,12 @@ import jerklib.events.modes.ModeAdjustment.Action;
 
 public class TabContainer extends JTabbedPane {
 	private Map<String, TabComponent> tabContainer = new HashMap<String, TabComponent>();
+	private boolean isAway;
 
 	public TabContainer() {
 		super();
+		isAway = false;
+		
 		newTab("Console", TabComponent.CONSOLE);
 		setMnemonicAt(0, KeyEvent.VK_1);
 		//((TabComponent) getComponent(0)).inFocus(); // Does not work. Why?
@@ -49,6 +52,9 @@ public class TabContainer extends JTabbedPane {
 		}
 		tabContainer.get(identifier).addText(message, format);
 		System.out.println("Got message: " + message);
+		
+		if(isAway && type == TabComponent.PM)
+			tabContainer.get(identifier).addText(sIRC.i18n.getStr("pm.isAwayReminder"), TabComponent.INFO);
 	}
 	
 	public void consoleMsg(String msg) {
@@ -157,5 +163,9 @@ public class TabContainer extends JTabbedPane {
 	
 	public boolean containsUser(String identifier) {
 		return tabContainer.containsKey(identifier);
+	}
+	
+	public void away(boolean isAway) {
+		this.isAway = isAway;
 	}
 }

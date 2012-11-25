@@ -90,6 +90,13 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.TopicDenied") + " " + channel);
 	}
 	
+	public void away(String awayMsg) {
+		if(session.isAway() && awayMsg == null)
+			session.unsetAway();
+		else
+			session.setAway(awayMsg);
+	}
+	
 	public void receiveEvent(IRCEvent e) {
 		if (e.getType() == Type.CONNECT_COMPLETE) {
 			String server = session.getServerInformation().getServerName();
@@ -137,7 +144,15 @@ public class ConnectionManagement implements IRCEventListener {
 				sIRC.tabContainer.userLeft(channelName, nickName);
 			}
 		}
-		
+		else if(e.getType() == Type.AWAY_EVENT) {
+			AwayEvent ae = (AwayEvent) e;
+			if(ae.isYou() == false) {
+				String nick = ae.getNick();
+				String awayMsg = buildInfoPrefix() + nick + " " + 
+							     sIRC.i18n.getStr("pm.userAway") + ": " + ae.getAwayMessage();
+				sIRC.tabContainer.message(awayMsg, nick, TabComponent.PM, TabComponent.INFO);
+			}
+		}
 		else if (e.getType() == Type.MODE_EVENT) {
 			
 			ModeEvent me = (ModeEvent) e;

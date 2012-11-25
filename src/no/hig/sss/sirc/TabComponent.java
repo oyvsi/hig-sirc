@@ -96,13 +96,15 @@ public class TabComponent extends JPanel {
 	}
 	
 	public void addText(String message, int type) {
-	//	Options.pmFormat.format(message);
 		Document document = chatArea.getDocument();
 		SimpleAttributeSet format;
+
 		if(type == INFO)
 			format = Options.infoFormat.format();
 		else if(type == PM)
 			format = Options.pmFormat.format();
+		else if(type == CONSOLE)
+			format = Options.consoleFormat.format();
 		else
 			format = Options.channelFormat.format();
 		
@@ -112,9 +114,7 @@ public class TabComponent extends JPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
-		//chatArea.append(message + "\n");
-		
+			
 	    SwingUtilities.invokeLater(new Thread() {
 	    	public void run() {
 	    		JScrollBar scrollBar = scrollPane.getVerticalScrollBar();

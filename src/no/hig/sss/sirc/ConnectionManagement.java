@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jerklib.Channel;
 import jerklib.ConnectionManager;
@@ -51,6 +53,7 @@ public class ConnectionManagement implements IRCEventListener {
 			session.close(quitMsg);
 			isConnected = false;
 			sIRC.tabContainer.closeAllTabs();
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.disconnected"));
 		}
 	}
 	
@@ -77,27 +80,34 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.message(message, me.getNick(), TabComponent.PM, TabComponent.PM);
 		}
 		
-		// TODO
-		/*else if(e.getType() == Type.ERROR) { 
+		else if(e.getType() == Type.ERROR) { 
 			ErrorEvent ee = (ErrorEvent) e;
 			if(ee.getErrorType() == ErrorType.NUMERIC_ERROR) {
 				NumericErrorEvent ne = (NumericErrorEvent) ee;
-				if(ne.getNumeric() == 401) // No such nick or channel
-					//sIRC.tabContainer.closeTab()	// NOES! need identifier
-					
-			}
-		}*/
+				
+				if(ne.getNumeric() == 401) { // No such nick or channel
+					// Messages from server look like: ":dreamhack.se.quakenet.org 401 oyvsiSirc oyvsi99999 :No such nick"
+					Pattern nickRegex = Pattern.compile("^.+401\\s(\\S+)\\s(\\S+).+$");
+					Matcher nickMatch = nickRegex.matcher(ne.getRawEventData());
+					if(nickMatch.matches()) {
+						String msg = buildInfoPrefix() + sIRC.i18n.getStr("error.noSuchNick");
+						sIRC.tabContainer.message(msg, nickMatch.group(2), TabComponent.PM, TabComponent.INFO);
+					}
+				}
+			}	
+		}
 		else if (e.getType() == Type.PART) {
 			PartEvent pe = (PartEvent) e;
 			String channelName = pe.getChannelName();
-			Date date = new Date();
-			String time = timeFormat.format(date);
 			String userName = pe.getUserName();
 			String nickName = pe.getWho();
-			String actionMsg = time + " -!- " + nickName + " [" + userName + '@' + pe.getHostName() 
-							   + "]  " + sIRC.i18n.getStr("channel.userPart") + "  " + pe.getPartMessage();
-			sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL, TabComponent.INFO);
-			sIRC.tabContainer.userLeft(channelName, nickName);
+			
+			if(nickName != session.getNick()) {
+				String actionMsg = buildInfoPrefix() + nickName + " [" + userName + '@' + pe.getHostName() 
+								   + "]  " + sIRC.i18n.getStr("channel.userPart") + "  " + pe.getPartMessage();
+				sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL, TabComponent.INFO);
+				sIRC.tabContainer.userLeft(channelName, nickName);
+			}
 		}
 		
 		else if (e.getType() == Type.MODE_EVENT) {
@@ -109,19 +119,19 @@ public class ConnectionManagement implements IRCEventListener {
 				String channelName = me.getChannel().getName();
 				me.getModeAdjustments().iterator().next();
 				Iterator<ModeAdjustment> modeIter = modeList.iterator();
+			
 				while(modeIter.hasNext()) {
 					ModeAdjustment ma = modeIter.next();
 					char mode = ma.getMode();
 					Action action = ma.getAction();
+					
 					if(mode == 'o') {
-							System.out.println("OP");
-							sIRC.tabContainer.opMode(channelName, ma.getArgument(), action);
+						System.out.println("OP");
+						sIRC.tabContainer.opMode(channelName, ma.getArgument(), action);
 					}
 					if(mode == 'v') {
-							System.out.println("VOICE");
-							sIRC.tabContainer.voiceMode(channelName, ma.getArgument(), action);
-						
-				
+						System.out.println("VOICE");
+						sIRC.tabContainer.voiceMode(channelName, ma.getArgument(), action);	
 					}
 				
 				}
@@ -143,13 +153,14 @@ public class ConnectionManagement implements IRCEventListener {
 			String[] topicSetBy = te.getSetBy().split("~");
 
 			sIRC.tabContainer.setTopText(channelName, topic);
-			
 			Date now = new Date();
 			long timeDiff = now.getTime() - te.getSetWhen().getTime();
+			
 			if(timeDiff > 3*1000) {	// We assume a join won't take longer than 3 seconds, and this is the existing topic 
 				topicMsg = timeFormat.format(now) + " -!- " + sIRC.i18n.getStr("topic.topicFor") 
 				+ " " + channelName + ": " +  topic;
 			}
+			
 			else {	// We're already in channel. So the topic is changed
 				topicMsg = timeFormat.format(te.getSetWhen()) + " -!- " + topicSetBy[0] + " " + 
 						   sIRC.i18n.getStr("topic.changed") + " " + channelName + " " + 
@@ -158,6 +169,7 @@ public class ConnectionManagement implements IRCEventListener {
 			
 			sIRC.tabContainer.message(topicMsg, channelName, TabComponent.CHANNEL, TabComponent.INFO);			
 		}
+		
 		else if (e.getType() == Type.JOIN_COMPLETE) { 
 			JoinCompleteEvent je = (JoinCompleteEvent) e;
 			String topic = je.getChannel().getTopic();
@@ -168,20 +180,19 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.setTopText(channelName, topic);
 		}
 		
-
 		else if (e.getType() == Type.JOIN) {
 			JoinEvent je = (JoinEvent) e;
 			String nick = je.getNick();
 			String channelName = je.getChannelName();
 			sIRC.tabContainer.userJoined(channelName, nick);
-			Date date = new Date();
 
-			String message = timeFormat.format(date) + " -!- " + 
+			String message = buildInfoPrefix() + 
 							 nick + " [" + je.getUserName() + "@" + je.getHostName() + "] " + 
 							 sIRC.i18n.getStr("channel.userJoin") + " " + channelName;
 			sIRC.tabContainer.message(message, channelName, TabComponent.CHANNEL, TabComponent.INFO);
 		}
 		
+
 		else if (e.getType() == Type.WHOIS_EVENT) {
 			WhoisEvent we = (WhoisEvent) e;
 			String nick = we.getNick();
@@ -303,9 +314,17 @@ public class ConnectionManagement implements IRCEventListener {
 		return timeFormat.format(timeStamp) + "  " + nick + "  " + msg;
 	}
 	
+	private String buildInfoPrefix() {
+		Date date = new Date();
+		return timeFormat.format(date) + " -!- ";
+	}
+	
 	public List<String> getUsers(String channelName) {
 		return session.getChannel(channelName).getNicks();
-		
+	}
+	
+	public void changeNick(String newNick) {
+		session.changeNick(newNick);
 	}
 	
 	public List<String> getUsersMode(String channelName, Action action, char mode) {

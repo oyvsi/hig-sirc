@@ -92,7 +92,11 @@ public class UsersContainer extends AbstractListModel {
 		updateView();
 	}
 	
-	public void removeUser(String identifier, String nick) {
+	public boolean userInChannel(String nick) {
+		return usersForView.contains(nick);
+	}
+	
+	public void removeUser(String nick) {		
 		
 		if(opExist && op.contains(nick)) {
 			op.remove(nick);

@@ -168,6 +168,5 @@ public class TabComponent extends JPanel {
 	
 	public UsersContainer getUserContainer() {
 		return userContainer;
-	}
-	
+	}	
 }

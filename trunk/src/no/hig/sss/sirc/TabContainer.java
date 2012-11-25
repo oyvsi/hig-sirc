@@ -90,11 +90,10 @@ public class TabContainer extends JTabbedPane {
 
 	public void userJoined(String identifier, String nick) {
 		tabContainer.get(identifier).getUserContainer().addUser(nick);
-	
 	}
 	
 	public void userLeft(String identifier, String nick) {
-		tabContainer.get(identifier).getUserContainer().removeUser(identifier, nick);
+		tabContainer.get(identifier).getUserContainer().removeUser(nick);
 	}
 	
 	public void opMode(String channelName, String nick, Action action) {

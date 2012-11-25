@@ -121,7 +121,7 @@ public class ConnectionManagement implements IRCEventListener {
 			String userName = pe.getUserName();
 			String nickName = pe.getWho();
 			
-			if(nickName != session.getNick()) {
+			if(nickName.equals(session.getNick()) == false) {
 				String actionMsg = buildInfoPrefix() + nickName + " [" + userName + '@' + pe.getHostName() 
 								   + "]  " + sIRC.i18n.getStr("channel.userPart") + "  " + pe.getPartMessage();
 				sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL, TabComponent.INFO);

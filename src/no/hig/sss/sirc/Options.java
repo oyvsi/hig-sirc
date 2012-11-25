@@ -47,8 +47,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 	    DefaultMutableTreeNode tHelp = new DefaultMutableTreeNode("Help");
 	    DefaultMutableTreeNode tHelpConn = new DefaultMutableTreeNode("Connection Help");
 	    DefaultMutableTreeNode tHelpUsage = new DefaultMutableTreeNode("Usage Help");
-	    //DefaultMutableTreeNode  = new DefaultMutableTreeNode("Console messages");
-	    //DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode("Console messages");
+	    DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode("Console Commands");
+	    DefaultMutableTreeNode tHelpStyle = new DefaultMutableTreeNode("Style");
 	    //DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode("Console messages");
 
 	    treeModel = new DefaultTreeModel(tRoot);    
@@ -68,6 +68,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 	    tStyle.add(tConFormat);
 	    tHelp.add(tHelpConn);
 	    tHelp.add(tHelpUsage);
+	    tHelp.add(tHelpCommands);
+	    tHelp.add(tHelpStyle);
 	    
 	    tree.addTreeSelectionListener(this);
 	    
@@ -149,7 +151,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 			splitPane.setRightComponent(infoFormat);			
 	}
 	
-	private void setViewHelp(String url) {
+	public void setViewHelp(String url) {
 		splitPane.setRightComponent(new SIRCHelp(url));
 	}
 	public JSplitPane getSplitPane() {
@@ -205,12 +207,18 @@ public class Options extends JPanel implements TreeSelectionListener {
         		break;
         	case "Console messages":
         		setViewFormat(TabComponent.CONSOLE);
-    		
+        		break;
     		case "Connection Help":
-    			setViewHelp("File:test.html");
+    			setViewHelp("File:help/conn_help.html");
     			break;
     		case "Usage Help":
-    			setViewHelp("File:test.html");
+    			setViewHelp("File:help/usage_help.html");
+    			break;
+    		case "Console Commands":
+    			setViewHelp("File:help/command_help.html");
+    			break;
+    		case "Style":
+    			setViewHelp("File:help/style_help.html");
     			break;
     		}
     		System.out.print(node.toString());

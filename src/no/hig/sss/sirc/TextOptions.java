@@ -34,6 +34,7 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class TextOptions extends JPanel implements ActionListener {
 
@@ -250,6 +251,8 @@ public class TextOptions extends JPanel implements ActionListener {
 			sIRC.options.hideWindow(true);
 		} else if(ae.getActionCommand().equals("cancel")) {
 			sIRC.options.hideWindow(false);
+		} else if(ae.getActionCommand().equals("help")) {
+			sIRC.options.setViewHelp("File:help/style_help.html");
 		}
 	}
 }

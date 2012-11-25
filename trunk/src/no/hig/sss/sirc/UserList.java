@@ -145,7 +145,7 @@ public class UserList extends JList<String> implements MouseListener {
 	public void mouseClicked(MouseEvent me) {
 		
 		if(me.getClickCount() == 2) {
-			String user = getSelectedValue().toString();
+			String user = parseNick(getSelectedValue().toString());
 			if(tabContainer.containsUser(user)) {
 				tabContainer.setSelectedIndex(tabContainer.getTabIndex(user));
 			} else {

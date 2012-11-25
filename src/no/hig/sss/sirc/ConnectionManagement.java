@@ -1,6 +1,7 @@
 package no.hig.sss.sirc;
 
 
+import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -143,18 +144,20 @@ public class ConnectionManagement implements IRCEventListener {
 					ModeAdjustment ma = modeIter.next();
 					char mode = ma.getMode();
 					Action action = ma.getAction();
+					String nick = ma.getArgument();
+					String modeText = (action == Action.PLUS) ? "+" : "-";
+					String msg = buildInfoPrefix() + sIRC.i18n.getStr("channel.mode") + 
+								 "/" + channelName  + " [" + modeText + mode + " " + nick + "]" + 
+							     " " + sIRC.i18n.getStr("channel.by") + " " + me.setBy(); 
 					
-					if(mode == 'o') {
-						System.out.println("OP");
-						sIRC.tabContainer.opMode(channelName, ma.getArgument(), action);
-					}
-					if(mode == 'v') {
-						System.out.println("VOICE");
-						sIRC.tabContainer.voiceMode(channelName, ma.getArgument(), action);	
-					}
-				
-				}
-				
+					if(mode == 'o')
+						sIRC.tabContainer.opMode(channelName, nick, action);
+
+					else if(mode == 'v')
+						sIRC.tabContainer.voiceMode(channelName, nick, action);	
+					if(mode == 'o' || mode == 'v')
+						sIRC.tabContainer.message(msg, channelName, TabComponent.CHANNEL, TabComponent.INFO);
+				}				
 			}
 		}
 		

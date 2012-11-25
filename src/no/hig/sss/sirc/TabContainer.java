@@ -104,6 +104,22 @@ public class TabContainer extends JTabbedPane {
 		tabContainer.get(channelName).getUserContainer().voiceMode(nick, action);
 	}
 	
+	public void userQuit(String nick, String msg) {
+		TabComponent tab;
+		for(int i = 1; i < tabContainer.size(); i++) {
+			tab = (TabComponent) getComponent(i);
+			if(tab.getType() == TabComponent.CHANNEL) {
+				if(tab.getUserContainer().userInChannel(nick)) {
+					tab.getUserContainer().removeUser(nick);
+					tab.addText(msg, TabComponent.INFO);
+				}
+			}
+			else if(tab.getType() == TabComponent.PM) {
+				tab.addText(msg, TabComponent.INFO);
+			}
+		}
+	}
+	
 	public void nickChange(String oldNick, String newNick, String msg) {
 		TabComponent tab;	
 		for(int i = 1; i < tabContainer.size(); i++) {

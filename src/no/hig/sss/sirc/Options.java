@@ -199,10 +199,12 @@ public class Options extends JPanel implements TreeSelectionListener {
 		jf.setVisible(false);
 		if(saveOptions)
 			saveOptions();
+		else 
+			loadOptions();
 	}
 	public void showWindow() {
-		jf.setVisible(true);
 		loadOptions();
+		jf.setVisible(true);
 	}
 	
 	private void saveOptions() {
@@ -247,5 +249,14 @@ public class Options extends JPanel implements TreeSelectionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public String getNick() {
+		return op.getNickname();
+	}
+	
+	public void setNick(String nick) {
+		op.setNick(nick);
+		saveOptions();
 	}
 }

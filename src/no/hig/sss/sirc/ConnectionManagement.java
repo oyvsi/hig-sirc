@@ -328,7 +328,12 @@ public class ConnectionManagement implements IRCEventListener {
 	}
 	
 	public void changeNick(String newNick) {
-		session.changeNick(newNick);
+		if(isConnected)
+			session.changeNick(newNick);
+		System.out.println("Current nick: " + sIRC.options.getNick());
+		sIRC.options.setNick(newNick);
+		System.out.println("New nick: " + sIRC.options.getNick());
+		
 	}
 	
 	public List<String> getUsersMode(String channelName, Action action, char mode) {

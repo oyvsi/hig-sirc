@@ -104,6 +104,10 @@ public class TabContainer extends JTabbedPane {
 	public void voiceMode(String channelName, String nick, Action action) {
 		tabContainer.get(channelName).getUserContainer().voiceMode(nick, action);
 	}
+	
+	public void nickChange(String channelName, String oldNick, String newNick) {
+		tabContainer.get(channelName).getUserContainer().nickChange(oldNick, newNick);
+	}
 
 	public int getType(String identifier) {
 		int index = getTabIndex(identifier);

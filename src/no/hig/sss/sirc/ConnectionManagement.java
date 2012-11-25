@@ -2,6 +2,7 @@ package no.hig.sss.sirc;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -181,7 +182,31 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.message(message, channelName, TabComponent.CHANNEL, TabComponent.INFO);
 		}
 		
-		//else if (e.getType() == Type.CTCP_EVENT) {
+		else if (e.getType() == Type.WHOIS_EVENT) {
+			WhoisEvent we = (WhoisEvent) e;
+			String nick = we.getNick();
+			String hostName = we.getHost();
+			String realName = we.getRealName();
+			String userName = we.getUser();
+			
+			String message = nick;
+			
+			
+		}
+		else if (e.getType() == Type.NICK_CHANGE) {
+			NickChangeEvent nce = (NickChangeEvent) e;
+			String oldNick = nce.getOldNick();
+			String newNick = nce.getNewNick();
+			List<String> channels = getChannelsWithUser(nce.getSession(), newNick);
+			Iterator<String> channelIter = channels.iterator();
+			while(channelIter.hasNext()) {
+				String channelName = channelIter.next();
+				sIRC.tabContainer.nickChange(channelName, oldNick, newNick);
+				
+			}
+			
+			
+		}
 
 		else if (e.getType() == Type.CTCP_EVENT) {
 			CtcpEvent ce = (CtcpEvent) e;
@@ -201,10 +226,17 @@ public class ConnectionManagement implements IRCEventListener {
 					sIRC.tabContainer.message(printMsg, identifier, type, TabComponent.INFO);
 			}
 			
-
+		
 		//	KickEvent ke = (KickEvent) e;
 		}
 	
+		else if(e.getType() == Type.KICK_EVENT) {
+			System.out.println("KICK");
+			KickEvent ke = (KickEvent) e;
+			sIRC.tabContainer.userLeft(ke.getChannel().getName(), ke.getWho());
+			
+		}
+		
 		else if(e.getType() == Type.CONNECTION_LOST) {
 			isConnected = false;
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.disconnected"));
@@ -278,6 +310,27 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	public List<String> getUsersMode(String channelName, Action action, char mode) {
 		return session.getChannel(channelName).getNicksForMode(action, mode);
+	}
+	
+	public List<String> getChannelsWithUser(Session session, String nick) {
+		Iterator<Channel >channelIter = session.getChannels().iterator();
+		List<String> channels = new ArrayList<String>();
+		while(channelIter.hasNext()) {
+			Channel channel = channelIter.next();
+			List<String> tmpnicks = channel.getNicks();
+			if(tmpnicks.contains(nick)) {
+				channels.add(channel.getName());
+			}
+		}
+		return channels;
+	}
+	
+	public Channel getChannel(String identifier) {
+		return session.getChannel(identifier);
+	}
+	
+	public Session getSession() {
+		return session;
 	}
 	
 	/*public boolean checkModeForUser(String channelName, Action action, char mode, String nick) {

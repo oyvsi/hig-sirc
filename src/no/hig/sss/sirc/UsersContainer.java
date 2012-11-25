@@ -2,8 +2,10 @@ package no.hig.sss.sirc;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.AbstractListModel;
@@ -15,6 +17,7 @@ public class UsersContainer extends AbstractListModel {
 	List<String> op;
 	List<String> voice;
 	List<String> regulars;
+	Map<String, String> users = new HashMap<String, String>();
 	ArrayList<String> usersForView;
 	ConnectionManagement cm = sIRC.conManagement;
 	String channel;
@@ -66,30 +69,40 @@ public class UsersContainer extends AbstractListModel {
 
 	
 	public void addUser(String nick) {
-		usersForView.add(nick);
-		sortList(usersForView);
 		if(cm.getUsersMode(channel, Action.PLUS, 'o').contains(nick)) {
-			if(!opExist)
+			if(!opExist) {
 				op = new ArrayList<String>();
+				opExist = true;
+			}
 			op.add(nick);
 		} else if  (cm.getUsersMode(channel, Action.PLUS, 'v').contains(nick)) {
-			if(!voiceExist) 
+			if(!voiceExist) {
 				voice = new ArrayList<String>();
+				voiceExist = true;
+			}
 			voice.add(nick);
-		}
-		fireContentsChanged(this, 0, usersForView.size());
+		} else {
+			if(!regularsExist) {
+				regulars = new ArrayList<String>();
+				regularsExist = true;
+			}
+			regulars.add(nick);
+			}
+		
+		updateView();
 	}
 	
 	public void removeUser(String identifier, String nick) {
-		usersForView.remove(nick);
-		sortList(usersForView);
+		
 		if(opExist && op.contains(nick)) {
 			op.remove(nick);
-		}
-		if(voiceExist && voice.contains(nick)) {
+		} else if(voiceExist && voice.contains(nick)) {
 			voice.remove(nick);
+		} else {
+			regulars.remove(nick);
 		}
-		fireContentsChanged(this, 0, usersForView.size());
+		
+		updateView();
 	}
 	
 	
@@ -97,8 +110,7 @@ public class UsersContainer extends AbstractListModel {
 		String user = usersForView.get(index);
 		if(opExist && op.contains(user)) return '@' + user;
 		if(voiceExist && voice.contains(user)) return '+' + user;
-		if(regularsExist && regulars.contains(user)) return user;
-		return null;
+		return user;
 		}
 	
 	public int getSize() {
@@ -180,6 +192,20 @@ public class UsersContainer extends AbstractListModel {
 		updateView();
 		
 	}
+	
+	public void nickChange(String oldNick, String newNick) {
+		if(opExist && op.contains(oldNick)) {
+			op.remove(oldNick);
+			op.add(newNick);
+		} else if (voiceExist && voice.contains(oldNick)) {
+			op.remove(oldNick);
+			op.add(newNick);
+		} else {
+			regulars.remove(oldNick);
+			regulars.add(newNick);
+		}
+		updateView();
+}
 
 	public void updateView() {
 		usersForView.clear();
@@ -192,9 +218,15 @@ public class UsersContainer extends AbstractListModel {
 			sortList(voice);
 			usersForView.addAll(voice);
 		}
-	    
+		if(regularsExist) {
 		sortList(regulars);
 	    usersForView.addAll(regulars);
+		}
+		
 		fireContentsChanged(this, 0, getSize());
 	}
+
 }
+	
+
+

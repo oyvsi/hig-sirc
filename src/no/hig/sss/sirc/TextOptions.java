@@ -28,6 +28,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+
 public class TextOptions extends JPanel {
 	private String optionName;
 	private String fontName;

@@ -82,6 +82,14 @@ public class ConnectionManagement implements IRCEventListener {
 		
 	}
 	
+	public void setTopic(String channel, String topic) {
+		String nick = session.getNick();
+		if(getUsersMode(channel, Action.PLUS, 'o').contains(nick)) 
+			session.getChannel(channel).setTopic(topic);
+		else
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.TopicDenied") + " " + channel);
+	}
+	
 	public void receiveEvent(IRCEvent e) {
 		if (e.getType() == Type.CONNECT_COMPLETE) {
 			String server = session.getServerInformation().getServerName();
@@ -179,11 +187,12 @@ public class ConnectionManagement implements IRCEventListener {
 			String[] topicSetBy = te.getSetBy().split("~");
 
 			sIRC.tabContainer.setTopText(channelName, topic);
-			Date now = new Date();
-			long timeDiff = now.getTime() - te.getSetWhen().getTime();
+			long timeNow = System.currentTimeMillis();
+			long timeSet = te.getSetWhen().getTime();
+			long timeDiff = (timeNow - timeSet) / 1000;
 			
-			if(timeDiff > 3*1000) {	// We assume a join won't take longer than 3 seconds, and this is the existing topic 
-				topicMsg = timeFormat.format(now) + " -!- " + sIRC.i18n.getStr("topic.topicFor") 
+			if(timeDiff > 3) {	// We assume a join won't take longer than 3 seconds, and this is the existing topic 
+				topicMsg = buildInfoPrefix() + sIRC.i18n.getStr("topic.topicFor") 
 				+ " " + channelName + ": " +  topic;
 			}
 			

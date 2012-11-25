@@ -96,11 +96,9 @@ public class TextOptions extends JPanel implements ActionListener {
 		JPanel edit = new JPanel();
 		edit.setLayout(new GridLayout(2,1));
 		edit.add(new JLabel(optionName));
-		
-		//previewPanel.setPreferredSize(new Dimension(300,100));
+
 		edit.add(settingsPanel);
 
-		
 		ok = createButton("ok", "", "connectionOptions.button.ok.tooltip", "button.ok.buttonText");
 		cancel = createButton("cancel", "", "connectionOptions.button.cancel.tooltip", "button.cancel.buttonText");
 		help = createButton("help", "", "connectionOptions.button.help.tooltip", "button.help.buttonText");

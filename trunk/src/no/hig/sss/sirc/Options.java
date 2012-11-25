@@ -43,10 +43,18 @@ public class Options extends JPanel implements TreeSelectionListener {
 	    DefaultMutableTreeNode tPmFormat = new DefaultMutableTreeNode("Private messages");
 	    DefaultMutableTreeNode tInfoFormat = new DefaultMutableTreeNode("Info messages");
 	    DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode("Console messages");
+	    
+	    DefaultMutableTreeNode tHelp = new DefaultMutableTreeNode("Help");
+	    DefaultMutableTreeNode tHelpConn = new DefaultMutableTreeNode("Connection Help");
+	    DefaultMutableTreeNode tHelpUsage = new DefaultMutableTreeNode("Usage Help");
+	    //DefaultMutableTreeNode  = new DefaultMutableTreeNode("Console messages");
+	    //DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode("Console messages");
+	    //DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode("Console messages");
 
 	    treeModel = new DefaultTreeModel(tRoot);    
 	    tree = new JTree(treeModel);
 	    
+	    treeModel.insertNodeInto(tHelp, tRoot, 0);
 	    treeModel.insertNodeInto(tStyle, tRoot, 0);
 	    treeModel.insertNodeInto(tConn, tRoot, 0);
 	    tree.expandPath(tree.getPathForRow(0)); // expands first level
@@ -58,6 +66,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 	    tStyle.add(tPmFormat);
 	    tStyle.add(tInfoFormat);
 	    tStyle.add(tConFormat);
+	    tHelp.add(tHelpConn);
+	    tHelp.add(tHelpUsage);
+	    
 	    tree.addTreeSelectionListener(this);
 	    
 		// Create a split pane with the two scroll panes in it.
@@ -110,6 +121,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		os.loadServers();
 		splitPane.setRightComponent(os);
 	}
+	
 	void setViewServerEdit() {
 		JPanel jp = new JPanel(); 
 		BorderLayout bl = new BorderLayout();
@@ -126,7 +138,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		
 	}
 	
-	private void setFormatView(int view) {
+	private void setViewFormat(int view) {
 		if(view == TabComponent.CHANNEL)
 			splitPane.setRightComponent(channelFormat);
 		else if(view == TabComponent.PM)
@@ -137,10 +149,12 @@ public class Options extends JPanel implements TreeSelectionListener {
 			splitPane.setRightComponent(infoFormat);			
 	}
 	
+	private void setViewHelp(String url) {
+		splitPane.setRightComponent(new SIRCHelp(url));
+	}
 	public JSplitPane getSplitPane() {
 		return splitPane;
 	}
-
 	/**
 	 * Create the GUI and show it. For thread safety, this method should be
 	 * invoked from the event-dispatching thread.
@@ -180,17 +194,24 @@ public class Options extends JPanel implements TreeSelectionListener {
     			break;
 
     		case "Channel messages":
-    			setFormatView(TabComponent.CHANNEL);
+    			setViewFormat(TabComponent.CHANNEL);
     			break;
     		
         	case "Private messages":
-        		setFormatView(TabComponent.PM);
+        		setViewFormat(TabComponent.PM);
         		break;
         	case "Info messages":
-        		setFormatView(TabComponent.INFO);
+        		setViewFormat(TabComponent.INFO);
         		break;
         	case "Console messages":
-        		setFormatView(TabComponent.CONSOLE);
+        		setViewFormat(TabComponent.CONSOLE);
+    		
+    		case "Connection Help":
+    			setViewHelp("File:test.html");
+    			break;
+    		case "Usage Help":
+    			setViewHelp("File:test.html");
+    			break;
     		}
     		System.out.print(node.toString());
         }

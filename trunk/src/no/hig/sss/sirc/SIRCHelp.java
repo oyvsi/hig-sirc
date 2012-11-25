@@ -76,7 +76,7 @@ public class SIRCHelp extends JPanel implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
         //Add content to the window.
-        frame.add(new SIRCHelp("File:test.html"));
+        frame.add(new SIRCHelp("File:help/test.html"));
  
         //Display the window.
         frame.pack();

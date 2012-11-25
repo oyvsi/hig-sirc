@@ -42,7 +42,7 @@ public class TabComponent extends JPanel {
 	private JTextPane chatArea;
 	private JScrollPane scrollPane;
 	private UsersContainer userContainer;
-	private JList<String> users;
+	private UserList userList;
 	private JTextField inputArea;
 	private ConnectionManagement cm = sIRC.conManagement;
 	private JTextField topText;
@@ -58,19 +58,15 @@ public class TabComponent extends JPanel {
 		else if(type == CHANNEL) {
 			this.type = CHANNEL;
 			userContainer = new UsersContainer(identifier);
-			users = new JList<String>(userContainer);
-			users.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
-					if(SwingUtilities.isRightMouseButton(e))
-						showRightClickMenu(e);
-					}
-				});
-			add(users, BorderLayout.EAST);
-		}			
+			userList = new UserList(identifier, userContainer);
+			add(userList, BorderLayout.EAST);
+		}
+			
+			
 		chatArea = new JTextPane();
 		chatArea.setEditable(false);
 		inputArea = new InputField(type, identifier);
-
+		
 		add(inputArea, BorderLayout.SOUTH);
 		add(chatArea, BorderLayout.NORTH);
 		if(type == CHANNEL || type == PM)
@@ -135,14 +131,20 @@ public class TabComponent extends JPanel {
 		return type;
 	}
 	
-	private void showRightClickMenu(MouseEvent e) {
-		JPopupMenu rightClickMenu = new JPopupMenu();
-		JMenuItem kick = new JMenuItem("Kick");
-		kick.addActionListener(new popupListener());
-		kick.setActionCommand("Kick");
+	private void createRightClickMenu(MouseEvent e) {
+	
 		
-		rightClickMenu.add(kick);
-		rightClickMenu.show(e.getComponent(), e.getX(), e.getY());
+		
+	}
+	
+	public JMenu createSubMenu(String [] names, String title) {
+		JMenu subMenu = new JMenu(title);
+		for(int i = 0; i < names.length; i++) {
+			subMenu.add(new JMenuItem(names[i]));
+			
+		}
+		return subMenu;
+		
 	}
 	
 	class popupListener implements ActionListener {

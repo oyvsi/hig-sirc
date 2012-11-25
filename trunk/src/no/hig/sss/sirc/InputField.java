@@ -92,10 +92,17 @@ public class InputField extends JTextField {
 				}
 				
 				else if(cmd.equals("me")) {	// Action msg
-					String actionMsg = null;
-					if(line.length > 1) 
-						actionMsg = restLine(line, 1);
-					connectionManagement.actionMsg(identifier, actionMsg, type);
+					if(line.length > 1) {
+						String actionMsg = restLine(line, 1);
+						connectionManagement.actionMsg(identifier, actionMsg, type);
+					}
+				}
+				
+				else if(cmd.equals("topic")) {
+					if(type == TabComponent.CHANNEL && line.length > 1) {
+						String topicMsg = restLine(line, 1);
+						connectionManagement.setTopic(identifier, topicMsg);
+					}
 				}
 
 				else {

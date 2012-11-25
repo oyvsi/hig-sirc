@@ -159,6 +159,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		jf.setBounds(X,Y , WWIDTH,WHEIGHT);
 		// Display the window.
 		jf.pack();
+		jf.setResizable(false);
 		jf.setVisible(true);
 		jf.setAlwaysOnTop(true);
 	}

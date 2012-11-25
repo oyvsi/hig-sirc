@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 public class OptionsPersonal extends JPanel implements ActionListener {
 	//private static ResourceBundle messages;
 	private JTextField fullName, email, nickname, altnick;
-	JButton connect, ok, cancel, help;
+	private JButton connect, ok, cancel, help;
 	private JPanel gridLayout = new JPanel();
 	private GridBagLayout layout = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
@@ -50,7 +50,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		// Create the panel with the four buttons on the right
 		
 		connect = createButton("connect", "", "", "connectionOptions.button.connect.buttonText");
-		add(2,6,10,1, connect);
+		add(1,6,2,1, connect);
 		// Add labels to text fields
 		
 		gbc.anchor = GridBagConstraints.WEST;

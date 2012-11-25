@@ -36,18 +36,37 @@ public class ConnectionManagement implements IRCEventListener {
 	}
 	
 	public void connect(String nick, String server) {
-		if(isConnected == false) {
+		if(isConnected) {
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.alreadyConnected"));
+		}
+		if(isConnected == false && validateNick(nick) && validateServer(server)) {
 			profile = new Profile(nick);
 			manager = new ConnectionManager(profile);
 			session = manager.requestConnection(server);
 			session.addIRCEventListener(this);
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.connecting"));
 		}
-		else {
-			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.alreadyConnected"));
-		}
 	}
 	
+	public boolean validateNick(String nick) { // Valid chars are 0-9a-z\[]^_`{|}- Can't begin with 0-9 or -
+		String nickRegex = "(?i)^[a-z\\\\\\[\\]^_`{|}][0-9a-z\\\\\\[\\]^_`{|}-]{2,15}$";
+		Boolean valid = false;
+		if(nick.matches(nickRegex))
+			valid = true;
+		else
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.invalidNick"));
+		return valid;
+	}
+	
+	public boolean validateServer(String server) {
+		Boolean valid = false;
+		if(server.length() > 3)
+			valid = true;
+		else
+			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.invalidServer"));
+		return valid;
+	}
+
 	public void disConnect(String quitMsg) {
 		if(isConnected) {
 			session.close(quitMsg);
@@ -330,9 +349,8 @@ public class ConnectionManagement implements IRCEventListener {
 	public void changeNick(String newNick) {
 		if(isConnected)
 			session.changeNick(newNick);
-		System.out.println("Current nick: " + sIRC.options.getNick());
 		sIRC.options.setNick(newNick);
-		System.out.println("New nick: " + sIRC.options.getNick());
+		sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.changedNick") + " " + newNick);
 		
 	}
 	

@@ -58,10 +58,12 @@ public class InputField extends JTextField {
 				}
 				else if(cmd.equals("connect")) {
 						String nick = sIRC.options.getNick();
-						if(nick.length() > 2)
-							connectionManagement.connect(nick, line[1]);
-						else
-							sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.noNick"));
+						if(line.length == 2) {
+							if(nick.length() > 2)
+								connectionManagement.connect(nick, line[1]);
+							else
+								sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.noNick"));
+						}
 				}
 				else if(cmd.equals("msg")) {	// Private messages
 					if(line.length > 2) {
@@ -82,14 +84,10 @@ public class InputField extends JTextField {
 					connectionManagement.disConnect(quitMsg);
 				}
 				else if(cmd.equals("nick")) {	// Nick change
-					if(line.length == 2) {	// Valid chars are 0-9a-z\[]^_`{|}- Can't begin with 0-9 or -
-						String nickRegex = "(?i)^[a-z\\\\\\[\\]^_`{|}][0-9a-z\\\\\\[\\]^_`{|}-]{2,15}$";
-						String newNick = restLine(line, 1);
-						
-						if(newNick.matches(nickRegex))
+					if(line.length == 2) {	
+						String newNick = restLine(line, 1);			
+						if(connectionManagement.validateNick(newNick))
 							connectionManagement.changeNick(newNick);
-						else
-							sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.invalidNick"));
 					}
 				}
 				

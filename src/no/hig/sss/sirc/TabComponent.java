@@ -43,7 +43,7 @@ public class TabComponent extends JPanel {
 	private JScrollPane scrollPane;
 	private UsersContainer userContainer;
 	private UserList userList;
-	private JTextField inputArea;
+	private InputField inputArea;
 	private ConnectionManagement cm = sIRC.conManagement;
 	private JTextField topText;
 
@@ -125,6 +125,11 @@ public class TabComponent extends JPanel {
 
 	public String getIdentifier() {
 		return identifier;
+	}
+	
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
+		inputArea.setIdentifier(identifier);
 	}
 	
 	public int getType() {

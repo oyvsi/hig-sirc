@@ -95,7 +95,7 @@ public class ConnectionManagement implements IRCEventListener {
 					}
 				}
 			}	
-		}
+		}	
 		else if (e.getType() == Type.PART) {
 			PartEvent pe = (PartEvent) e;
 			String channelName = pe.getChannelName();
@@ -141,8 +141,12 @@ public class ConnectionManagement implements IRCEventListener {
 		
 		else if(e.getType() == Type.QUIT) {
 			QuitEvent qe = (QuitEvent) e;
-			// Got to check channels user is in
-			System.out.println(qe.toString());
+			String nickName = qe.getNick();
+			String msg = buildInfoPrefix() + " " + nickName + " [" + qe.getUserName() + 
+					     "@" + qe.getHostName() + "] " + sIRC.i18n.getStr("channel.userQuit") + 
+					     " [" + qe.getQuitMessage() + "]";
+			
+			sIRC.tabContainer.userQuit(nickName, msg);
 		}
 
 		else if (e.getType() == Type.TOPIC) {	// Sent on topic changes and channel joins (if topic is set)

@@ -125,41 +125,8 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		cancel.setActionCommand("cancel");
 		cancel.addActionListener(this);
 		okCancelHelpPanel.add(help = new JButton(sIRC.i18n.getStr("button.help.buttonText")));
-
-		add(okCancelHelpPanel, BorderLayout.SOUTH);
-		// Set all tooltip texts
-		add.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.add.tooltip"));
-		change.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.change.tooltip"));
-		delete.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.delete.tooltip"));
-		ok.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.ok.tooltip"));
-		cancel.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.cancel.tooltip"));
-		help.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.help.tooltip"));
-		setVisible(true);
-	}
-	void init() {
-		bl = new BorderLayout();
-		this.loadServers();
-		setLayout(bl);
-
-		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
-
-		treeModel = new DefaultTreeModel(tRoot);
-		tree = new JTree(treeModel);
-
-		addServers(tRoot);
-		// Create the panel with the four buttons on the right
-		add(action, BorderLayout.EAST);
-		// Add ok, cancel, help buttons
-		JPanel okCancelHelpPanel = new JPanel();
-		okCancelHelpPanel.setLayout(new GridLayout(1, 2));
-		okCancelHelpPanel.add(ok = new JButton(sIRC.i18n.getStr("button.ok.buttonText")));
-		ok.setActionCommand("ok");
-		ok.addActionListener(this);
-		okCancelHelpPanel.add(cancel = new JButton(sIRC.i18n.getStr("button.cancel.buttonText")));
-		cancel.setActionCommand("cancel");
-		cancel.addActionListener(this);
-		okCancelHelpPanel.add(help = new JButton(sIRC.i18n.getStr("button.help.buttonText")));
-
+		help.setActionCommand("help");
+		help.addActionListener(this);
 		add(okCancelHelpPanel, BorderLayout.SOUTH);
 		// Set all tooltip texts
 		add.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.add.tooltip"));
@@ -322,8 +289,10 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		} else if (ae.getActionCommand().equals("back")) {
 			sIRC.options.os = new OptionsServer();
 			sIRC.options.setViewServer();
-			
+		} else if (ae.getActionCommand().equals("help")) {
+			sIRC.options.setViewHelp("File:help/server_help.html");
 		}
+		
 		
 	}
 

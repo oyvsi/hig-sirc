@@ -134,6 +134,15 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		layout.setConstraints(c, gbc);
 		gridLayout.add(c);
 	}
+	
+	/**
+	 * 
+	 * @param nick The nickname to change to
+	 */
+	public void setNick(String nick) {
+		nickname.setText(nick);
+	
+	}
 
 	/**
 	 * @return the fullName

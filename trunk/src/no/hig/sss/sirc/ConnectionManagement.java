@@ -1,7 +1,5 @@
 package no.hig.sss.sirc;
 
-
-import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,7 +76,8 @@ public class ConnectionManagement implements IRCEventListener {
 	}
 	
 	/**
-	 * Validates the user specified nick based on IRC-RFC
+	 * Validates the user specified nick based on RFC 2812
+	 * 
 	 * @param nick the nickname to validate
 	 * @return valid valid or not valid
 	 */
@@ -481,9 +480,8 @@ public class ConnectionManagement implements IRCEventListener {
 	 * Concatenates time, nick and msg for output in channel or pm
 	 * @param nick the users nick
 	 * @param msg the message
-	 * @return
+	 * @return the prefix string for a user who says something
 	 */
-	
 	private String buildSay(String nick, String msg) {
 		Date timeStamp = new Date();
 		return timeFormat.format(timeStamp) + "  " + nick + "  " + msg;
@@ -574,7 +572,5 @@ public class ConnectionManagement implements IRCEventListener {
 	/*public boolean checkModeForUser(String channelName, Action action, char mode, String nick) {
 		return session.getChannel(channelName).checkModeForUser(action, mode, nick);
 	}*/
-
-	
 
 }

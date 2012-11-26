@@ -230,7 +230,7 @@ public class TabContainer extends JTabbedPane {
 	/**
 	 * Get the type of tab as defined in TabComponent
 	 * 
-	 * @param the name of channel or nick
+	 * @param identifier name of channel or nick
 	 * @return the type of tab
 	 */
 	public int getType(String identifier) {

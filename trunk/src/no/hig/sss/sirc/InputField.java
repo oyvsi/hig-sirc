@@ -58,7 +58,7 @@ public class InputField extends JTextField {
 	 * 
 	 * @param line the array with text 
 	 * @param startAt the index to start at
-	 * @return
+	 * @return the rest of the line
 	 */
 	private String restLine(String[] line, int startAt) {
 		String msg = "";

@@ -100,12 +100,13 @@ public class TextOptions extends JPanel implements ActionListener {
 
 		edit.add(settingsPanel);
 
-		ok = createButton("ok", "", "connectionOptions.button.ok.tooltip", "button.ok.buttonText");
-		cancel = createButton("cancel", "", "connectionOptions.button.cancel.tooltip", "button.cancel.buttonText");
-		help = createButton("help", "", "connectionOptions.button.help.tooltip", "button.help.buttonText");
-
+		ok = Helpers.createButton("button.ok.buttonText", "connectionOptions.button.ok.tooltip", "ok", this);
+		cancel = Helpers.createButton("button.cancel.buttonText", "connectionOptions.button.cancel.tooltip","cancel", this);
+		help = Helpers.createButton("button.help.buttonText", "connectionOptions.button.help.tooltip", "help", this);
+		
 		JPanel navigate = new JPanel();
 		navigate.setLayout(new GridLayout(1, 3));
+		
 		navigate.add(ok);
 		navigate.add(cancel);
 		navigate.add(help);
@@ -226,22 +227,6 @@ public class TextOptions extends JPanel implements ActionListener {
 			System.out.println("Error loading TextOptions");
 			e.printStackTrace();
 		}
-	}
-	private JButton createButton(String cmd, String icon, String tooltip, String name) {
-		JButton button = new JButton(sIRC.i18n.getStr(name));
-		button.setActionCommand(cmd);
-		button.addActionListener(this);
-
-		if (icon.length() > 1) {  // Set icon if we got one
-			button.setIcon(new ImageIcon(getClass().getResource(
-					"Images/Icons/" + icon)));
-		}
-		if (tooltip.length() > 2) { // Set tooltip if the string tooltip
-									// contains something useful
-			button.setToolTipText(sIRC.i18n.getStr(tooltip));
-		}
-		
-		return button;
 	}
 
 	@Override

@@ -102,39 +102,30 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		// Create the panel with the four buttons on the right
 		action = new JPanel();
 		action.setLayout(new GridLayout(3, 1));
-		action.add(add = new JButton(sIRC.i18n.getStr("connectionOptions.button.add.buttonText")));
-		add.setActionCommand("add");
-		add.addActionListener(this);
+		add = Helpers.createButton("button.add.buttonText", "button.add.tooltip", "add", this);
+		change = Helpers.createButton("connectionOptions.button.change.buttonText", "connectionOptions.button.change.tooltip", "change", this);
+		delete = Helpers.createButton("connectionOptions.button.delete.buttonText", "connectionOptions.button.delete.tooltip", "delete", this);
 
-		action.add(change = new JButton(sIRC.i18n.getStr("connectionOptions.button.change.buttonText")));
-		change.setActionCommand("change");
-		change.addActionListener(this);
-		action.add(delete = new JButton(sIRC.i18n.getStr("connectionOptions.button.delete.buttonText")));
-		delete.setActionCommand("delete");
-		delete.addActionListener(this);
+		action.add(add);
+		action.add(change);
+		action.add(delete);
+		
 		// Add the buttons on the right
 		action.setSize(new Dimension(200, 60));
 		add(action, BorderLayout.EAST);
 		// Add ok, cancel, help buttons
-		JPanel okCancelHelpPanel = new JPanel();
-		okCancelHelpPanel.setLayout(new GridLayout(1, 2));
-		okCancelHelpPanel.add(ok = new JButton(sIRC.i18n.getStr("button.ok.buttonText")));
-		ok.setActionCommand("ok");
-		ok.addActionListener(this);
-		okCancelHelpPanel.add(cancel = new JButton(sIRC.i18n.getStr("button.cancel.buttonText")));
-		cancel.setActionCommand("cancel");
-		cancel.addActionListener(this);
-		okCancelHelpPanel.add(help = new JButton(sIRC.i18n.getStr("button.help.buttonText")));
-		help.setActionCommand("help");
-		help.addActionListener(this);
-		add(okCancelHelpPanel, BorderLayout.SOUTH);
-		// Set all tooltip texts
-		add.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.add.tooltip"));
-		change.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.change.tooltip"));
-		delete.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.delete.tooltip"));
-		ok.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.ok.tooltip"));
-		cancel.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.cancel.tooltip"));
-		help.setToolTipText(sIRC.i18n.getStr("connectionOptions.button.help.tooltip"));
+		JPanel navigate = new JPanel();
+		navigate.setLayout(new GridLayout(1, 2));
+		
+		ok = Helpers.createButton("button.ok.buttonText", "connectionOptions.button.ok.tooltip", "ok", this);
+		cancel = Helpers.createButton("button.cancel.buttonText", "connectionOptions.button.cancel.tooltip", "cancel", this);
+		help = Helpers.createButton("button.help.buttonText", "connectionOptions.button.help.tooltip", "help", this);
+		
+		navigate.add(ok);
+		navigate.add(cancel);
+		navigate.add(help);
+		add(navigate, BorderLayout.SOUTH);
+		
 		setVisible(true);
 	}
 	
@@ -432,12 +423,13 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		server.add(editServerGroup = new JTextField(osp != null ? osp
 				.getServerGroup() : ""));
 		
-		server.add(addServer = new JButton("AddServer"));
-		addServer.setActionCommand("addServer");
-		server.add(back = new JButton("Back"));
-		back.setActionCommand("back");
-		back.addActionListener(this);
-		addServer.addActionListener(this);
+		addServer = Helpers.createButton("button.add.buttonText", "button.add.tooltip", "addServer", this);
+		back = Helpers.createButton("button.back.buttonText", "button.back.tooltip", "back", this);
+		
+
+		server.add(addServer);
+		server.add(back);
+
 		if (osp == null) {
 			osp = new OptionsServerPrefs();
 		}

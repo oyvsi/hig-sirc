@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
+
 import jerklib.events.modes.ModeAdjustment.Action;
 
 
@@ -14,7 +16,7 @@ import jerklib.events.modes.ModeAdjustment.Action;
  * 
  *
  */
-public class UsersContainer extends AbstractListModel {
+public class UserModel extends DefaultListModel {
 	private List<String> op;
 	private List<String> voice;
 	private List<String> regulars;
@@ -30,7 +32,7 @@ public class UsersContainer extends AbstractListModel {
 	 * users with voice and op, aswell as regular users
 	 * @param identifier
 	 */
-	public UsersContainer(String identifier) {
+	public UserModel(String identifier) {
 		channel = identifier;
 		List<String> tmpusers =  new ArrayList<String>(cm.getUsers(identifier));
 		usersForView = new ArrayList<String>();
@@ -82,8 +84,8 @@ public class UsersContainer extends AbstractListModel {
 	
 	/**
 	 * Checks if the user is in a given channel
-	 * @param nick
-	 * @return 
+	 * @param nick Nick to be checked
+	 * @return usersForView.contains(nick) True or false
 	 */
 	public boolean userInChannel(String nick) {
 		return usersForView.contains(nick);
@@ -201,8 +203,8 @@ public class UsersContainer extends AbstractListModel {
 		} 
 		if(action == Action.PLUS) {
 			if(opExist && op.contains(nick)) {	
-			op.remove(nick);
-			voice.add(nick);
+				op.remove(nick);
+				voice.add(nick);
 			if(op.size() == 0) opExist = false;
 				
 			} else {

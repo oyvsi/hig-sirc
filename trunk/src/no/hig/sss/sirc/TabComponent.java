@@ -34,7 +34,7 @@ public class TabComponent extends JPanel {
 	private int type;
 	private String identifier;
 	private JTextPane chatArea;
-	private JScrollPane scrollPane;
+	private JScrollPane scrollPaneChat;
 	private UserModel userModel;
 	private UserList userList;
 	private InputField inputArea;
@@ -57,7 +57,8 @@ public class TabComponent extends JPanel {
 			this.type = CHANNEL;
 			userModel = new UserModel(identifier);
 			userList = new UserList(identifier, userModel);
-			add(userList, BorderLayout.EAST);
+			JScrollPane scrollPaneUsers = new JScrollPane(userList);
+			add(scrollPaneUsers, BorderLayout.EAST);
 		}
 			
 			
@@ -70,8 +71,8 @@ public class TabComponent extends JPanel {
 		if(type == CHANNEL || type == PM)
 			add(makeTopText(), BorderLayout.NORTH);
 
-		scrollPane = new JScrollPane(chatArea);
-		add(scrollPane);
+		scrollPaneChat = new JScrollPane(chatArea);
+		add(scrollPaneChat);
 	}
 	
 	/**
@@ -131,7 +132,7 @@ public class TabComponent extends JPanel {
 			
 	    SwingUtilities.invokeLater(new Thread() {
 	    	public void run() {
-	    		JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+	    		JScrollBar scrollBar = scrollPaneChat.getVerticalScrollBar();
 	    		scrollBar.setValue(scrollBar.getMaximum());
 	    	}
 	    });

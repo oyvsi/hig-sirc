@@ -235,12 +235,13 @@ public class UserModel extends DefaultListModel {
 			op.remove(oldNick);
 			op.add(newNick);
 		} else if (voiceExist && voice.contains(oldNick)) {
-			op.remove(oldNick);
-			op.add(newNick);
+			voice.remove(oldNick);
+			voice.add(newNick);
 		} else {
 			regulars.remove(oldNick);
 			regulars.add(newNick);
 		}
+		
 		updateView();
 }
 

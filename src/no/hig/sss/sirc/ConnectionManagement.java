@@ -95,7 +95,7 @@ public class ConnectionManagement implements IRCEventListener {
 	}
 
 	/**
-	 * Handles client side quit
+	 * Handles client-side quit
 	 */
 	public void disConnect(String quitMsg) {
 		if(isConnected) {

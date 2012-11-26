@@ -131,11 +131,12 @@ public class ConnectionManagement implements IRCEventListener {
 	 */
 	
 	public void away(String awayMsg) {
-		if(session.isAway() && awayMsg == null)
+		boolean away = (awayMsg != null);
+		if(session.isAway() && away == false)
 			session.unsetAway();
-		else
+		else if(away)
 			session.setAway(awayMsg);
-		sIRC.tabContainer.away(awayMsg != null);	// Toggle away in tabs, so we can remind user
+		sIRC.tabContainer.away(away);	// Toggle away in tabs, so we can remind user
 	}
 	
 	/**
@@ -539,6 +540,10 @@ public class ConnectionManagement implements IRCEventListener {
 	 */	
 	public Session getSession() {
 		return session;
+	}
+
+	public boolean isConnected() {
+		return isConnected;
 	}
 	
 	/*public boolean checkModeForUser(String channelName, Action action, char mode, String nick) {

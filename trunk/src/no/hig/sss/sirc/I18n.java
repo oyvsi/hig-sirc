@@ -2,9 +2,12 @@ package no.hig.sss.sirc;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+
 /**
  * 
- * @author SSS
+ * Class to give out strings in language-file
+ * 
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
  */
 public class I18n {
@@ -22,8 +25,8 @@ public class I18n {
 	/**
 	 * Fetches the text string from specifies id
 	 * 
-	 * @param id
-	 * @return string
+	 * @param id - The name of the string
+	 * @return string - The string from the language file
 	 */
 	public String getStr(String id) {
 		return messages.getString(id);

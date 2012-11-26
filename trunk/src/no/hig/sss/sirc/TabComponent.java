@@ -1,34 +1,18 @@
 package no.hig.sss.sirc;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.Color;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-
 
 import javax.swing.BorderFactory;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.text.JTextComponent;
 import javax.swing.text.SimpleAttributeSet;
-
-import jerklib.Channel;
-import jerklib.Session;
 
 public class TabComponent extends JPanel {
 	public final static int CONSOLE = 0;
@@ -163,7 +147,7 @@ public class TabComponent extends JPanel {
 	
 	/**
 	 * Return the type 
-	 * @return 
+	 * @return the type of the tab
 	 */
 	public int getType() {
 		return type;

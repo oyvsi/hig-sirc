@@ -7,13 +7,7 @@ import java.awt.event.*;        //for action events
  
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
  
 public class SIRCHelp extends JPanel implements ActionListener {
     
@@ -72,7 +66,7 @@ public class SIRCHelp extends JPanel implements ActionListener {
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("MORDIÆMANN!!!");
+        JFrame frame = new JFrame("Help");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
         //Add content to the window.

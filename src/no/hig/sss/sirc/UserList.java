@@ -143,9 +143,8 @@ public class UserList extends JList<String> implements MouseListener {
 	}
 	
 	/** 
-	 * Displays the popup menu with actions on a user
-	 * @author 
-	 * @param me Mousevent
+	 * Displays the popup menu with actions on a user 
+	 * @param me Mousevent - The Mousevent
 	 * 
 	 */
 	public void showMenu(MouseEvent me) {

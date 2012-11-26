@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 
 import jerklib.events.modes.ModeAdjustment.Action;
@@ -17,6 +16,7 @@ import jerklib.events.modes.ModeAdjustment.Action;
  *
  */
 public class UserModel extends DefaultListModel {
+	private static final long serialVersionUID = 1L;
 	private List<String> op;
 	private List<String> voice;
 	private List<String> regulars;

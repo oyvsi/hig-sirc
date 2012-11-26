@@ -17,11 +17,11 @@ import javax.swing.SwingUtilities;
  *
  */
 public class UserList extends JList<String> implements MouseListener {
-	
-	TabContainer tabContainer = sIRC.tabContainer;
-	String channel;
-	JPopupMenu popupMenu;
-	ConnectionManagement cm = sIRC.conManagement;
+	private static final long serialVersionUID = 1L;
+	private TabContainer tabContainer = sIRC.tabContainer;
+	private String channel;
+	private JPopupMenu popupMenu;
+	private ConnectionManagement cm = sIRC.conManagement;
 	
 	
 	/**

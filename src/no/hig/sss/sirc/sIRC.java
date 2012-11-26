@@ -1,25 +1,9 @@
 package no.hig.sss.sirc;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import javax.swing.DefaultListModel;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
-import jerklib.ConnectionManager;
 
 /**
  * Initializes the application and holds references
@@ -28,6 +12,7 @@ import jerklib.ConnectionManager;
  *
  */
 public class sIRC extends JFrame {
+    private static final long serialVersionUID = 1L;
 	public static ConnectionManagement conManagement;
 	public static TabContainer tabContainer;
 	public static Options options;

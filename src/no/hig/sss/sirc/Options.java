@@ -18,6 +18,7 @@ import java.util.*;
 
 //SplitPaneDemo itself is not a visible component.
 public class Options extends JPanel implements TreeSelectionListener {
+	private static final long serialVersionUID = 1L;
 	private JSplitPane splitPane;
 	OptionsPersonal op;
 	OptionsServer os;
@@ -258,7 +259,6 @@ public class Options extends JPanel implements TreeSelectionListener {
 	private void saveOptions() {
 		File file = new File("config.ini");
 		FileOutputStream fos;
-		Properties pro = new Properties();
 		try {
 			fos = new FileOutputStream(file);
 			op.save().store(fos, "Personal Settings");

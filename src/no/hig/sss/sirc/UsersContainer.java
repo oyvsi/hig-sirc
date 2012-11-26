@@ -6,10 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.swing.AbstractListModel;
-import javax.swing.DefaultListModel;
 
 import jerklib.events.modes.ModeAdjustment.Action;
 
@@ -118,7 +116,7 @@ public class UsersContainer extends AbstractListModel {
 
 	/**
 	 * Removes a user 
-	 * @param nick 
+	 * @param nick the nick of the user to remove
 	 */
 	
 	public void removeUser(String nick) {		
@@ -281,6 +279,3 @@ public class UsersContainer extends AbstractListModel {
 	}
 
 }
-	
-
-

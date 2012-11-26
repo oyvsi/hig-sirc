@@ -196,7 +196,7 @@ public class TextOptions extends JPanel implements ActionListener {
 	
 	/**
 	 * Get the various formatting choices
-	 * @return 
+	 * @return all the text format choices
 	 */
 	public Properties save() {
 		Properties pro = new Properties();

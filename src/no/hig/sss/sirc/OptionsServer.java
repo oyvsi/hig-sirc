@@ -132,7 +132,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	/**
 	 * Test function for the class.
 	 * 
-	 * @param args
+	 * @param tse
 	 */
 	@Override
 	public void valueChanged(TreeSelectionEvent tse) {

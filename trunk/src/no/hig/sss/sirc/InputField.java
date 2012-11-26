@@ -7,7 +7,8 @@ import java.awt.event.KeyEvent;
 import javax.swing.JTextField;
 
 /**
- * This class holds the textfield where the user inputs commands and messages.
+ * Holds the text field where the user inputs commands and messages,
+ * and pass them to corresponding functions
  * 
  * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
@@ -21,8 +22,8 @@ public class InputField extends JTextField {
 	/**
 	 * Constructor
 	 * 
-	 * @param type - The type of window the inputfield belongs to
-	 * @param identifier - The name of the channel, or nickname of user in PM 
+	 * @param type the type of window the input field belongs to
+	 * @param identifier the name of the channel, or nickname of user in PM 
 	 */
 		
 	public InputField(int type, String identifier) {
@@ -46,7 +47,7 @@ public class InputField extends JTextField {
 	/**
 	 * Sets the indentifier
 	 * 
-	 * @param identifier - Name of channel or user
+	 * @param identifier name of channel or user
 	 */
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
@@ -55,8 +56,8 @@ public class InputField extends JTextField {
 	/**
 	 * Helper function to create string from array split on space 
 	 * 
-	 * @param line - The array with text 
-	 * @param startAt - The index to start at
+	 * @param line the array with text 
+	 * @param startAt the index to start at
 	 * @return
 	 */
 	private String restLine(String[] line, int startAt) {
@@ -71,7 +72,7 @@ public class InputField extends JTextField {
 	/**
 	 * Parses input for commands. If not a command it's sent as chat message.
 	 * 
-	 * @param text - Input text to parse
+	 * @param text input text to parse
 	 */
 	public void parseInput(String text) {
 		if(text.length() > 0 && text.charAt(0) == '/') {	// commands

@@ -32,7 +32,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 			"File:help/usage_help.html", 
 			"File:help/command_help.html", 
 			"File:help/style_help.html",
-			"File:help/server_help.html"};
+			"File:help/server_help.html",
+			"File:help/about_help.html"};
 
 	public static TextOptions channelFormat;
 	public static TextOptions pmFormat;
@@ -44,7 +45,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 	public static final int COMMANDHELP = 2;
 	public static final int STYLEHELP = 3;
 	public static final int SERVERHELP = 4;
-
+	public static final int ABOUTHELP = 5;
+	
 	private final int WHEIGHT = 300;
 	private final int WWIDTH = 700;
 
@@ -66,7 +68,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode("Commands");
 		DefaultMutableTreeNode tHelpStyle = new DefaultMutableTreeNode("Style");
 		DefaultMutableTreeNode tHelpServer = new DefaultMutableTreeNode("Server Help");
-		// DefaultMutableTreeNode("Console messages");
+		DefaultMutableTreeNode tHelpAbout = new DefaultMutableTreeNode("About");
 
 		treeModel = new DefaultTreeModel(tRoot);
 		tree = new JTree(treeModel);
@@ -89,6 +91,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		tHelp.add(tHelpCommands);
 		tHelp.add(tHelpStyle);
 		tHelp.add(tHelpServer);
+		tHelp.add(tHelpAbout);
 
 		expandAll(tree, new TreePath(tRoot));
 
@@ -166,6 +169,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Connection Help]");
 		else if(helpPaths[view].contains("server"))
 			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Server Help]");
+		else if(helpPaths[view].contains("about"))
+			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, About]");
 	}
 
 	public JSplitPane getSplitPane() {
@@ -180,9 +185,15 @@ public class Options extends JPanel implements TreeSelectionListener {
 		// Create and set up the window.
 		jf = new JFrame("sIRC Options");
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		// sIRC.options = new Options();
-
+		
+		// Icon for JFrame
+		ImageIcon img = new ImageIcon("icon.png");
+		jf.setIconImage(img.getImage());
+		
+		
 		jf.getContentPane().add(getSplitPane());
+		
+		// Set start position for options
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int X = (screen.width / 2) - (WWIDTH / 2); // Center horizontally.
 		int Y = (screen.height / 2) - (WHEIGHT / 2); // Center vertically.
@@ -238,6 +249,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 				break;
 			case "Server Help":
 				setViewHelp(SERVERHELP);
+				break;
+			case "About":
+				setViewHelp(ABOUTHELP);
 				break;
 			}
 		}

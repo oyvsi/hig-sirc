@@ -2,25 +2,24 @@ package no.hig.sss.sirc;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.util.ResourceBundle;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+/**
+ * Creates our menu bars
+ * 
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+ *
+ */
 class GUI implements ActionListener, MenuListener {
-	// private ActionListener menuListener;
 	private JFrame jf;
 	private JMenuItem marked_away;
 	
@@ -50,33 +49,33 @@ class GUI implements ActionListener, MenuListener {
 		
 		serverMenu.addMenuListener(this);
 
-		// Items for File
+		// Items for File menu
 		JMenuItem fileExit = Helpers.createMenuItem("fileMenu.Exit", "exit",
 				"tooltip.Exit", fileMenu, this);
-		// Items for Edit menu bar
-		JMenuItem editOptions = Helpers.createMenuItem("editMenu.Options",
-				"options", "tooltip.Options", toolsMenu, this);
-		// Items for help
-		JMenuItem helpHelp = Helpers.createMenuItem("helpMenu.Help", "help",
-				"tooltip.Help", helpMenu, this);
-		JMenuItem helpAbout = Helpers.createMenuItem("helpMenu.About", "about",
-				"tooltip.About", helpMenu, this);
+		// Items for Edit menu 
+		Helpers.createMenuItem("editMenu.Options", "options", "tooltip.Options", toolsMenu, this);
+		// Items for Help
+		Helpers.createMenuItem("helpMenu.Help", "help", "tooltip.Help", helpMenu, this);
+		Helpers.createMenuItem("helpMenu.About", "about", "tooltip.About", helpMenu, this);
+		
+		// Items for Server menu
+		Helpers.createMenuItem("serverMenu.Disconnect", "disconnect", "tooltip.Disconnect", serverMenu, this);
+		Helpers.createMenuItem("serverMenu.Connect", "connect", "tooltip.Connect", serverMenu, this);
+		Helpers.createMenuItem("serverMenu.JoinAChannel", "joinAChannel", "tooltip.JoinAChannel", serverMenu, this);
+		Helpers.createMenuItem("serverMenu.ListOfChannels", "listOfChannels", "tooltip.ListOfChannels", serverMenu, this);
+		marked_away = Helpers.createCheckBoxMenuItem("serverMenu.MarkedAway", "markedAway", "tooltip.MarkedAway", serverMenu, this, false);
+		
 		// Mnemonics
 		fileExit.setMnemonic(KeyEvent.VK_Q);
 		fileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,
-				ActionEvent.ALT_MASK));
-
-		JMenuItem disconnect = Helpers.createMenuItem("serverMenu.Disconnect", "disconnect", "tooltip.Disconnect", serverMenu, this);
-		JMenuItem connect = Helpers.createMenuItem("serverMenu.Connect", "connect", "tooltip.Connect", serverMenu, this);
-		JMenuItem join_a_channel = Helpers.createMenuItem("serverMenu.JoinAChannel", "joinAChannel", "tooltip.JoinAChannel", serverMenu, this);
-		JMenuItem list_of_channels = Helpers.createMenuItem("serverMenu.ListOfChannels", "listOfChannels", "tooltip.ListOfChannels", serverMenu, this);
-		marked_away = Helpers.createCheckBoxMenuItem("serverMenu.MarkedAway", "markedAway", "tooltip.MarkedAway", serverMenu, this, false);
-
+		ActionEvent.ALT_MASK));
+		
 		// Adding main menu
 		menuBar.add(fileMenu);
 		menuBar.add(toolsMenu);
 		menuBar.add(helpMenu);
 		menuBar.add(serverMenu);
+	
 		return menuBar;
 	}
 
@@ -100,6 +99,7 @@ class GUI implements ActionListener, MenuListener {
 		else if (event.equals("joinAChannel")) {
 			String channel = (String) JOptionPane.showInputDialog(jf, sIRC.i18n.getStr("enterChannel"), "Join channel",
 					         JOptionPane.QUESTION_MESSAGE);
+			
 			if (channel != "" && channel != null)
 				sIRC.conManagement.joinChannel(channel);
 		} 

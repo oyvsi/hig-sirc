@@ -1,30 +1,38 @@
 package no.hig.sss.sirc;
 
-import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import jerklib.events.modes.ModeAdjustment.Action;
 
-public class TabContainer extends JTabbedPane {
-	private Map<String, TabComponent> tabContainer = new HashMap<String, TabComponent>();
-	private boolean isAway;
+/**
+ * This class holds all the tabs and pass messages to them.
+ * 
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+ *
+ */
 
+public class TabContainer extends JTabbedPane {
+	private Map<String, TabComponent> tabContainer; // Holds all the tabs
+	private boolean isAway;	// Keeps track of away status
+
+	/**
+	 * Constructor
+	 */
 	public TabContainer() {
 		super();
 		isAway = false;
-		
-		newTab("Console", TabComponent.CONSOLE);
-		setMnemonicAt(0, KeyEvent.VK_1);
-		//((TabComponent) getComponent(0)).inFocus(); // Does not work. Why?
+		tabContainer = new HashMap<String, TabComponent>();
 	
-		// We want to notify the tab it has been selected
+		newTab("Console", TabComponent.CONSOLE); // Create console tab
+		setMnemonicAt(0, KeyEvent.VK_1); // Set shortcut
+	
+		// Notify when tab is selected to set inputarea in focus.
 		addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int index = getSelectedIndex();
@@ -33,13 +41,20 @@ public class TabContainer extends JTabbedPane {
 		});
 	}	
 
+	/**
+	 * Function to pass messages to tab. Creates new tab if identifier is unknown.
+	 * @param message - The message to send
+	 * @param identifier - The name of channel or user
+	 * @param type - The type of tab. Defined in TabComponent
+	 * @param format - The text style to use for the message. Defined in TabComponent
+	 */
 	public void message(String message, String identifier, int type, int format) {
 		int index = getTabIndex(identifier);
-		if(index == -1) {
+		if(index == -1) {	// Unknown tab. Create a new
 			newTab(identifier, type);
 			index = getTabIndex(identifier);
 			setSelectedIndex(index);
-			switch(index) {
+			switch(index) {	 // Set up shortcuts for the first 8 tabs.
 				case 1:  setMnemonicAt(index, KeyEvent.VK_2); break;
 				case 2:  setMnemonicAt(index, KeyEvent.VK_3); break;
 				case 3:  setMnemonicAt(index, KeyEvent.VK_4); break;
@@ -50,27 +65,36 @@ public class TabContainer extends JTabbedPane {
 				case 8:  setMnemonicAt(index, KeyEvent.VK_9); break;
 			}
 		}
-		tabContainer.get(identifier).addText(message, format);
-		System.out.println("Got message: " + message);
-		
+		tabContainer.get(identifier).addText(message, format);	// Pass along the message
+		// if user is set away. Send her a reminder.
 		if(isAway && type == TabComponent.PM)
 			tabContainer.get(identifier).addText(sIRC.i18n.getStr("pm.isAwayReminder"), TabComponent.INFO);
 	}
-	
+	/**
+	 * Sends message to the consoleTab
+	 * 
+	 * @param msg - The text to append
+	 */
 	public void consoleMsg(String msg) {
 		tabContainer.get("Console").addText(msg, TabComponent.CONSOLE);
 	}
-	
+	/**
+	 * Get index of tab
+	 * 
+	 * @param identifier - The name of channel or nick
+	 * @return - the index of tab. -1 if it does not exist
+	 */
 	public int getTabIndex(String identifier) {
 		return indexOfTab(identifier);
-		
 	}
-	
-	private String getTabIdentifier(int index) {
-		return ((TabComponent) getComponent(index)).getIdentifier();
-	}
-	
 
+	
+	/**
+	 * Creates a new tab
+	 * 
+	 * @param identifier - The name of channel or nick
+	 * @param type - The type of tab. Defined in TabComponent
+	 */
 	public void newTab(String identifier, int type) {
 		TabComponent tab = new TabComponent(type, identifier);
 		tabContainer.put(identifier, tab);
@@ -79,43 +103,88 @@ public class TabContainer extends JTabbedPane {
 		setSelectedIndex(index);
 	}
 
+	/**
+	 * Close a tab
+	 * 
+	 * @param identifier - The name of channel or nick
+	 */
 	public void closeTab(String identifier) {
 		remove(getTabIndex(identifier));
 		tabContainer.remove(identifier);
 	}
-	
-	public void closeAllTabs() {	// Close everything but the console
+	/**
+	 * Close all tabs, except console
+	 */
+	public void closeAllTabs() {	
 		for(int i = getTabCount() - 1; i > 0; i--) {
 			tabContainer.remove(getTabIdentifier(i));
 			remove(i);
 		}
 	}
-
+	
+/**
+ * Sets the top text in a tab
+ * 
+ * @param identifier - The name of channel or nick
+ * @param text - The text to put in top-field
+ */
 	public void setTopText(String identifier, String text) {
 		tabContainer.get(identifier).setTopText(text);
 	}
 	
-
+/**
+ * Notifies a tab that a user has joined
+ * 
+ * @param identifier - The name of channel or nick
+ * @param nick - The nick of the user who joined
+ */
 	public void userJoined(String identifier, String nick) {
 		tabContainer.get(identifier).getUserContainer().addUser(nick);
 	}
 	
+	/**
+	 * Notifies a tab that a user has left
+	 * 	
+	 * @param identifier - The name of channel or nick
+	 * @param nick - The nick of the user who left
+	 */
 	public void userLeft(String identifier, String nick) {
 		tabContainer.get(identifier).getUserContainer().removeUser(nick);
 	}
 	
+	/**
+	 * Notifies a channel-tab that a op has been set or unset for a user
+	 * 
+	 * @param channelName - The name of the channel
+	 * @param nick - The nick of the user
+	 * @param action - Action object for the op-change
+	 */
 	public void opMode(String channelName, String nick, Action action) {
 		tabContainer.get(channelName).getUserContainer().opMode(nick, action);
 	}
 	
+	/**
+	 * Notifies a channel-tab that a voice has been set or unset for a user
+	 * 
+	 * @param channelName - The name of the channel
+	 * @param nick - The nick of the user
+	 * @param action - Action object for the voice-change
+	 */
 	public void voiceMode(String channelName, String nick, Action action) {
 		tabContainer.get(channelName).getUserContainer().voiceMode(nick, action);
 	}
 	
+	/**
+	 * Notifies all tabs concerned that a user has quit
+	 * 
+	 * @param nick - The nick of the user who quit
+	 * @param msg - The quit message
+	 */
 	public void userQuit(String nick, String msg) {
 		TabComponent tab;
 		for(int i = 1; i < tabContainer.size(); i++) {
 			tab = (TabComponent) getComponent(i);
+			
 			if(tab.getType() == TabComponent.CHANNEL) {
 				if(tab.getUserContainer().userInChannel(nick)) {
 					tab.getUserContainer().removeUser(nick);
@@ -127,23 +196,30 @@ public class TabContainer extends JTabbedPane {
 			}
 		}
 	}
-	
+	/**
+	 * Notifies channels that a user has changed nick.
+	 * If we have a PM with the user, we change the tab to reflect the new nick.
+	 * 
+	 * @param oldNick - The old nick
+	 * @param newNick - The new nick
+	 * @param msg - The info-message to send to the tab
+	 */
 	public void nickChange(String oldNick, String newNick, String msg) {
 		TabComponent tab;	
-		for(int i = 1; i < tabContainer.size(); i++) {
+		for(int i = 1; i < tabContainer.size(); i++) {	// loop all tabs
 			tab = (TabComponent) getComponent(i);
 
 			if(tab.getType() == TabComponent.CHANNEL) {
-				if(tab.getUserContainer().userInChannel(oldNick)) {
-					tab.getUserContainer().nickChange(oldNick, newNick);
-					tab.addText(msg, TabComponent.INFO);
+				if(tab.getUserContainer().userInChannel(oldNick)) { // Check if user is in channel
+					tab.getUserContainer().nickChange(oldNick, newNick); // Notify the userlist
+					tab.addText(msg, TabComponent.INFO); // Pass the change nick message
 				}
 			}
 			else if(tab.getType() == TabComponent.PM) {
-				tab.setIdentifier(newNick);
-				tab.setTopText(newNick);
-				setTitleAt(i, newNick);
-				tab.addText(msg, TabComponent.INFO);
+				tab.setIdentifier(newNick);	// Notify the tab of new name
+				tab.setTopText(newNick);  // Change top text
+				setTitleAt(i, newNick);  // Change the title of the tab
+				tab.addText(msg, TabComponent.INFO); // Pass change nick message
 				
 				tabContainer.remove(oldNick);
 				tabContainer.put(newNick, tab);
@@ -151,7 +227,12 @@ public class TabContainer extends JTabbedPane {
 		}
 		
 	}
-
+	/**
+	 * Get the type of tab as defined in TabComponent
+	 * 
+	 * @param - The name of channel or nick
+	 * @return - The type of tab
+	 */
 	public int getType(String identifier) {
 		int index = getTabIndex(identifier);
 		if(index > -1)	// Found tab
@@ -161,11 +242,22 @@ public class TabContainer extends JTabbedPane {
 
 	}
 	
-	public boolean containsUser(String identifier) {
-		return tabContainer.containsKey(identifier);
-	}
-	
+	/**
+	 * Sets if the user is away or not
+	 * 
+	 * @param isAway
+	 */
 	public void away(boolean isAway) {
 		this.isAway = isAway;
+	}
+	
+	/**
+	 * Get identifier of tab
+	 * 
+	 * @param index - The index of the tab
+	 * @return - The identifier of the tab
+	 */
+	private String getTabIdentifier(int index) {
+		return ((TabComponent) getComponent(index)).getIdentifier();
 	}
 }

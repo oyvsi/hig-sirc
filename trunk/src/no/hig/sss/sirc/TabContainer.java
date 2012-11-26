@@ -139,7 +139,7 @@ public class TabContainer extends JTabbedPane {
  * @param nick - The nick of the user who joined
  */
 	public void userJoined(String identifier, String nick) {
-		tabContainer.get(identifier).getUserContainer().addUser(nick);
+		tabContainer.get(identifier).getUserModel().addUser(nick);
 	}
 	
 	/**
@@ -149,7 +149,7 @@ public class TabContainer extends JTabbedPane {
 	 * @param nick - The nick of the user who left
 	 */
 	public void userLeft(String identifier, String nick) {
-		tabContainer.get(identifier).getUserContainer().removeUser(nick);
+		tabContainer.get(identifier).getUserModel().removeUser(nick);
 	}
 	
 	/**
@@ -160,7 +160,7 @@ public class TabContainer extends JTabbedPane {
 	 * @param action - Action object for the op-change
 	 */
 	public void opMode(String channelName, String nick, Action action) {
-		tabContainer.get(channelName).getUserContainer().opMode(nick, action);
+		tabContainer.get(channelName).getUserModel().opMode(nick, action);
 	}
 	
 	/**
@@ -171,7 +171,7 @@ public class TabContainer extends JTabbedPane {
 	 * @param action - Action object for the voice-change
 	 */
 	public void voiceMode(String channelName, String nick, Action action) {
-		tabContainer.get(channelName).getUserContainer().voiceMode(nick, action);
+		tabContainer.get(channelName).getUserModel().voiceMode(nick, action);
 	}
 	
 	/**
@@ -186,8 +186,8 @@ public class TabContainer extends JTabbedPane {
 			tab = (TabComponent) getComponent(i);
 			
 			if(tab.getType() == TabComponent.CHANNEL) {
-				if(tab.getUserContainer().userInChannel(nick)) {
-					tab.getUserContainer().removeUser(nick);
+				if(tab.getUserModel().userInChannel(nick)) {
+					tab.getUserModel().removeUser(nick);
 					tab.addText(msg, TabComponent.INFO);
 				}
 			}
@@ -210,8 +210,8 @@ public class TabContainer extends JTabbedPane {
 			tab = (TabComponent) getComponent(i);
 
 			if(tab.getType() == TabComponent.CHANNEL) {
-				if(tab.getUserContainer().userInChannel(oldNick)) { // Check if user is in channel
-					tab.getUserContainer().nickChange(oldNick, newNick); // Notify the userlist
+				if(tab.getUserModel().userInChannel(oldNick)) { // Check if user is in channel
+					tab.getUserModel().nickChange(oldNick, newNick); // Notify the userlist
 					tab.addText(msg, TabComponent.INFO); // Pass the change nick message
 				}
 			}

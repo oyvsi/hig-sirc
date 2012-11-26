@@ -171,7 +171,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	 */
 	public void createAndShowGUI() {
 		// Create and set up the window.
-		jf = new JFrame("sIrc Options");
+		jf = new JFrame("sIRC Options");
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		// sIRC.options = new Options();
 

@@ -49,7 +49,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		gbc.anchor = GridBagConstraints.CENTER;
 		// Create the panel with the four buttons on the right
 		
-		connect = createButton("connect", "", "", "connectionOptions.button.connect.buttonText");
+		connect = Helpers.createButton("connectionOptions.button.connect.buttonText", "", "connect", this);
 		add(1,6,2,1, connect);
 		// Add labels to text fields
 		
@@ -70,16 +70,17 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		add(2, 5,2,1, altnick = new JTextField("", 15));
 
 		// Add ok, cancel, help buttons
-		JPanel okCancelHelpPanel = new JPanel();
-		okCancelHelpPanel.setLayout(new GridLayout(1, 3));
+		JPanel navigate = new JPanel();
+		navigate.setLayout(new GridLayout(1, 3));
 		
-		ok = createButton("ok", "", "connectionOptions.button.ok.tooltip", "button.ok.buttonText");
-		okCancelHelpPanel.add(ok);
+		ok = Helpers.createButton("button.ok.buttonText", "connectionOptions.button.ok.tooltip", "ok", this);
+		cancel = Helpers.createButton("button.cancel.buttonText", "connectionOptions.button.cancel.tooltip","cancel", this);
+		help = Helpers.createButton("button.help.buttonText", "connectionOptions.button.help.tooltip", "help", this);
 		
-		cancel = createButton("cancel", "", "connectionOptions.button.cancel.tooltip", "button.cancel.buttonText");
-		okCancelHelpPanel.add(cancel);
-		help = createButton("help", "", "connectionOptions.button.help.tooltip", "button.help.buttonText");
-		okCancelHelpPanel.add(help);
+		
+		navigate.add(ok);
+		navigate.add(cancel);
+		navigate.add(help);
 		
 		gbc.anchor = GridBagConstraints.SOUTH;
 		gbc.insets = new Insets (10,10,10,10);
@@ -92,7 +93,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		
 		add(new JLabel("Personal"), BorderLayout.NORTH);
 		add(gridLayout, BorderLayout.CENTER);
-		add(okCancelHelpPanel, BorderLayout.SOUTH);
+		add(navigate, BorderLayout.SOUTH);
 		setVisible(true);
 	}
 
@@ -221,21 +222,4 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	public void setSelectedServer(String selectedServer) {
 		this.selectedServer.setText(selectedServer);
 	}
-	private JButton createButton(String cmd, String icon, String tooltip, String name) {
-		JButton button = new JButton(sIRC.i18n.getStr(name));
-		button.setActionCommand(cmd);
-		button.addActionListener(this);
-
-		if (icon.length() > 1) {  // Set icon if we got one
-			button.setIcon(new ImageIcon(getClass().getResource(
-					"Images/Icons/" + icon)));
-		}
-		if (tooltip.length() > 2) { // Set tooltip if the string tooltip
-									// contains something useful
-			button.setToolTipText(sIRC.i18n.getStr(tooltip));
-		}
-		
-		return button;
-	}
-
 }

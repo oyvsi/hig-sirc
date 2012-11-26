@@ -141,6 +141,10 @@ public class InputField extends JTextField {
 						connectionManagement.away(null);
 					}
 				}
+				
+				else if(cmd.equals("list")) {
+					connectionManagement.ListChannels();
+				}
 					// Input starts with /, but we haven't implemented the command. Give error.
 				else {
 					sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.unknownCommand"));

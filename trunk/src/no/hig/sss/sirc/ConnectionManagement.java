@@ -108,10 +108,13 @@ public class ConnectionManagement implements IRCEventListener {
 	}
 	
 	/**
-	 * Lists number of channels for the given session
+	 * Asks server for a list of available servers. We will get a CHANNEL_LIST_EVENT for
+	 * every channel on the server. This means A LOT of traffic on big servers.
 	 */
 	public void ListChannels() {
-		System.out.println("Fant " + session.getChannels().size() + " kanaler");
+		String msg = "Attempting to get a channel list from server " + session.getServerInformation().getServerName();
+		sIRC.tabContainer.message(msg, "Console", TabComponent.CONSOLE, TabComponent.INFO);
+		session.chanList();
 		
 	}
 	
@@ -367,6 +370,12 @@ public class ConnectionManagement implements IRCEventListener {
 		else if(e.getType() == Type.CONNECTION_LOST) {
 			isConnected = false;
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.disconnected"));
+		}
+		
+		else if(e.getType() == Type.CHANNEL_LIST_EVENT) {
+			ChannelListEvent ce = (ChannelListEvent) e;
+			String msg = ce.getChannelName() + "(" + ce.getNumberOfUser() + ") " + ce.getTopic();
+			sIRC.tabContainer.message(msg, "Console", TabComponent.CONSOLE, TabComponent.INFO);
 		}
 		
 		else {

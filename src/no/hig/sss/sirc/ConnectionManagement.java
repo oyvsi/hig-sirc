@@ -392,7 +392,7 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.message(msg, "Console", TabComponent.CONSOLE, TabComponent.INFO);
 		}
 		
-		else if(e.getRawEventData().contains("KICK")) {
+		else if(e.getRawEventData().contains(" KICK ")) {
 			String rawData = e.getRawEventData();
 			String [] colonSplit = rawData.split(":");
 			String [] excSplit = colonSplit[1].split("!");
@@ -408,9 +408,7 @@ public class ConnectionManagement implements IRCEventListener {
 			
 			
 			
-		}
-		
-		else {
+		} else {
 			
 			
 			sIRC.tabContainer.consoleMsg(e.getRawEventData());
@@ -507,7 +505,7 @@ public class ConnectionManagement implements IRCEventListener {
 	 */
 	private String buildSay(String nick, String msg) {
 		Date timeStamp = new Date();
-		return timeFormat.format(timeStamp) + "  " + nick + "  " + msg;
+		return timeFormat.format(timeStamp) + "  <" + nick + ">  " + msg;
 	}
 	
 	/**

@@ -43,15 +43,18 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	JButton add, change, delete, ok, cancel, help, addServer, back;
 	private ArrayList<OptionsServerPrefs> osp;
 	private String[] networks;
-	BorderLayout bl;
-	JScrollPane sp;
-	JPanel action, server;
+	private BorderLayout bl;
+	private JScrollPane sp;
+	private JPanel action, server;
 	private String selectedServer;
-	JTree tree;
-	DefaultTreeModel treeModel;
-	File fileServers;
-	JTextField editServerName, editServerUrl, editServerGroup, editServerPorts; 
+	private JTree tree;
+	private DefaultTreeModel treeModel;
+	private File fileServers;
+	private JTextField editServerName, editServerUrl, editServerGroup, editServerPorts; 
 	
+	// To remember nodes while editing an existing server
+	private DefaultMutableTreeNode nToRemove = null;
+	private OptionsServerPrefs ospToRemove = null;
 	
 	// for edit and add server
 
@@ -218,10 +221,11 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	public void actionPerformed(ActionEvent ae) {
 		System.out.println(ae.getActionCommand());
 		if (ae.getActionCommand().equals("add")) {
-			addServer(null);
+			nToRemove = null;
+			ospToRemove = null;
+			addServer(null, null);
 		} else if (ae.getActionCommand().equals("addServer")) {
 			saveServer();
-			saveServers();
 			sIRC.options.os = new OptionsServer();
 			sIRC.options.setViewServer();
 
@@ -247,11 +251,9 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 			for (int i = osp.size() - 1; i >= 0; --i) {
 				if (osp.get(i).getServerName().equals(node.toString())) {
 					OptionsServerPrefs osp = this.osp.get(i);
-					addServer(osp);
-					// this.osp.remove(i));
-					// DefaultTreeModel model = (DefaultTreeModel)
-					// tree.getModel();
-					// model.removeNodeFromParent(node);
+					addServer(osp, node);
+					break;
+					
 				}
 			}
 		} else if (ae.getActionCommand().equals("ok")) {
@@ -384,7 +386,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		}
 	}
 
-	public void addServer(OptionsServerPrefs osp) {
+	public void addServer(OptionsServerPrefs osp, DefaultMutableTreeNode n) {
 		remove(sp);
 		remove(action);
 		if(server != null) {
@@ -410,14 +412,12 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		addServer = Helpers.createButton("button.add.buttonText", "button.add.tooltip", "addServer", this);
 		back = Helpers.createButton("button.back.buttonText", "button.back.tooltip", "back", this);
 		
-
 		server.add(addServer);
 		server.add(back);
 
-		if (osp == null) {
-			osp = new OptionsServerPrefs();
-		}
-
+		nToRemove = n;
+		ospToRemove = osp;
+		
 		add(server, BorderLayout.CENTER);
 		revalidate();
 		repaint();
@@ -428,6 +428,13 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 				editServerName.getText(), editServerUrl.getText(),
 				editServerGroup.getText(), toPort(editServerPorts.getText()));
 		this.osp.add(osp);
+		
+		if((nToRemove != null) && (ospToRemove != null)) {
+			treeModel.removeNodeFromParent(nToRemove);
+			this.osp.remove(ospToRemove);
+			nToRemove = null;
+			ospToRemove = null;
+		}
 		this.saveServers();
 	}
 

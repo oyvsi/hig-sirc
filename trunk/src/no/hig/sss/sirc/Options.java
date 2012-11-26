@@ -56,7 +56,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		DefaultMutableTreeNode tHelp = new DefaultMutableTreeNode("Help");
 		DefaultMutableTreeNode tHelpConn = new DefaultMutableTreeNode("Connection Help");
 		DefaultMutableTreeNode tHelpUsage = new DefaultMutableTreeNode("Usage Help");
-		DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode("Console Commands");
+		DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode("Commands");
 		DefaultMutableTreeNode tHelpStyle = new DefaultMutableTreeNode("Style");
 		DefaultMutableTreeNode tHelpServer = new DefaultMutableTreeNode("Server Help");
 		// DefaultMutableTreeNode("Console messages");
@@ -223,7 +223,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 			case "Usage Help":
 				setViewHelp(1);
 				break;
-			case "Console Commands":
+			case "Commands":
 				setViewHelp(2);
 				break;
 			case "Style":

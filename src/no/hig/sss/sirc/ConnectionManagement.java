@@ -57,9 +57,21 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.alreadyConnected"));
 		}
 		if(isConnected == false && validateNick(nick) && validateServer(server)) {
-			profile = new Profile(nick);
+			String userName = sIRC.options.getUserName();
+			
+			if(userName.length() > 1) {
+				String altNick = sIRC.options.getAltNick();
+				if(altNick.length() > 0 && validateNick(altNick))
+					profile = new Profile(userName, nick, altNick, altNick + "_42");
+				else
+					profile = new Profile(userName, nick);
+			} else {
+				profile = new Profile(nick);
+			}
+			
 			manager = new ConnectionManager(profile);
 			session = manager.requestConnection(server);
+			
 			session.addIRCEventListener(this);
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.connecting"));
 		}

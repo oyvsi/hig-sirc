@@ -18,6 +18,7 @@ import jerklib.events.modes.ModeAdjustment.Action;
  */
 
 public class TabContainer extends JTabbedPane {
+	private static final long serialVersionUID = 1L;
 	private Map<String, TabComponent> tabContainer; // Holds all the tabs
 	private boolean isAway;	// Keeps track of away status
 

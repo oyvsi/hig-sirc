@@ -19,8 +19,9 @@ import javax.swing.event.MouseInputListener;
  * @since August 16, 2010
  */
 public class ColorSwatch extends JPanel {
+	private static final long serialVersionUID = 1L;
 
-  /** The rollover color. */
+/** The rollover color. */
   private static final Color ROLLOVER_COLOR = new Color(0x80ffffff, true);
 
   /** The listener. */

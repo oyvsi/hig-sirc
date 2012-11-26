@@ -40,7 +40,7 @@ import javax.swing.text.StyledDocument;
  */
 
 public class TextOptions extends JPanel implements ActionListener {
-
+	private static final long serialVersionUID = 1L;
 	private String optionName;
 	private String fontName;
 	private Boolean italic;

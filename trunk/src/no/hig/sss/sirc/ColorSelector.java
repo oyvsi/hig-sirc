@@ -18,8 +18,9 @@ import javax.swing.JPopupMenu;
  * @since August 16, 2010
  */
 public class ColorSelector extends JButton {
+	private static final long serialVersionUID = 1L;
 
-  /** The default colors. */
+/** The default colors. */
   private static final int[][] DEFAULT_COLORS = new int[][] {
       { 0xFFFFFF, 0xEEEEEE, 0xDDDDDD, 0xCCCCCC
        , 0xBBBBBB, 0xAAAAAA, 0xFFCC00, 0xFF9900

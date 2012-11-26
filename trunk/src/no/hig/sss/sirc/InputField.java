@@ -15,6 +15,7 @@ import javax.swing.JTextField;
  */
 
 public class InputField extends JTextField {
+	private static final long serialVersionUID = 1L;
 	private ConnectionManagement connectionManagement;
 	private int type;	// Type of tab. Defined in TabComponent
 	private String identifier;

@@ -10,8 +10,7 @@ import java.net.URL;
 import java.io.IOException;
  
 public class SIRCHelp extends JPanel implements ActionListener {
-    
-    protected JLabel actionLabel;
+	private static final long serialVersionUID = 1L;
  
     public SIRCHelp(String url) {
         setLayout(new BorderLayout());
@@ -26,7 +25,6 @@ public class SIRCHelp extends JPanel implements ActionListener {
         editorScrollPane.setMinimumSize(new Dimension(10, 10));
 
         //Put everything together.
-        JPanel leftPane = new JPanel(new BorderLayout());
         add(new JLabel("Help"), BorderLayout.NORTH);
         add(editorScrollPane, BorderLayout.CENTER);
     }

@@ -11,15 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Properties;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-@SuppressWarnings("serial")
 public class OptionsPersonal extends JPanel implements ActionListener {
-	//private static ResourceBundle messages;
+	private static final long serialVersionUID = 1L;
 	private JTextField username, nickname, altnick;
 	private JButton connect, ok, cancel, help;
 	private JPanel gridLayout = new JPanel();

@@ -22,6 +22,8 @@ import javax.swing.text.SimpleAttributeSet;
  */
 public class TabComponent extends JPanel {
 	
+	private static final long serialVersionUID = 1L;
+
 	// Constants used for tab and text format type
 	public final static int CONSOLE = 0;	
 	public final static int PM = 1;

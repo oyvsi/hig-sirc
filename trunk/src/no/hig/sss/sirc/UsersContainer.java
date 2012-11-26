@@ -157,8 +157,8 @@ public class UsersContainer extends AbstractListModel {
 
 	/**
 	 * Modifies the 'o' mode for a user, either op or deop
-	 * @param nick
-	 * @param action
+	 * @param nick - The nick of the user
+	 * @param action - Either + or -
 	 */
 	
 	public void opMode(String nick, Action action) {
@@ -191,8 +191,8 @@ public class UsersContainer extends AbstractListModel {
 
 	/**
 	 * Modifies the mode for a user, either voice or devoice
-	 * @param nick
-	 * @param action
+	 * @param nick The nick which is given the mode
+	 * @param action Either + or -
 	 */
 	public void voiceMode(String nick, Action action) {
 		if(!voiceExist) {

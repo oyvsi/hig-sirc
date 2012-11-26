@@ -8,8 +8,24 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+/**
+ * Helper class which holds methods for creating common JComponents
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+ *
+ */
+
 public final class Helpers {
 	
+	
+	/**
+	 * Creates a JMenuItem
+	 * @param name Name of the new item
+	 * @param ac The ActionCommand
+	 * @param tt Text for tooltip
+	 * @param menu he menu which this item is added to
+	 * @param al Set this ActionListener
+	 * @return mi The JMenuItem
+	 */
 	public static JMenuItem createMenuItem(String name, String ac, String tt,  JMenu menu, ActionListener al) {
 		JMenuItem mi = new JMenuItem(sIRC.i18n.getStr(name));
 		mi.setActionCommand(ac);
@@ -21,6 +37,16 @@ public final class Helpers {
 		}
 		return mi;
 	}
+	/**
+	 * Creates a JCheckBoxMenuItem
+	 * @param name Name of the new item
+	 * @param ac The ActionCommand
+	 * @param tt Text for tooltip
+	 * @param menu The menu which this item is added to
+	 * @param al Set this ActionListener
+	 * @param state The default state to be set
+	 * @return cbmi The JCheckBoxMenuItem
+	 */
 
 	public static JCheckBoxMenuItem createCheckBoxMenuItem(String name, String ac,String tt, JMenu menu, ActionListener al, boolean state) {
 		JCheckBoxMenuItem cbmi = new JCheckBoxMenuItem(sIRC.i18n.getStr(name));
@@ -34,7 +60,17 @@ public final class Helpers {
 		}
 		return cbmi;
 	}
-
+	
+	
+	/**
+	 * Creates a JButton
+	 * @param name Name of the new item
+	 * @param tt Text for tooltip
+	 * @param ac The ActionCommand
+	 * @param al Set this ActionListener
+	 * @return b The JButton
+	 */
+	
 	public static JButton createButton(String name, String tt, String ac, ActionListener al) {
 		JButton b = new JButton(sIRC.i18n.getStr(name));
 		b.addActionListener(al);

@@ -2,6 +2,7 @@ package no.hig.sss.sirc;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 
@@ -26,10 +27,9 @@ public class sIRC extends JFrame {
 		conManagement = new ConnectionManagement(); 
 		tabContainer = new TabContainer();
 		options = new Options();
-		
 		GUI gui = new GUI(this);		       
         add(tabContainer);
-				
+		
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
@@ -46,6 +46,10 @@ public class sIRC extends JFrame {
 	 */
 	public static void main(String[] args) {
 		sIRC irc = new sIRC();
+
+		ImageIcon img = new ImageIcon("icon.png");
+		irc.setIconImage(img.getImage());
+		
 		irc.setVisible(true);
 		irc.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}

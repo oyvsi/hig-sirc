@@ -88,9 +88,10 @@ class GUI implements ActionListener, MenuListener {
 			System.exit(0);
 		else if (event.equals("options"))
 			sIRC.options.showWindow();
-		else if (event.equals("help"))
+		else if (event.equals("help")) {
+			sIRC.options.showWindow();
 			sIRC.options.setViewHelp(Options.CONNECTIONHELP);
-		else if (event.equals("disconnect"))
+		} else if (event.equals("disconnect"))
 			sIRC.conManagement.disConnect(null);
 		else if (event.equals("connect")) {
 			sIRC.conManagement.connect(sIRC.options.getNick(), sIRC.options.getServer());
@@ -102,9 +103,7 @@ class GUI implements ActionListener, MenuListener {
 			
 			if (channel != "" && channel != null)
 				sIRC.conManagement.joinChannel(channel);
-		} 
-		
-		else if (event.equals("markedAway")) {
+		} else if (event.equals("markedAway")) {
 			if(sIRC.conManagement.isConnected()) {
 				if(marked_away.isSelected()) {
 					String awayMsg = (String) JOptionPane.showInputDialog(jf, sIRC.i18n.getStr("setAwayMsg"), "Set away message", 						
@@ -118,9 +117,11 @@ class GUI implements ActionListener, MenuListener {
 				JOptionPane.showMessageDialog(jf, sIRC.i18n.getStr("error.setAwayDisconnected"));
 				marked_away.setSelected(false);
 			}
-		}
-
-		else {
+		} else if (event.equals("about")) {
+			sIRC.options.showWindow();
+			sIRC.options.setViewHelp(Options.ABOUTHELP);
+			
+		} else {
 			JOptionPane.showMessageDialog(null, sIRC.i18n.getStr("notFound.Text"));
 		}
 	}

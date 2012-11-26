@@ -14,8 +14,16 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 
+/**
+ * holds the tabs themselves.
+ * 
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+ *
+ */
 public class TabComponent extends JPanel {
-	public final static int CONSOLE = 0;
+	
+	// Constants used for tab and text format type
+	public final static int CONSOLE = 0;	
 	public final static int PM = 1;
 	public final static int CHANNEL = 2;	
 	public final static int INFO = 3;
@@ -28,13 +36,12 @@ public class TabComponent extends JPanel {
 	private UsersContainer userContainer;
 	private UserList userList;
 	private InputField inputArea;
-	private ConnectionManagement cm = sIRC.conManagement;
 	private JTextField topText;
 
 	/**
 	 * Constructor - Creates either a pm tab or channel tab
-	 * @param type - Channel or pm
-	 * @param identifier - The name to be set for the tab
+	 * @param type channel or pm
+	 * @param identifier the name to be set for the tab
 	 */
 	
 	public TabComponent(int type, String identifier) {
@@ -67,7 +74,7 @@ public class TabComponent extends JPanel {
 	
 	/**
 	 * Creates the text field containing either topic or nick of user
-	 * @return JTextField - The text field
+	 * @return JTextField the text field
 	 */
 	private JTextField makeTopText() {
 		topText = new JTextField(identifier);
@@ -80,7 +87,7 @@ public class TabComponent extends JPanel {
 	}
 	
 	/**
-	 * Sets the text
+	 * Sets the top text if channel or pm tab
 	 * @param text
 	 */
 	public void setTopText(String text) {
@@ -97,8 +104,8 @@ public class TabComponent extends JPanel {
 	
 	/**
 	 * Formats, and inserts the text to the chat/info area of the tab
-	 * @param message
-	 * @param type
+	 * @param message the text to be appended
+	 * @param type the type of style to apply to the text
 	 */
 	public void addText(String message, int type) {
 		Document document = chatArea.getDocument();
@@ -130,7 +137,7 @@ public class TabComponent extends JPanel {
 
 	/**
 	 * Returns the identifier of this tab
-	 * @return String - The identifier
+	 * @return String the identifier
 	 */
 	public String getIdentifier() {
 		return identifier;

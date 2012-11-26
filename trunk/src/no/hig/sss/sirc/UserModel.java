@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.swing.AbstractListModel;
 import javax.swing.DefaultListModel;
 
 import jerklib.events.modes.ModeAdjustment.Action;
@@ -15,7 +17,7 @@ import jerklib.events.modes.ModeAdjustment.Action;
  * 
  *
  */
-public class UserModel extends DefaultListModel {
+public class UserModel extends AbstractListModel {
 	private static final long serialVersionUID = 1L;
 	private List<String> op;
 	private List<String> voice;
@@ -172,14 +174,15 @@ public class UserModel extends DefaultListModel {
 		if(action == Action.PLUS) {
 			if(voiceExist && voice.contains(nick)) {
 				voice.remove(nick);
-				op.add(nick);
 				if(voice.size() == 0) voiceExist = false;
 			} else {
 				regulars.remove(nick);
 				if(regulars.size() == 0) regularsExist = false;
-				op.add(nick);
+				
 			}
+			op.add(nick);
 		}
+		
 		
 		if(action == Action.MINUS) {
 			op.remove(nick);
@@ -204,14 +207,13 @@ public class UserModel extends DefaultListModel {
 		if(action == Action.PLUS) {
 			if(opExist && op.contains(nick)) {	
 				op.remove(nick);
-				voice.add(nick);
-			if(op.size() == 0) opExist = false;
+				if(op.size() == 0) opExist = false;
 				
 			} else {
 				regulars.remove(nick);
-				voice.add(nick);
 				if(regulars.size() == 0) regularsExist = false;
 			} 
+			voice.add(nick);
 		}
 		
 		if(action == Action.MINUS) {

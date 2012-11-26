@@ -223,7 +223,6 @@ public class ConnectionManagement implements IRCEventListener {
 			List<ModeAdjustment> modeList = me.getModeAdjustments();
 			if(me.getModeType() == ModeType.CHANNEL) {
 				String channelName = me.getChannel().getName();
-				me.getModeAdjustments().iterator().next();
 				Iterator<ModeAdjustment> modeIter = modeList.iterator();
 			
 				while(modeIter.hasNext()) {

@@ -21,13 +21,21 @@ import javax.swing.JTextField;
 
 import jerklib.ConnectionManager;
 
-
+/**
+ * Initializes the application and holds references
+ * to ConnectionManagement, TabContainer, Options and I18n  
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+ *
+ */
 public class sIRC extends JFrame {
 	public static ConnectionManagement conManagement;
 	public static TabContainer tabContainer;
 	public static Options options;
 	public static I18n i18n;
 	
+	/**
+	 * Constructor 
+	 */
 	public sIRC() {
 		i18n = new I18n();
 		conManagement = new ConnectionManagement(); 
@@ -48,6 +56,7 @@ public class sIRC extends JFrame {
 	}
 	
 	/**
+	 * Main creates the JFrame and sets it to visible, with exit on close
 	 * @param args
 	 */
 	public static void main(String[] args) {

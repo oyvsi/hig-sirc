@@ -392,7 +392,27 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.message(msg, "Console", TabComponent.CONSOLE, TabComponent.INFO);
 		}
 		
+		else if(e.getRawEventData().contains("KICK")) {
+			String rawData = e.getRawEventData();
+			String [] colonSplit = rawData.split(":");
+			String [] excSplit = colonSplit[1].split("!");
+			String kicker = excSplit[0];
+			String rest = excSplit[1];
+			String [] spaceSplit  = rest.split(" ");
+			String channel = spaceSplit[2];
+			String victim = spaceSplit[3];
+			String reason = colonSplit[2];
+			sIRC.tabContainer.userLeft(channel, victim);
+			String kickMessage = buildInfoPrefix() + victim + " was kicked from " + channel + " by " + kicker + " [" + reason +"] ";
+			sIRC.tabContainer.message(kickMessage, channel, TabComponent.CHANNEL, TabComponent.INFO);
+			
+			
+			
+		}
+		
 		else {
+			
+			
 			sIRC.tabContainer.consoleMsg(e.getRawEventData());
 		}
 	}

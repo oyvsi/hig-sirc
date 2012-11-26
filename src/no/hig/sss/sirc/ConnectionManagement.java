@@ -428,7 +428,7 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Relays private message from client to the given user
-	 * @param toNick the user to send the message  to
+	 * @param toNick the user to send the message to
 	 * @param msg the message 
 	 */
 	public void privMsg(String toNick, String msg) {

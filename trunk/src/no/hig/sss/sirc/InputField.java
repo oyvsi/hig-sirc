@@ -2,15 +2,28 @@ package no.hig.sss.sirc;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+
 
 import javax.swing.JTextField;
 
+/**
+ * This class holds the textfield where the user inputs commands and messages.
+ * 
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+ *
+ */
+
 public class InputField extends JTextField {
 	private ConnectionManagement connectionManagement;
-	private int type;
+	private int type;	// Type of tab. Defined in TabComponent
 	private String identifier;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param type - The type of window the inputfield belongs to
+	 * @param identifier - The name of the channel, or nickname of user in PM 
+	 */
 		
 	public InputField(int type, String identifier) {
 		super();
@@ -18,6 +31,7 @@ public class InputField extends JTextField {
 		this.type = type;
 		this.identifier = identifier;
 		
+		// Listen for user pressing enter.
 		this.addKeyListener(new KeyAdapter() {
 	           public void keyReleased(KeyEvent e) {
 	               if(e.getKeyCode() == KeyEvent.VK_ENTER ) {
@@ -29,34 +43,47 @@ public class InputField extends JTextField {
 	           }
 		});
 	}
-	
+	/**
+	 * Sets the indentifier
+	 * 
+	 * @param identifier - Name of channel or user
+	 */
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 	
+	/**
+	 * Helper function to create string from array split on space 
+	 * 
+	 * @param line - The array with text 
+	 * @param startAt - The index to start at
+	 * @return
+	 */
 	private String restLine(String[] line, int startAt) {
 		String msg = "";
+		
 		for(int i = startAt; i < line.length; i++)
 			msg = msg.concat(line[i] + " ");
 		msg = msg.substring(0, msg.length()-1);	// Remove last space
 		return msg;
 	}
 	
-	//TODO: Needs cleanup. Maybe do regexp. Now it does not support multiple spaces in output to irc
+	/**
+	 * Parses input for commands. If not a command it's sent as chat message.
+	 * 
+	 * @param text - Input text to parse
+	 */
 	public void parseInput(String text) {
-		//System.out.println("Input: " + text);
 		if(text.charAt(0) == '/') {	// commands
 			try {
-				String[] line = text.split("\\s+");	// needs try/catch
+				String[] line = text.split("\\s+");	// Split input on space
 				String cmd = line[0].toLowerCase().substring(1);
-				System.out.println("cmd: " + cmd);
 					
-				if(cmd.equals("join") || cmd.equals("j")) {
-					if(line.length == 2) { // Where to validate? 
+				if(cmd.equals("join") || cmd.equals("j")) { // Join a channel
+					if(line.length == 2)
 						connectionManagement.joinChannel(line[1]);
-					}
 				}
-				else if(cmd.equals("connect")) {
+				else if(cmd.equals("connect")) { // Connect to a irc-server
 						String nick = sIRC.options.getNick();
 						if(line.length == 2) {
 							if(nick.length() > 2)
@@ -98,26 +125,26 @@ public class InputField extends JTextField {
 					}
 				}
 				
-				else if(cmd.equals("topic")) {
+				else if(cmd.equals("topic")) { // Set topic
 					if(type == TabComponent.CHANNEL && line.length > 1) {
 						String topicMsg = restLine(line, 1);
 						connectionManagement.setTopic(identifier, topicMsg);
 					}
 				}
 				
-				else if(cmd.equals("away")) {
-					if(line.length > 1) {
+				else if(cmd.equals("away")) { // Set or unset away
+					if(line.length > 1) { // We have argument, set away message
 						String awayMsg = restLine(line, 1);
 						connectionManagement.away(awayMsg);
-					} else {
+					} else { // No argument. Unset away.
 						connectionManagement.away(null);
 					}
 				}
-
+					// Input starts with /, but we haven't implemented the command. Give error.
 				else {
 					sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.unknownCommand"));
 				}
-			} catch (Exception e) {
+			} catch (Exception e) {	// Split failed.
 				e.printStackTrace();
 			}
 		} else {	// Just normal chat

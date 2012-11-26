@@ -89,7 +89,7 @@ class GUI implements ActionListener, MenuListener {
 		else if (event.equals("options"))
 			sIRC.options.showWindow();
 		else if (event.equals("help"))
-			sIRC.options.setViewHelp(0);
+			sIRC.options.setViewHelp(Options.CONNECTIONHELP);
 		else if (event.equals("disconnect"))
 			sIRC.conManagement.disConnect(null);
 		else if (event.equals("connect")) {

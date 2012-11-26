@@ -37,9 +37,15 @@ public class Options extends JPanel implements TreeSelectionListener {
 	public static TextOptions pmFormat;
 	public static TextOptions infoFormat;
 	public static TextOptions consoleFormat;
+	
+	public static final int CONNECTIONHELP = 0;
+	public static final int USAGEHELP = 1;
+	public static final int COMMANDHELP = 2;
+	public static final int STYLEHELP = 3;
+	public static final int SERVERHELP = 4;
 
-	final int WHEIGHT = 300;
-	final int WWIDTH = 700;
+	private final int WHEIGHT = 300;
+	private final int WWIDTH = 700;
 
 	public Options() {
 
@@ -151,13 +157,13 @@ public class Options extends JPanel implements TreeSelectionListener {
 			splitPane.setRightComponent(infoFormat);
 	}
 
-	public void setViewHelp(int i) {
-		splitPane.setRightComponent(new SIRCHelp(helpPaths[i]));
-		if(helpPaths[i].contains("style"))
+	void setViewHelp(int view) {
+		splitPane.setRightComponent(new SIRCHelp(helpPaths[view]));
+		if(helpPaths[view].contains("style"))
 			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Style]");
-		else if(helpPaths[i].contains("conn"))
+		else if(helpPaths[view].contains("conn"))
 			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Connection Help]");
-		else if(helpPaths[i].contains("server"))
+		else if(helpPaths[view].contains("server"))
 			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Server Help]");
 	}
 
@@ -218,22 +224,21 @@ public class Options extends JPanel implements TreeSelectionListener {
 				setViewFormat(TabComponent.CONSOLE);
 				break;
 			case "Connection Help":
-				setViewHelp(0);
+				setViewHelp(CONNECTIONHELP);
 				break;
 			case "Usage Help":
-				setViewHelp(1);
+				setViewHelp(USAGEHELP);
 				break;
 			case "Commands":
-				setViewHelp(2);
+				setViewHelp(COMMANDHELP);
 				break;
 			case "Style":
-				setViewHelp(3);
+				setViewHelp(STYLEHELP);
 				break;
 			case "Server Help":
-				setViewHelp(4);
+				setViewHelp(SERVERHELP);
 				break;
 			}
-			System.out.print(node.toString());
 		}
 	}
 

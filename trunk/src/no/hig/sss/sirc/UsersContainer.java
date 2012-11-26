@@ -118,7 +118,7 @@ public class UsersContainer extends AbstractListModel {
 
 	/**
 	 * Removes a user 
-	 * @param nick
+	 * @param nick 
 	 */
 	
 	public void removeUser(String nick) {		

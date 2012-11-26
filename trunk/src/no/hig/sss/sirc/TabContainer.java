@@ -32,7 +32,7 @@ public class TabContainer extends JTabbedPane {
 		newTab("Console", TabComponent.CONSOLE); // Create console tab
 		setMnemonicAt(0, KeyEvent.VK_1); // Set shortcut
 	
-		// Notify when tab is selected to set inputarea in focus.
+		// Notify when tab is selected to set input area in focus.
 		addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int index = getSelectedIndex();

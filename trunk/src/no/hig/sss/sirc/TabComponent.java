@@ -47,6 +47,11 @@ public class TabComponent extends JPanel {
 	private ConnectionManagement cm = sIRC.conManagement;
 	private JTextField topText;
 
+	/**
+	 * Constructor - Creates either a pm tab or channel tab
+	 * @param type - Channel or pm
+	 * @param identifier - The name to be set for the tab
+	 */
 	
 	public TabComponent(int type, String identifier) {
 		setLayout(new BorderLayout());
@@ -76,6 +81,10 @@ public class TabComponent extends JPanel {
 		add(scrollPane);
 	}
 	
+	/**
+	 * Creates the text field containing either topic or nick of user
+	 * @return JTextField - The text field
+	 */
 	private JTextField makeTopText() {
 		topText = new JTextField(identifier);
 		topText.setBackground(null);
@@ -86,15 +95,27 @@ public class TabComponent extends JPanel {
 		return topText;
 	}
 	
+	/**
+	 * Sets the text
+	 * @param text
+	 */
 	public void setTopText(String text) {
 		if(type == CHANNEL || type == PM)
 			topText.setText(text);
 	}
 	
+	/**
+	 * Sets the focus to the input field
+	 */
 	public void inFocus() {
 		inputArea.requestFocus();
 	}
 	
+	/**
+	 * Formats, and inserts the text to the chat/info area of the tab
+	 * @param message
+	 * @param type
+	 */
 	public void addText(String message, int type) {
 		Document document = chatArea.getDocument();
 		SimpleAttributeSet format;
@@ -123,49 +144,35 @@ public class TabComponent extends JPanel {
 	    });
 	}
 
+	/**
+	 * Returns the identifier of this tab
+	 * @return String - The identifier
+	 */
 	public String getIdentifier() {
 		return identifier;
 	}
 	
+	/**
+	 * Set the identifier 
+	 * @param identifier
+	 */
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 		inputArea.setIdentifier(identifier);
 	}
 	
+	/**
+	 * Return the type 
+	 * @return 
+	 */
 	public int getType() {
 		return type;
 	}
 	
-	private void createRightClickMenu(MouseEvent e) {
-	
-		
-		
-	}
-	
-	public JMenu createSubMenu(String [] names, String title) {
-		JMenu subMenu = new JMenu(title);
-		for(int i = 0; i < names.length; i++) {
-			subMenu.add(new JMenuItem(names[i]));
-			
-		}
-		return subMenu;
-		
-	}
-	
-	class popupListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-		String command = e.getActionCommand();
-		if(command == "Kick") {
-			//cm.getChannel(identifier).kick(userContainer.getElementAt(users.getSelectedIndex()).toString(), "LOL");
-		}
-	}
-	
-	}
-	
-	public JMenuItem createMenuItem(String name) {
-		return new JMenuItem(name);
-	}
-	
+	/**
+	 * Returns the user container for this tab
+	 * @return UserContainer - The container
+	 */
 	public UsersContainer getUserContainer() {
 		return userContainer;
 	}	

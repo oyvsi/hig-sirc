@@ -49,8 +49,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Connects to a given server with user specified information
-	 * @param nick
-	 * @param server
+	 * @param nick - The nick to connect with
+	 * @param server - The server to connect to
 	 */
 	public void connect(String nick, String server) {
 		if(isConnected) {
@@ -67,7 +67,7 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Validates the user specified nick based on IRC-RFC
-	 * @param nick
+	 * @param nick - The nickname to validate
 	 * @return valid - valid or not valid
 	 */
 	public boolean validateNick(String nick) { // Valid chars are 0-9a-z\[]^_`{|}- Can't begin with 0-9 or -
@@ -82,7 +82,7 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Validates the server name
-	 * @param server
+	 * @param server - The server hostname
 	 * @return valid - valid or not valid
 	 */
 	public boolean validateServer(String server) {
@@ -96,6 +96,7 @@ public class ConnectionManagement implements IRCEventListener {
 
 	/**
 	 * Handles client-side quit
+	 * @param quitMsg - The quit message to send to the server
 	 */
 	public void disConnect(String quitMsg) {
 		if(isConnected) {
@@ -116,6 +117,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Sets the topic in the channel window for the given channel 
+	 * @param channel - The channel to set topic for
+	 * @param topic - The topic to set
 	 */
 	public void setTopic(String channel, String topic) {
 		String nick = session.getNick();
@@ -142,25 +145,25 @@ public class ConnectionManagement implements IRCEventListener {
 	/**
 	 * Handles all events from server
 	 */
-	public void receiveEvent(IRCEvent e) {
+	public void receiveEvent(IRCEvent e) {  // We have connected to irc server
 		if (e.getType() == Type.CONNECT_COMPLETE) {
 			String server = session.getServerInformation().getServerName();
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionMangement.connected") + " " + server);
 			isConnected = true;
 		} 
-		else if (e.getType() == Type.CHANNEL_MESSAGE) {	
+		else if (e.getType() == Type.CHANNEL_MESSAGE) {	// message from others from channel we're in
 			MessageEvent me = (MessageEvent) e;
 			String message = buildSay(me.getNick(), me.getMessage());
 			sIRC.tabContainer.message(message, me.getChannel().getName(), TabComponent.CHANNEL, TabComponent.CHANNEL);			
 		}
 		
-		else if (e.getType() == Type.PRIVATE_MESSAGE) {
+		else if (e.getType() == Type.PRIVATE_MESSAGE) { // private message going to us
 			MessageEvent me = (MessageEvent) e;
 			String message = buildSay(me.getNick(), me.getMessage());
 			sIRC.tabContainer.message(message, me.getNick(), TabComponent.PM, TabComponent.PM);
 		}
 		
-		else if(e.getType() == Type.ERROR) { 
+		else if(e.getType() == Type.ERROR) { // Errors undefined by jerklib
 			ErrorEvent ee = (ErrorEvent) e;
 			if(ee.getErrorType() == ErrorType.NUMERIC_ERROR) {
 				NumericErrorEvent ne = (NumericErrorEvent) ee;
@@ -169,6 +172,7 @@ public class ConnectionManagement implements IRCEventListener {
 					// Messages from server look like: ":dreamhack.se.quakenet.org 401 oyvsiSirc oyvsi99999 :No such nick"
 					Pattern nickRegex = Pattern.compile("^.+401\\s(\\S+)\\s(\\S+).+$");
 					Matcher nickMatch = nickRegex.matcher(ne.getRawEventData());
+					
 					if(nickMatch.matches()) {
 						String msg = buildInfoPrefix() + sIRC.i18n.getStr("error.noSuchNick");
 						sIRC.tabContainer.message(msg, nickMatch.group(2), TabComponent.PM, TabComponent.INFO);
@@ -176,20 +180,20 @@ public class ConnectionManagement implements IRCEventListener {
 				}
 			}	
 		}	
-		else if (e.getType() == Type.PART) {
+		else if (e.getType() == Type.PART) {  // We or someone else leaves channel we're in
 			PartEvent pe = (PartEvent) e;
 			String channelName = pe.getChannelName();
 			String userName = pe.getUserName();
 			String nickName = pe.getWho();
 			
-			if(nickName.equals(session.getNick()) == false) {
+			if(nickName.equals(session.getNick()) == false) {	// We don't want to notify tab if we left
 				String actionMsg = buildInfoPrefix() + nickName + " [" + userName + '@' + pe.getHostName() 
 								   + "]  " + sIRC.i18n.getStr("channel.userPart") + "  " + pe.getPartMessage();
 				sIRC.tabContainer.message(actionMsg, channelName, TabComponent.CHANNEL, TabComponent.INFO);
 				sIRC.tabContainer.userLeft(channelName, nickName);
 			}
 		}
-		else if(e.getType() == Type.AWAY_EVENT) {
+		else if(e.getType() == Type.AWAY_EVENT) {	// Away message from server. Us or someone we talk to
 			AwayEvent ae = (AwayEvent) e;
 			if(ae.isYou() == false) {
 				String nick = ae.getNick();
@@ -198,7 +202,7 @@ public class ConnectionManagement implements IRCEventListener {
 				sIRC.tabContainer.message(awayMsg, nick, TabComponent.PM, TabComponent.INFO);
 			}
 		}
-		else if (e.getType() == Type.MODE_EVENT) {
+		else if (e.getType() == Type.MODE_EVENT) {  // Mode is changed for us or someone in a channel we're joined
 			
 			ModeEvent me = (ModeEvent) e;
 			
@@ -229,14 +233,14 @@ public class ConnectionManagement implements IRCEventListener {
 			}
 		}
 		
-		else if(e.getType() == Type.QUIT) {
+		else if(e.getType() == Type.QUIT) {	// Someone quits and thus leaves a channel we're in
 			QuitEvent qe = (QuitEvent) e;
 			String nickName = qe.getNick();
 			String msg = buildInfoPrefix() + " " + nickName + " [" + qe.getUserName() + 
 					     "@" + qe.getHostName() + "] " + sIRC.i18n.getStr("channel.userQuit") + 
 					     " [" + qe.getQuitMessage() + "]";
 			
-			sIRC.tabContainer.userQuit(nickName, msg);
+			sIRC.tabContainer.userQuit(nickName, msg);	// Pass the quit message to the tab
 		}
 
 		else if (e.getType() == Type.TOPIC) {	// Sent on topic changes and channel joins (if topic is set)
@@ -246,7 +250,7 @@ public class ConnectionManagement implements IRCEventListener {
 			String topic = te.getTopic();
 			String[] topicSetBy = te.getSetBy().split("~");
 
-			sIRC.tabContainer.setTopText(channelName, topic);
+			sIRC.tabContainer.setTopText(channelName, topic);	// Update top text in tab to the new topic
 			long timeNow = System.currentTimeMillis();
 			long timeSet = te.getSetWhen().getTime();
 			long timeDiff = (timeNow - timeSet) / 1000;
@@ -265,17 +269,17 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.message(topicMsg, channelName, TabComponent.CHANNEL, TabComponent.INFO);			
 		}
 		
-		else if (e.getType() == Type.JOIN_COMPLETE) { 
+		else if (e.getType() == Type.JOIN_COMPLETE) {	// We have successfully joined a channel
 			JoinCompleteEvent je = (JoinCompleteEvent) e;
 			String topic = je.getChannel().getTopic();
 			String channelName = je.getChannel().getName();
 			sIRC.tabContainer.newTab(channelName, TabComponent.CHANNEL);
 			if(topic.equals(""))	// No topic, we won't get a topic event
 				topic = " ";
-			sIRC.tabContainer.setTopText(channelName, topic);
+			sIRC.tabContainer.setTopText(channelName, topic);  // blank the top text in tab
 		}
 		
-		else if (e.getType() == Type.JOIN) {
+		else if (e.getType() == Type.JOIN) {  // Someone joined a channel we're in
 			JoinEvent je = (JoinEvent) e;
 			String nick = je.getNick();
 			String channelName = je.getChannelName();

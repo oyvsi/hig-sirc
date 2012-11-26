@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 /**
  * 
- * Class to give out strings in language-file
+ * Give out strings in language-file
  * 
  * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
@@ -23,10 +23,10 @@ public class I18n {
 	}
 	
 	/**
-	 * Fetches the text string from specifies id
+	 * Returns the text string from specifies id
 	 * 
-	 * @param id - The name of the string
-	 * @return string - The string from the language file
+	 * @param id the name of the string
+	 * @return string the string from the language file
 	 */
 	public String getStr(String id) {
 		return messages.getString(id);

@@ -33,7 +33,7 @@ public class TabComponent extends JPanel {
 	private String identifier;
 	private JTextPane chatArea;
 	private JScrollPane scrollPane;
-	private UsersContainer userContainer;
+	private UserModel userModel;
 	private UserList userList;
 	private InputField inputArea;
 	private JTextField topText;
@@ -53,8 +53,8 @@ public class TabComponent extends JPanel {
 		}
 		else if(type == CHANNEL) {
 			this.type = CHANNEL;
-			userContainer = new UsersContainer(identifier);
-			userList = new UserList(identifier, userContainer);
+			userModel = new UserModel(identifier);
+			userList = new UserList(identifier, userModel);
 			add(userList, BorderLayout.EAST);
 		}
 			
@@ -164,7 +164,7 @@ public class TabComponent extends JPanel {
 	 * Returns the user container for this tab
 	 * @return UserContainer - The container
 	 */
-	public UsersContainer getUserContainer() {
-		return userContainer;
+	public UserModel getUserModel() {
+		return userModel;
 	}	
 }

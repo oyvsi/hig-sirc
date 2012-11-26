@@ -29,8 +29,8 @@ public class UserList extends JList<String> implements MouseListener {
 	 * @param identifier
 	 * @param userContainer
 	 */
-	public UserList(String identifier, UsersContainer userContainer) {
-		super(userContainer);
+	public UserList(String identifier, UserModel userModel) {
+		super(userModel);
 		channel = identifier;
 		popupMenu = new JPopupMenu();
 		this.add(popupMenu);
@@ -82,6 +82,12 @@ public class UserList extends JList<String> implements MouseListener {
 			}
 		});
 		
+		slap.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
 		unignore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -123,7 +129,7 @@ public class UserList extends JList<String> implements MouseListener {
 			}
 		});
 		
-		// Control
+		// Control items
 		control.add(ignore);
 		control.add(unignore);
 		control.add(deop);
@@ -132,7 +138,7 @@ public class UserList extends JList<String> implements MouseListener {
 		control.add(kick);
 		control.add(ban);
 		
-		// CTCP
+		// CTCP items
 		ctcp.add(ping);
 		ctcp.add(time);
 		ctcp.add(version);
@@ -153,8 +159,8 @@ public class UserList extends JList<String> implements MouseListener {
 	
 	/**
 	 * Parses a nick and removes operator prefix if it exists
-	 * @param nick
-	 * @return
+	 * @param nick - Nick to be parsed
+	 * @return nick  - Nick without prefix
 	 */
 	
 	public String parseNick(String nick) {
@@ -174,7 +180,7 @@ public class UserList extends JList<String> implements MouseListener {
 			String identifier = parseNick(getSelectedValue().toString());
 			if(tabContainer.getTabIndex(identifier) != -1) {
 				tabContainer.setSelectedIndex(tabContainer.getTabIndex(identifier));
-			} else {
+			} else  {
 				tabContainer.newTab(identifier, TabComponent.PM);
 			}
 		}

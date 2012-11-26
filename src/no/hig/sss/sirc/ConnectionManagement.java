@@ -309,13 +309,15 @@ public class ConnectionManagement implements IRCEventListener {
 		else if (e.getType() == Type.WHOIS_EVENT) {
 			WhoisEvent we = (WhoisEvent) e;
 			String nick = we.getNick();
+			
 			String hostName = we.getHost();
 			String realName = we.getRealName();
 			String userName = we.getUser();
 			String message = nick;
 			Date signOn = we.signOnTime();
 			String server = we.whoisServer();
-	
+			boolean isIdle = we.isIdle();
+			
 			
 			long idle = we.secondsIdle();
 			long days = idle / 86400;
@@ -329,7 +331,8 @@ public class ConnectionManagement implements IRCEventListener {
 			String whoismessage = infoPrefix + nick  + " [" + hostName + "] " + '\n' + 
 								  infoPrefix + "ircname	: " + realName + '\n' +
 								  infoPrefix + "server	: " + server + '\n' +
-								  infoPrefix + "idle	: " + idleMessage + " " + signOn;
+								  ((isIdle) ? (infoPrefix + "idle	: " + idleMessage + " " + signOn) : "") +
+								  infoPrefix + "END OF WHOIS";
 			sIRC.tabContainer.consoleMsg(whoismessage);
 			
 		}
@@ -368,7 +371,7 @@ public class ConnectionManagement implements IRCEventListener {
 			}
 			
 		
-		//	KickEvent ke = (KickEvent) e;
+		
 		}
 	
 		else if(e.getType() == Type.KICK_EVENT) {

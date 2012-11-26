@@ -185,7 +185,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		} else if(ae.getActionCommand().equals("cancel")) {
 			sIRC.options.hideWindow(false);
 		} else if(ae.getActionCommand().equals("help")) {
-			sIRC.options.setViewHelp("File:help/conn_help.html");
+			sIRC.options.setViewHelp(0);
 		}
 		
 		

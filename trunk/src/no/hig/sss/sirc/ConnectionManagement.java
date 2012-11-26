@@ -49,8 +49,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Connects to a given server with user specified information
-	 * @param nick - The nick to connect with
-	 * @param server - The server to connect to
+	 * @param nick the nick to connect with
+	 * @param server the server to connect to
 	 */
 	public void connect(String nick, String server) {
 		if(isConnected) {
@@ -67,8 +67,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Validates the user specified nick based on IRC-RFC
-	 * @param nick - The nickname to validate
-	 * @return valid - valid or not valid
+	 * @param nick the nickname to validate
+	 * @return valid valid or not valid
 	 */
 	public boolean validateNick(String nick) { // Valid chars are 0-9a-z\[]^_`{|}- Can't begin with 0-9 or -
 		String nickRegex = "(?i)^[a-z\\\\\\[\\]^_`{|}][0-9a-z\\\\\\[\\]^_`{|}-]{2,15}$";
@@ -82,8 +82,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Validates the server name
-	 * @param server - The server hostname
-	 * @return valid - valid or not valid
+	 * @param server the server hostname
+	 * @return valid valid or not valid
 	 */
 	public boolean validateServer(String server) {
 		Boolean valid = false;
@@ -96,7 +96,7 @@ public class ConnectionManagement implements IRCEventListener {
 
 	/**
 	 * Handles client-side quit
-	 * @param quitMsg - The quit message to send to the server
+	 * @param quitMsg the quit message to send to the server
 	 */
 	public void disConnect(String quitMsg) {
 		if(isConnected) {
@@ -117,8 +117,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Sets the topic in the channel window for the given channel 
-	 * @param channel - The channel to set topic for
-	 * @param topic - The topic to set
+	 * @param channel the channel to set topic for
+	 * @param topic the topic to set
 	 */
 	public void setTopic(String channel, String topic) {
 		String nick = session.getNick();
@@ -130,7 +130,7 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Handles client-side use of away event
-	 * @param awayMsg - the away message
+	 * @param awayMsg the away message
 	 */
 	
 	public void away(String awayMsg) {
@@ -377,8 +377,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Relays channel messages from client to server
-	 * @param channelName - the channel name
-	 * @param msg - the message to be sent
+	 * @param channelName the channel name
+	 * @param msg the message to be sent
 	 */
 	
 	public void channelMsg(String channelName, String msg) {
@@ -391,9 +391,9 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Relays action messages from client to server
-	 * @param identifier - the channel or user 
-	 * @param msg - the action message 
-	 * @param type - channel or user
+	 * @param identifier the channel or user 
+	 * @param msg the action message 
+	 * @param type channel or user
 	 */
 	public void actionMsg(String identifier, String msg, int type) {
 		if(isConnected && (type == TabComponent.PM || type == TabComponent.CHANNEL)) {
@@ -405,8 +405,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Relays private message from client to the given user
-	 * @param toNick - the user to send the message  to
-	 * @param msg - the message 
+	 * @param toNick the user to send the message  to
+	 * @param msg the message 
 	 */
 	public void privMsg(String toNick, String msg) {
 		if(isConnected) {
@@ -419,7 +419,7 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Requests connection to a server 
-	 * @param hostName - hostname of the server
+	 * @param hostName hostname of the server
 	 */
 	public void newServer(String hostName) {
 		manager.requestConnection(hostName);
@@ -427,7 +427,7 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/** 
 	 * Connects to the given channel
-	 * @param channelName - the channel name
+	 * @param channelName the channel name
 	 */
 	public void joinChannel(String channelName) {
 		System.out.println("Asked to join " + channelName);
@@ -442,9 +442,9 @@ public class ConnectionManagement implements IRCEventListener {
 	}
 	/**
 	 * Closes either a channel tab or pm window
-	 * @param identifier - the name of the tab
-	 * @param type - channel or user 
-	 * @param partMsg - the message
+	 * @param identifier the name of the tab
+	 * @param type channel or user 
+	 * @param partMsg the message
 	 */
 	public void closeChat(String identifier, int type, String partMsg) {
 		if(type == TabComponent.CHANNEL) {
@@ -458,8 +458,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Concatenates time, nick and msg for output in channel or pm
-	 * @param nick - the users nick
-	 * @param msg - the message
+	 * @param nick the users nick
+	 * @param msg the message
 	 * @return
 	 */
 	
@@ -470,7 +470,7 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Concatenates time and -!- for information messages to channel or pm
-	 * @return String - the concatenated string
+	 * @return String the concatenated string
 	 */
 	private String buildInfoPrefix() {
 		Date date = new Date();
@@ -480,7 +480,7 @@ public class ConnectionManagement implements IRCEventListener {
 	/**
 	 * Fetches the users in a channel
 	 * @param channelName
-	 * @return List<String> - the list with users
+	 * @return List<String> the list with users
 	 */
 	public List<String> getUsers(String channelName) {
 		return session.getChannel(channelName).getNicks();
@@ -488,7 +488,7 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Change of client-side nick
-	 * @param newNick - Our new nick
+	 * @param newNick our new nick
 	 */
 	public void changeNick(String newNick) {
 		if(isConnected)
@@ -500,10 +500,10 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Fetches list of users with a given mode set
-	 * @param channelName - The channel
-	 * @param action - the action of the mode (+ or -)
-	 * @param mode - The give mode
-	 * @return List<String> - The list containing the users
+	 * @param channelName the channel
+	 * @param action the action of the mode (+ or -)
+	 * @param mode the give mode
+	 * @return List<String> the list containing the users
 	 */
 	public List<String> getUsersMode(String channelName, Action action, char mode) {
 		return session.getChannel(channelName).getNicksForMode(action, mode);
@@ -512,9 +512,9 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Fetches all channels with a given user 
-	 * @param session - The current session
-	 * @param nick - The nick to check
-	 * @return List<String> - The list containing the channels
+	 * @param session the current session
+	 * @param nick the nick to check
+	 * @return List<String> the list containing the channels
 	 */
 	public List<String> getChannelsWithUser(Session session, String nick) {
 		Iterator<Channel >channelIter = session.getChannels().iterator();
@@ -531,8 +531,8 @@ public class ConnectionManagement implements IRCEventListener {
 	
 	/**
 	 * Fetches a given channel
-	 * @param identifier - The channel name
-	 * @return Channel - The channel object returned
+	 * @param identifier the channel name
+	 * @return Channel the channel object returned
 	 */
 	public Channel getChannel(String identifier) {
 		return session.getChannel(identifier);

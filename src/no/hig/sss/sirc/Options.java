@@ -332,4 +332,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 			}
 		}
 	}
+
+	public String getServer() {
+		return op.getSelectedServer();
+	}
 }

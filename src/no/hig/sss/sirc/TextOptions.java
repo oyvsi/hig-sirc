@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import java.awt.event.ActionEvent;
@@ -17,7 +15,6 @@ import java.awt.event.ItemListener;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -34,7 +31,13 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import javax.swing.tree.DefaultMutableTreeNode;
+
+/**
+ * This class lets you choose various options for text formatting
+ * 
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+ *
+ */
 
 public class TextOptions extends JPanel implements ActionListener {
 
@@ -47,14 +50,18 @@ public class TextOptions extends JPanel implements ActionListener {
 	private StyledDocument preview;
 	
 	private final JComboBox<String> selFontName;
-	private final JCheckBox selBold;
-	private final JCheckBox selItalic;
+	private final JCheckBox selBold, selItalic;
 	private final JSpinner selFontSize;
 	private final ColorSelector selColor;
 	
 	private JButton ok, cancel, help;
 	
-		
+	/**
+	 * Constructor
+	 * 
+	 * @param optionName - The name of the text format
+	 */
+	
 	public TextOptions(String optionName) {
 		this.optionName = optionName;
 		fontName = "Serif";
@@ -115,8 +122,7 @@ public class TextOptions extends JPanel implements ActionListener {
 		add(previewPanel, BorderLayout.CENTER);
 		add(navigate, BorderLayout.SOUTH);
 		
-		//add(mainPanel);
-		/* Listeneres */
+		/* Add listeners */
 		
 		selBold.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -147,7 +153,6 @@ public class TextOptions extends JPanel implements ActionListener {
 			}
 		});
 		
-		// Add custom action to ColorSelector?
 		selColor.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {}
@@ -161,16 +166,23 @@ public class TextOptions extends JPanel implements ActionListener {
 
 	}
 	
-	private void updatePreview() {
-		try {
-			preview.remove(0, preview.getLength());
-			preview.insertString(0, fontName, format());
-			//preview.insertString(offset, str, a)
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}	
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		System.out.println(ae.getActionCommand());
+		if(ae.getActionCommand().equals("ok")) {
+			sIRC.options.hideWindow(true);
+		} else if(ae.getActionCommand().equals("cancel")) {
+			sIRC.options.hideWindow(false);
+		} else if(ae.getActionCommand().equals("help")) {
+			sIRC.options.setViewHelp(3);
+		}
 	}
 	
+	/**
+	 * Get a SaS object reflecting the style the user has selected.
+	 * 
+	 * @return - A object which can be used to format text
+	 */
 	public SimpleAttributeSet format() {
 		SimpleAttributeSet sas = new SimpleAttributeSet();
 		StyleConstants.setFontFamily(sas, fontName);
@@ -182,6 +194,10 @@ public class TextOptions extends JPanel implements ActionListener {
 		return sas;
 	}
 	
+	/**
+	 * Get the various formatting choices
+	 * @return 
+	 */
 	public Properties save() {
 		Properties pro = new Properties();
 		String rgbColor = Integer.toString(color.getRed()) + " " + 
@@ -197,7 +213,11 @@ public class TextOptions extends JPanel implements ActionListener {
 		return pro;
 			
 	}
-	
+	/**
+	 * Load selections from a Properties object
+	 * 
+	 * @param pro - The object containing the selections
+	 */
 	public void load(Properties pro) {
 		try {
 			fontName = pro.getProperty(optionName + "FontName");
@@ -228,16 +248,16 @@ public class TextOptions extends JPanel implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent ae) {
-		System.out.println(ae.getActionCommand());
-		if(ae.getActionCommand().equals("ok")) {
-			sIRC.options.hideWindow(true);
-		} else if(ae.getActionCommand().equals("cancel")) {
-			sIRC.options.hideWindow(false);
-		} else if(ae.getActionCommand().equals("help")) {
-			sIRC.options.setViewHelp(3);
-		}
+	
+	/**
+	 * Updates the preview pane to reflect users choices
+	 */
+	private void updatePreview() { 
+		try {
+			preview.remove(0, preview.getLength());
+			preview.insertString(0, fontName, format());
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}	
 	}
 }

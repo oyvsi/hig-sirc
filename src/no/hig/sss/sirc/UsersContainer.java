@@ -2,13 +2,9 @@ package no.hig.sss.sirc;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import javax.swing.AbstractListModel;
-
 import jerklib.events.modes.ModeAdjustment.Action;
 
 
@@ -22,7 +18,6 @@ public class UsersContainer extends AbstractListModel {
 	private List<String> op;
 	private List<String> voice;
 	private List<String> regulars;
-	private Map<String, String> users = new HashMap<String, String>();
 	private ArrayList<String> usersForView;
 	private ConnectionManagement cm = sIRC.conManagement;
 	private String channel;
@@ -39,41 +34,21 @@ public class UsersContainer extends AbstractListModel {
 		channel = identifier;
 		List<String> tmpusers =  new ArrayList<String>(cm.getUsers(identifier));
 		usersForView = new ArrayList<String>();
-		System.out.println(tmpusers);
 			
+		if(cm.getUsersMode(identifier, Action.PLUS, 'o').iterator().hasNext()) {
+			opExist = true;
+			op = createList(tmpusers, 'o');
+		}
 		
-			if(cm.getUsersMode(identifier, Action.PLUS, 'o').iterator().hasNext())  {
-				opExist = true;
-				Iterator<String> opUser = cm.getUsersMode(identifier, Action.PLUS, 'o').iterator();
-				op = cm.getUsersMode(identifier, Action.PLUS, 'o');
-				while(opUser.hasNext()) {
-					String user = opUser.next();
-					if(tmpusers.contains(user)) {
-						tmpusers.remove(user);
-					}
-				}
-				Collections.sort(op, String.CASE_INSENSITIVE_ORDER);
-				usersForView.addAll(op);
-			}
-				
-			if(cm.getUsersMode(identifier, Action.PLUS, 'v').iterator().hasNext()) {
-				voiceExist = true;
-				Iterator<String> voiceUser = cm.getUsersMode(identifier, Action.PLUS, 'v').iterator();
-				voice = cm.getUsersMode(identifier, Action.PLUS, 'v');
-				while(voiceUser.hasNext()) {
-					String user = voiceUser.next();
-					if(tmpusers.contains(user)) {
-						tmpusers.remove(user);
-					}
-				}
-				Collections.sort(voice, String.CASE_INSENSITIVE_ORDER);
-				usersForView.addAll(voice);
-			}
-			
-			regulars = new ArrayList<String>(tmpusers);
-			regularsExist = true;
-			Collections.sort(regulars, String.CASE_INSENSITIVE_ORDER);
-			usersForView.addAll(regulars);
+		if(cm.getUsersMode(identifier, Action.PLUS, 'v').iterator().hasNext()) {
+			voiceExist = true;
+			voice = createList(tmpusers, 'v');
+		}
+		
+		regulars = new ArrayList<String>(tmpusers);
+		regularsExist = true;
+		
+		updateView();
 	}
 	
 
@@ -112,6 +87,19 @@ public class UsersContainer extends AbstractListModel {
 	 */
 	public boolean userInChannel(String nick) {
 		return usersForView.contains(nick);
+	}
+	
+	public List<String> createList(List<String> tmpusers, char mode) {
+		List<String> userList = new ArrayList<String>();
+		Iterator<String> userIter = cm.getUsersMode(channel, Action.PLUS, mode).iterator();
+		userList = cm.getUsersMode(channel, Action.PLUS, mode);
+		while(userIter.hasNext()) {
+			String user = userIter.next();
+			if(tmpusers.contains(user)) {
+				tmpusers.remove(user);
+				}
+			}
+		return userList;
 	}
 
 	/**
@@ -207,7 +195,6 @@ public class UsersContainer extends AbstractListModel {
 	 * @param action
 	 */
 	public void voiceMode(String nick, Action action) {
-		System.out.println(nick);
 		if(!voiceExist) {
 			voice = new ArrayList<String>();
 			voiceExist = true;
@@ -262,8 +249,8 @@ public class UsersContainer extends AbstractListModel {
 	public void updateView() {
 		usersForView.clear();
 		if(opExist) { 
-		sortList(op);
-		usersForView.addAll(op);
+			sortList(op);
+			usersForView.addAll(op);
 		
 		}
 		if(voiceExist) {
@@ -271,8 +258,8 @@ public class UsersContainer extends AbstractListModel {
 			usersForView.addAll(voice);
 		}
 		if(regularsExist) {
-		sortList(regulars);
-	    usersForView.addAll(regulars);
+			sortList(regulars);
+			usersForView.addAll(regulars);
 		}
 		
 		fireContentsChanged(this, 0, getSize());

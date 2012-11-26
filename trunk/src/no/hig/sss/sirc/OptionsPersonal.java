@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class OptionsPersonal extends JPanel implements ActionListener {
 	//private static ResourceBundle messages;
-	private JTextField fullName, email, nickname, altnick;
+	private JTextField username, nickname, altnick;
 	private JButton connect, ok, cancel, help;
 	private JPanel gridLayout = new JPanel();
 	private GridBagLayout layout = new GridBagLayout();
@@ -55,8 +55,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		
 		gbc.anchor = GridBagConstraints.WEST;
 		add(1,1, 2, 1, new JLabel("Server"));
-		add(1, 2, new JLabel(sIRC.i18n.getStr("connectionOptions.label.fullName")));
-		add(1, 3,new JLabel(sIRC.i18n.getStr("connectionOptions.label.email")));
+		add(1, 2, new JLabel(sIRC.i18n.getStr("connectionOptions.label.username")));
 		add(1,4,new JLabel(sIRC.i18n.getStr("connectionOptions.label.nickname")));
 		add(1,5,new JLabel(sIRC.i18n.getStr("connectionOptions.label.altNick")));
 		// Add textfields
@@ -64,8 +63,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		if(!(selectedServer == null)){
 			add(2,1, 2, 1, this.selectedServer = new JTextField("", 20));
 		}
-		add(2, 2,2,1, fullName = new JTextField("", 20));
-		add(2, 3,2,1, email = new JTextField("", 20));
+		add(2, 2,2,1, username = new JTextField("", 20));
 		add(2, 4,2,1, nickname = new JTextField("", 15));
 		add(2, 5,2,1, altnick = new JTextField("", 15));
 
@@ -86,8 +84,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		gbc.insets = new Insets (10,10,10,10);
 
 		// Set all tooltip texts
-		fullName.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.fullName.tooltip"));
-		email.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.email.tooltip"));
+		username.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.username.tooltip"));
 		nickname.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.nickname.tooltip"));
 		altnick.setToolTipText(sIRC.i18n.getStr("connectionOptions.textfield.altNick.tooltip"));
 		
@@ -146,18 +143,12 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	}
 
 	/**
-	 * @return the fullName
+	 * @return the username
 	 */
-	public String getFullName() {
-		return fullName.getText();
+	public String getUserName() {
+		return username.getText();
 	}
 
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email.getText();
-	}
 
 	/**
 	 * @return the nickname
@@ -193,8 +184,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	}
 	public Properties save() {
 		Properties pro = new Properties();
-		pro.setProperty("fullname", fullName.getText());
-		pro.setProperty("email", email.getText());
+		pro.setProperty("username", username.getText());
 		pro.setProperty("nickname", nickname.getText());
 		pro.setProperty("altnick", altnick.getText());
 		pro.setProperty("server", selectedServer.getText());
@@ -203,8 +193,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	}
 	
 	public void load(Properties pro) {		
-		fullName.setText(pro.getProperty("fullname"));
-		email.setText(pro.getProperty("email"));
+		username.setText(pro.getProperty("username"));
 		nickname.setText(pro.getProperty("nickname"));
 		altnick.setText(pro.getProperty("altnick"));
 		selectedServer.setText(pro.getProperty("server"));

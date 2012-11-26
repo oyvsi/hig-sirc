@@ -281,7 +281,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 			sIRC.options.os = new OptionsServer();
 			sIRC.options.setViewServer();
 		} else if (ae.getActionCommand().equals("help")) {
-			sIRC.options.setViewHelp(4);
+			sIRC.options.setViewHelp(Options.SERVERHELP);
 		}
 		
 		

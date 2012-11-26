@@ -174,7 +174,7 @@ public class TextOptions extends JPanel implements ActionListener {
 		} else if(ae.getActionCommand().equals("cancel")) {
 			sIRC.options.hideWindow(false);
 		} else if(ae.getActionCommand().equals("help")) {
-			sIRC.options.setViewHelp(3);
+			sIRC.options.setViewHelp(Options.STYLEHELP);
 		}
 	}
 	

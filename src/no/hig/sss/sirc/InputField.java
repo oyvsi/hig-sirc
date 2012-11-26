@@ -76,7 +76,8 @@ public class InputField extends JTextField {
 	 * @param text input text to parse
 	 */
 	public void parseInput(String text) {
-		if(text.length() > 0 && text.charAt(0) == '/') {	// commands
+		if(text.length() > 0) {
+			if(text.charAt(0) == '/') {	// commands
 			try {
 				String[] line = text.split("\\s+");	// Split input on space
 				String cmd = line[0].toLowerCase().substring(1);
@@ -158,6 +159,7 @@ public class InputField extends JTextField {
 				connectionManagement.channelMsg(identifier, text);
 			else
 				connectionManagement.privMsg(identifier, text);		
-		}	
+			}
+		}
 	}	 
 }

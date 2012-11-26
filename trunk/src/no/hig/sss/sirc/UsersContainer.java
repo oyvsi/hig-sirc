@@ -13,18 +13,30 @@ import javax.swing.DefaultListModel;
 
 import jerklib.events.modes.ModeAdjustment.Action;
 
+
+/**
+ * UserContainer holds all the users, and takes care of
+ * adding, removing and mode updates on users
+ * 
+ *
+ */
 public class UsersContainer extends AbstractListModel {
-	List<String> op;
-	List<String> voice;
-	List<String> regulars;
-	Map<String, String> users = new HashMap<String, String>();
-	ArrayList<String> usersForView;
-	ConnectionManagement cm = sIRC.conManagement;
-	String channel;
+	private List<String> op;
+	private List<String> voice;
+	private List<String> regulars;
+	private Map<String, String> users = new HashMap<String, String>();
+	private ArrayList<String> usersForView;
+	private ConnectionManagement cm = sIRC.conManagement;
+	private String channel;
 	boolean opExist = false;
 	boolean voiceExist = false;
 	boolean regularsExist = false;
 	
+	/**
+	 * Constructor for UserContainer. Creates the lists used for tracking
+	 * users with voice and op, aswell as regular users
+	 * @param identifier
+	 */
 	public UsersContainer(String identifier) {
 		channel = identifier;
 		List<String> tmpusers =  new ArrayList<String>(cm.getUsers(identifier));
@@ -67,7 +79,10 @@ public class UsersContainer extends AbstractListModel {
 	}
 	
 
-	
+	/**
+	 * Adds a user to the appropriate list based on the users mode
+	 * @param nick
+	 */
 	public void addUser(String nick) {
 		if(cm.getUsersMode(channel, Action.PLUS, 'o').contains(nick)) {
 			if(!opExist) {
@@ -92,9 +107,19 @@ public class UsersContainer extends AbstractListModel {
 		updateView();
 	}
 	
+	/**
+	 * Checks if the user is in a given channel
+	 * @param nick
+	 * @return 
+	 */
 	public boolean userInChannel(String nick) {
 		return usersForView.contains(nick);
 	}
+
+	/**
+	 * Removes a user 
+	 * @param nick
+	 */
 	
 	public void removeUser(String nick) {		
 		
@@ -109,7 +134,11 @@ public class UsersContainer extends AbstractListModel {
 		updateView();
 	}
 	
-	
+	/**
+	 * Fetch a user from the list and append prefix
+	 * @param index 
+	 * 
+	 */
 	public Object getElementAt(int index) {
 		String user = usersForView.get(index);
 		if(opExist && op.contains(user)) return '@' + user;
@@ -140,6 +169,12 @@ public class UsersContainer extends AbstractListModel {
 			
 	}
 
+	/**
+	 * Modifies the 'o' mode for a user, either op or deop
+	 * @param nick
+	 * @param action
+	 */
+	
 	public void opMode(String nick, Action action) {
 		if(!opExist) {
 			op = new ArrayList<String>();
@@ -168,6 +203,11 @@ public class UsersContainer extends AbstractListModel {
 		
 	}
 
+	/**
+	 * Modifies the mode for a user, either voice or devoice
+	 * @param nick
+	 * @param action
+	 */
 	public void voiceMode(String nick, Action action) {
 		System.out.println(nick);
 		if(!voiceExist) {
@@ -197,6 +237,12 @@ public class UsersContainer extends AbstractListModel {
 		
 	}
 	
+	/**
+	 * Changes a users nick 
+	 * @param oldNick
+	 * @param newNick
+	 */
+	
 	public void nickChange(String oldNick, String newNick) {
 		if(opExist && op.contains(oldNick)) {
 			op.remove(oldNick);
@@ -211,6 +257,10 @@ public class UsersContainer extends AbstractListModel {
 		updateView();
 }
 
+	/**
+	 * Sorts a modified list and adds it to the list (usersForView) used
+	 * by JList
+	 */
 	public void updateView() {
 		usersForView.clear();
 		if(opExist) { 

@@ -11,6 +11,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
+/**
+ * UserList is used for the visualization of users
+ * 
+ *
+ */
 public class UserList extends JList<String> implements MouseListener {
 	
 	TabContainer tabContainer = sIRC.tabContainer;
@@ -18,6 +23,12 @@ public class UserList extends JList<String> implements MouseListener {
 	JPopupMenu popupMenu;
 	ConnectionManagement cm = sIRC.conManagement;
 	
+	
+	/**
+	 * Constructor for UserList, creates popup menu and adds action listeners
+	 * @param identifier
+	 * @param userContainer
+	 */
 	public UserList(String identifier, UsersContainer userContainer) {
 		super(userContainer);
 		channel = identifier;
@@ -126,13 +137,26 @@ public class UserList extends JList<String> implements MouseListener {
 		ctcp.add(time);
 		ctcp.add(version);
 		
+		popupMenu.add(whois);
 		popupMenu.add(control);
 		popupMenu.add(ctcp);
 	}
 	
+	/** 
+	 * Displays the popup menu with actions on a user
+	 * @author 
+	 * @param me Mousevent
+	 * 
+	 */
 	public void showMenu(MouseEvent me) {
 		popupMenu.show(this, me.getX(), me.getY());
 	}
+	
+	/**
+	 * Parses a nick and removes operator prefix if it exists
+	 * @param nick
+	 * @return
+	 */
 	
 	public String parseNick(String nick) {
 		if(nick.startsWith("@") || nick.startsWith("+")) {
@@ -141,7 +165,10 @@ public class UserList extends JList<String> implements MouseListener {
 		return nick;
 	}
 
-	@Override
+	/**
+	 * 
+	 * 
+	 */
 	public void mouseClicked(MouseEvent me) {
 		
 		if(me.getClickCount() == 2) {

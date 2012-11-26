@@ -34,7 +34,7 @@ public class sIRC extends JFrame {
 		tabContainer = new TabContainer();
 		options = new Options();
 		
-		GUI gui = new GUI();		       
+		GUI gui = new GUI(this);		       
         add(tabContainer);
 				
         int inset = 50;

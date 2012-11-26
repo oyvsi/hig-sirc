@@ -25,6 +25,14 @@ public class Options extends JPanel implements TreeSelectionListener {
 	JTree tree;
 	DefaultTreeModel treeModel;
 
+	
+	private final String[] helpPaths = {
+			"File:help/conn_help.html", 
+			"File:help/usage_help.html", 
+			"File:help/command_help.html", 
+			"File:help/style_help.html",
+			"File:help/server_help.html"};
+
 	public static TextOptions channelFormat;
 	public static TextOptions pmFormat;
 	public static TextOptions infoFormat;
@@ -158,13 +166,13 @@ public class Options extends JPanel implements TreeSelectionListener {
 			splitPane.setRightComponent(infoFormat);
 	}
 
-	public void setViewHelp(String url) {
-		splitPane.setRightComponent(new SIRCHelp(url));
-		if(url.contains("style"))
+	public void setViewHelp(int i) {
+		splitPane.setRightComponent(new SIRCHelp(helpPaths[i]));
+		if(helpPaths[i].contains("style"))
 			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Style]");
-		else if(url.contains("conn"))
+		else if(helpPaths[i].contains("conn"))
 			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Connection Help]");
-		else if(url.contains("server"))
+		else if(helpPaths[i].contains("server"))
 			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Server Help]");
 	}
 
@@ -225,19 +233,19 @@ public class Options extends JPanel implements TreeSelectionListener {
 				setViewFormat(TabComponent.CONSOLE);
 				break;
 			case "Connection Help":
-				setViewHelp("File:help/conn_help.html");
+				setViewHelp(0);
 				break;
 			case "Usage Help":
-				setViewHelp("File:help/usage_help.html");
+				setViewHelp(1);
 				break;
 			case "Console Commands":
-				setViewHelp("File:help/command_help.html");
+				setViewHelp(2);
 				break;
 			case "Style":
-				setViewHelp("File:help/style_help.html");
+				setViewHelp(3);
 				break;
 			case "Server Help":
-				setViewHelp("File:help/server_help.html");
+				setViewHelp(4);
 				break;
 			}
 			System.out.print(node.toString());
@@ -333,13 +341,10 @@ public class Options extends JPanel implements TreeSelectionListener {
 				TreeNode n = (TreeNode) e.nextElement();
 				TreePath path = parent.pathByAddingChild(n);
 				selectNode(tree, path, exp);
-				System.out.println(path.toString());
 				if(path.toString().equals(exp)) {
 					tree.setSelectionPath(path);
 				}
 			}
 		}
-		//tree.expandPath(parent);
-		// tree.collapsePath(parent);
 	}
 }

@@ -1,6 +1,5 @@
 package no.hig.sss.sirc;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -13,8 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -47,8 +44,10 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 		// Notify when tab is selected to set input area in focus.
 		addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
+				
 				int index = getSelectedIndex();
-				((TabComponent) getComponent(index)).inFocus();
+				((TabComponent) getComponentAt(index)).inFocus();
+				
 			}
 		});
 	}	
@@ -101,38 +100,35 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	public void newTab(String identifier, int type) {
 		TabComponent tab = new TabComponent(type, identifier);
 		tabContainer.put(identifier, tab);
-		addTab(identifier, tab);	
-		
+		addTab(identifier, tab);
 		
 		int index = indexOfTab(identifier);
-		setSelectedIndex(index);
 		
-		if(!(identifier.equals("Console"))) {
+		// No point in having x on the console window
+		if((type != TabComponent.CONSOLE)) {
 			JPanel jp = new JPanel(new GridBagLayout());
 			jp.setOpaque(false);
 			
 			JLabel jl = new JLabel(identifier);
-			JButton bc = new JButton("x");
-			bc.setBorder(new EmptyBorder(1, 10, 1, 1));
-			bc.setContentAreaFilled(false);
+			JButton jb = new JButton("x");
+			jb.setBorder(new EmptyBorder(1, 10, 1, 1));
+			jb.setContentAreaFilled(false);
 			
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.gridx = 0;
 			gbc.gridy = 0;
 			gbc.weightx = 1;
-	
 			jp.add(jl, gbc);
-	
+
 			gbc.gridx++;
 			gbc.weightx--;
-			bc.addActionListener(this);
-			jp.add(bc, gbc);
-			
-			// No point in having x on the console window
+			jb.addActionListener(this);
+			jp.add(jb, gbc);
 			setTabComponentAt(index, jp);
 		}
 		setMnemonics();	// Has to be updated when /wc between windows
-
+		index = indexOfTab(identifier);
+		setSelectedIndex(index);
 	}
 	/**
 	 * Sets Mnemonics for all tabs
@@ -233,7 +229,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	public void userQuit(String nick, String msg) {
 		TabComponent tab;
 		for(int i = 1; i < tabContainer.size(); i++) {
-			tab = (TabComponent) getComponent(i);
+			tab = (TabComponent) getComponentAt(i);
 			
 			if(tab.getType() == TabComponent.CHANNEL) {
 				if(tab.getUserModel().userInChannel(nick)) {
@@ -257,7 +253,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	public void nickChange(String oldNick, String newNick, String msg) {
 		TabComponent tab;	
 		for(int i = 1; i < tabContainer.size(); i++) {	// loop all tabs
-			tab = (TabComponent) getComponent(i);
+			tab = (TabComponent) getComponentAt(i);
 
 			if(tab.getType() == TabComponent.CHANNEL) {
 				if(tab.getUserModel().userInChannel(oldNick)) { // Check if user is in channel
@@ -308,20 +304,16 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	 * @return - The identifier of the tab
 	 */
 	private String getTabIdentifier(int index) {
-		return ((TabComponent) getComponent(index)).getIdentifier();
+		return ((TabComponent) getComponentAt(index)).getIdentifier();
 	}
 
 
+	
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		TabComponent selected = (TabComponent) getSelectedComponent();
         if (selected != null) {
-            closeTab(selected.getIdentifier());
-            // It would probably be worthwhile getting the source
-            // casting it back to a JButton and removing
-            // the action handler reference ;)
-
+            sIRC.conManagement.closeChat(selected.getIdentifier(), selected.getType(), null);
         }
-		
 	}
 }

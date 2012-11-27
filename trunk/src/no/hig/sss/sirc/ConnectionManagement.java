@@ -374,7 +374,6 @@ public class ConnectionManagement implements IRCEventListener {
 		}
 	
 		else if(e.getType() == Type.KICK_EVENT) {
-			System.out.println("KICK");
 			KickEvent ke = (KickEvent) e;
 			sIRC.tabContainer.userLeft(ke.getChannel().getName(), ke.getWho());
 			
@@ -450,7 +449,6 @@ public class ConnectionManagement implements IRCEventListener {
 	 */
 	public void privMsg(String toNick, String msg) {
 		if(isConnected) {
-			System.out.println("Got PM. Going to " + toNick + " Message was " + msg);
 			String message = buildSay(session.getNick(), msg);
 			sIRC.tabContainer.message(message, toNick, TabComponent.PM, TabComponent.PM);
 			session.sayPrivate(toNick, msg);
@@ -470,7 +468,6 @@ public class ConnectionManagement implements IRCEventListener {
 	 * @param channelName the channel name
 	 */
 	public void joinChannel(String channelName) {
-		System.out.println("Asked to join " + channelName);
 		if(isConnected) {
 			if(session.isChannelToken(channelName))
 				session.join(channelName);

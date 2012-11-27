@@ -21,7 +21,12 @@ import javax.swing.event.MenuListener;
  */
 class GUI implements ActionListener, MenuListener {
 	private JFrame jf;
-	private JMenuItem marked_away;
+	private JMenuItem serverAway;	
+	private JMenuItem serverConnect;
+	private JMenuItem serverDisconnect;
+	private JMenuItem serverJoinChannel;
+	private JMenuItem serverChannelList;
+	
 	
 	public GUI(JFrame jf) {
 		this.jf = jf;
@@ -59,11 +64,11 @@ class GUI implements ActionListener, MenuListener {
 		Helpers.createMenuItem("helpMenu.About", "about", "tooltip.About", helpMenu, this);
 		
 		// Items for Server menu
-		Helpers.createMenuItem("serverMenu.Disconnect", "disconnect", "tooltip.Disconnect", serverMenu, this);
-		Helpers.createMenuItem("serverMenu.Connect", "connect", "tooltip.Connect", serverMenu, this);
-		Helpers.createMenuItem("serverMenu.JoinAChannel", "joinAChannel", "tooltip.JoinAChannel", serverMenu, this);
-		Helpers.createMenuItem("serverMenu.ListOfChannels", "listOfChannels", "tooltip.ListOfChannels", serverMenu, this);
-		marked_away = Helpers.createCheckBoxMenuItem("serverMenu.MarkedAway", "markedAway", "tooltip.MarkedAway", serverMenu, this, false);
+		serverConnect = Helpers.createMenuItem("serverMenu.Connect", "connect", "tooltip.Connect", serverMenu, this);
+		serverDisconnect = Helpers.createMenuItem("serverMenu.Disconnect", "disconnect", "tooltip.Disconnect", serverMenu, this);
+		serverJoinChannel = Helpers.createMenuItem("serverMenu.JoinAChannel", "joinAChannel", "tooltip.JoinAChannel", serverMenu, this);
+		serverChannelList = Helpers.createMenuItem("serverMenu.ListOfChannels", "listOfChannels", "tooltip.ListOfChannels", serverMenu, this);
+		serverAway = Helpers.createCheckBoxMenuItem("serverMenu.MarkedAway", "markedAway", "tooltip.MarkedAway", serverMenu, this, false);
 		
 		// Mnemonics
 		fileExit.setMnemonic(KeyEvent.VK_Q);
@@ -105,7 +110,7 @@ class GUI implements ActionListener, MenuListener {
 				sIRC.conManagement.joinChannel(channel);
 		} else if (event.equals("markedAway")) {
 			if(sIRC.conManagement.isConnected()) {
-				if(marked_away.isSelected()) {
+				if(serverAway.isSelected()) {
 					String awayMsg = (String) JOptionPane.showInputDialog(jf, sIRC.i18n.getStr("setAwayMsg"), "Set away message", 						
 						     JOptionPane.QUESTION_MESSAGE);
 					sIRC.conManagement.away(awayMsg);
@@ -115,7 +120,7 @@ class GUI implements ActionListener, MenuListener {
 				}
 			} else {
 				JOptionPane.showMessageDialog(jf, sIRC.i18n.getStr("error.setAwayDisconnected"));
-				marked_away.setSelected(false);
+				serverAway.setSelected(false);
 			}
 		} else if (event.equals("about")) {
 			sIRC.options.showWindow();
@@ -129,7 +134,17 @@ class GUI implements ActionListener, MenuListener {
 	@Override
 	public void menuSelected(MenuEvent e) {
 		if(sIRC.conManagement.isConnected()) {
-			marked_away.setSelected(sIRC.conManagement.getSession().isAway());
+			serverDisconnect.setEnabled(true);
+			serverAway.setEnabled(true);
+			serverJoinChannel.setEnabled(true);
+			serverChannelList.setEnabled(true);
+			
+			serverAway.setSelected(sIRC.conManagement.getSession().isAway());
+		} else {
+			serverDisconnect.setEnabled(false);
+			serverAway.setEnabled(false);
+			serverJoinChannel.setEnabled(false);
+			serverChannelList.setEnabled(false);
 		}
 	}
 

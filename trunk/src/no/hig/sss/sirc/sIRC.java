@@ -51,7 +51,7 @@ public class sIRC extends JFrame {
 		
 		irc.setVisible(true);
 		irc.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		options.createAndShowGUI(irc);
+		options.createAndShowGUI();
 	}
 	
 }

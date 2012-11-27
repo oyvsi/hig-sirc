@@ -186,7 +186,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	 * Create the GUI and show it. For thread safety, this method should be
 	 * invoked from the event-dispatching thread.
 	 */
-	public void createAndShowGUI(JFrame jff) {
+	public void createAndShowGUI() {
 		// Create and set up the window.
 		jf = new JFrame("sIRC Options");
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -209,9 +209,6 @@ public class Options extends JPanel implements TreeSelectionListener {
 		jf.pack();
 		jf.setResizable(false);
 		jf.setVisible(true);
-		
-		jf.setLocationRelativeTo(jff);
-		//jf.setAlwaysOnTop(false);
 	}
 
 	@Override

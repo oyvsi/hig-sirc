@@ -29,11 +29,10 @@ public class TabContainer extends JTabbedPane {
 		super();
 		isAway = false;
 		tabContainer = new HashMap<String, TabComponent>();
-	
+
 		newTab("Console", TabComponent.CONSOLE); // Create console tab
-		setMnemonics();
-		//setMnemonicAt(0, KeyEvent.VK_1); // Set shortcut
-	
+		setMnemonics();	// Set mnemonics for all tabs
+
 		// Notify when tab is selected to set input area in focus.
 		addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {

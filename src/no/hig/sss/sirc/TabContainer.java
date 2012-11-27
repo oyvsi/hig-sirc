@@ -1,10 +1,21 @@
 package no.hig.sss.sirc;
 
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -17,7 +28,7 @@ import jerklib.events.modes.ModeAdjustment.Action;
  *
  */
 
-public class TabContainer extends JTabbedPane {
+public class TabContainer extends JTabbedPane implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private Map<String, TabComponent> tabContainer; // Holds all the tabs
 	private boolean isAway;	// Keeps track of away status
@@ -91,11 +102,37 @@ public class TabContainer extends JTabbedPane {
 		TabComponent tab = new TabComponent(type, identifier);
 		tabContainer.put(identifier, tab);
 		addTab(identifier, tab);	
-		int index = getTabIndex(identifier);
-		setSelectedIndex(index);
-		setMnemonics();	// Has to be updated when /wc between windows
 		
+		
+		int index = indexOfTab(identifier);
 		setSelectedIndex(index);
+		
+		if(!(identifier.equals("Console"))) {
+			JPanel jp = new JPanel(new GridBagLayout());
+			jp.setOpaque(false);
+			
+			JLabel jl = new JLabel(identifier);
+			JButton bc = new JButton("x");
+			bc.setBorder(new EmptyBorder(1, 10, 1, 1));
+			bc.setContentAreaFilled(false);
+			
+			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.weightx = 1;
+	
+			jp.add(jl, gbc);
+	
+			gbc.gridx++;
+			gbc.weightx--;
+			bc.addActionListener(this);
+			jp.add(bc, gbc);
+			
+			// No point in having x on the console window
+			setTabComponentAt(index, jp);
+		}
+		setMnemonics();	// Has to be updated when /wc between windows
+
 	}
 	/**
 	 * Sets Mnemonics for all tabs
@@ -272,5 +309,19 @@ public class TabContainer extends JTabbedPane {
 	 */
 	private String getTabIdentifier(int index) {
 		return ((TabComponent) getComponent(index)).getIdentifier();
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		TabComponent selected = (TabComponent) getSelectedComponent();
+        if (selected != null) {
+            closeTab(selected.getIdentifier());
+            // It would probably be worthwhile getting the source
+            // casting it back to a JButton and removing
+            // the action handler reference ;)
+
+        }
+		
 	}
 }

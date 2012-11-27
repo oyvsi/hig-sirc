@@ -203,8 +203,8 @@ public class UserModel extends AbstractListModel {
 		if(!voiceExist) {
 			voice = new ArrayList<String>();
 			voiceExist = true;
-		} 
-		if(action == Action.PLUS) {
+		}  // Some channels have autovoice, and then we might be voiced before the mode comes 
+		if(action == Action.PLUS && voice.contains(nick) == false) {
 			if(opExist && op.contains(nick)) {	
 				op.remove(nick);
 				if(op.size() == 0) opExist = false;

@@ -31,7 +31,8 @@ public class TabContainer extends JTabbedPane {
 		tabContainer = new HashMap<String, TabComponent>();
 	
 		newTab("Console", TabComponent.CONSOLE); // Create console tab
-		setMnemonicAt(0, KeyEvent.VK_1); // Set shortcut
+		setMnemonics();
+		//setMnemonicAt(0, KeyEvent.VK_1); // Set shortcut
 	
 		// Notify when tab is selected to set input area in focus.
 		addChangeListener(new ChangeListener() {
@@ -42,6 +43,7 @@ public class TabContainer extends JTabbedPane {
 		});
 	}	
 
+	
 	/**
 	 * Function to pass messages to tab. Creates new tab if identifier is unknown.
 	 * @param message - The message to send
@@ -49,28 +51,18 @@ public class TabContainer extends JTabbedPane {
 	 * @param type - The type of tab. Defined in TabComponent
 	 * @param format - The text style to use for the message. Defined in TabComponent
 	 */
+	
 	public void message(String message, String identifier, int type, int format) {
 		int index = getTabIndex(identifier);
 		if(index == -1) {	// Unknown tab. Create a new
 			newTab(identifier, type);
-			index = getTabIndex(identifier);
-			setSelectedIndex(index);
-			switch(index) {	 // Set up shortcuts for the first 8 tabs.
-				case 1:  setMnemonicAt(index, KeyEvent.VK_2); break;
-				case 2:  setMnemonicAt(index, KeyEvent.VK_3); break;
-				case 3:  setMnemonicAt(index, KeyEvent.VK_4); break;
-				case 4:  setMnemonicAt(index, KeyEvent.VK_5); break;
-				case 5:  setMnemonicAt(index, KeyEvent.VK_6); break;
-				case 6:  setMnemonicAt(index, KeyEvent.VK_7); break;
-				case 7:  setMnemonicAt(index, KeyEvent.VK_8); break;
-				case 8:  setMnemonicAt(index, KeyEvent.VK_9); break;
-			}
 		}
 		tabContainer.get(identifier).addText(message, format);	// Pass along the message
 		// if user is set away. Send her a reminder.
 		if(isAway && type == TabComponent.PM)
 			tabContainer.get(identifier).addText(sIRC.i18n.getStr("pm.isAwayReminder"), TabComponent.INFO);
 	}
+	
 	/**
 	 * Sends message to the consoleTab
 	 * 
@@ -102,8 +94,28 @@ public class TabContainer extends JTabbedPane {
 		addTab(identifier, tab);	
 		int index = getTabIndex(identifier);
 		setSelectedIndex(index);
+		setMnemonics();	// Has to be updated when /wc between windows
+		
+		setSelectedIndex(index);
 	}
-
+	/**
+	 * Sets Mnemonics for all tabs
+	 */
+	public void setMnemonics() {
+		for(int i = 0; i < getTabCount(); i++) {
+			switch(i) {	 // Set up shortcuts for the first 8 tabs.
+				case 0:	setMnemonicAt(i, KeyEvent.VK_1); break;
+				case 1: setMnemonicAt(i, KeyEvent.VK_2); break;
+				case 2: setMnemonicAt(i, KeyEvent.VK_3); break;
+				case 3: setMnemonicAt(i, KeyEvent.VK_4); break;
+				case 4: setMnemonicAt(i, KeyEvent.VK_5); break;
+				case 5: setMnemonicAt(i, KeyEvent.VK_6); break;
+				case 6: setMnemonicAt(i, KeyEvent.VK_7); break;
+				case 7: setMnemonicAt(i, KeyEvent.VK_8); break;
+				case 8: setMnemonicAt(i, KeyEvent.VK_9); break;
+			}
+		}
+	}
 	/**
 	 * Close a tab
 	 * 
@@ -112,6 +124,7 @@ public class TabContainer extends JTabbedPane {
 	public void closeTab(String identifier) {
 		remove(getTabIndex(identifier));
 		tabContainer.remove(identifier);
+		setMnemonics();	// Has to be updated when /wc between windows
 	}
 	/**
 	 * Close all tabs, except console

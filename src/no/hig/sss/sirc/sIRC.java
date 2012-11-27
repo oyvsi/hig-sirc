@@ -29,7 +29,7 @@ public class sIRC extends JFrame {
 		options = new Options();
 		GUI gui = new GUI(this);		       
         add(tabContainer);
-		
+
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
@@ -37,7 +37,7 @@ public class sIRC extends JFrame {
                   screenSize.height - inset*2);
 
 		setJMenuBar(gui.menu());
-		options.createAndShowGUI();
+		//options.createAndShowGUI(this);
 	}
 	
 	/**
@@ -46,12 +46,12 @@ public class sIRC extends JFrame {
 	 */
 	public static void main(String[] args) {
 		sIRC irc = new sIRC();
-
 		ImageIcon img = new ImageIcon("icon.png");
 		irc.setIconImage(img.getImage());
 		
 		irc.setVisible(true);
 		irc.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		options.createAndShowGUI(irc);
 	}
 	
 }

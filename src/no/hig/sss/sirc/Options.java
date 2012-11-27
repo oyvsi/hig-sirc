@@ -22,9 +22,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 	private JSplitPane splitPane;
 	OptionsPersonal op;
 	OptionsServer os;
-	JFrame jf;
-	JTree tree;
-	DefaultTreeModel treeModel;
+	private JFrame jf;
+	private JTree tree;
+	private DefaultTreeModel treeModel;
 
 	
 	private final String[] helpPaths = {
@@ -33,12 +33,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 			"File:help/command_help.html", 
 			"File:help/style_help.html",
 			"File:help/server_help.html",
-			"File:help/about_help.html"};
-
-	public static TextOptions channelFormat;
-	public static TextOptions pmFormat;
-	public static TextOptions infoFormat;
-	public static TextOptions consoleFormat;
+			"File:help/about_help.html" };
 	
 	public static final int CONNECTIONHELP = 0;
 	public static final int USAGEHELP = 1;
@@ -47,11 +42,17 @@ public class Options extends JPanel implements TreeSelectionListener {
 	public static final int SERVERHELP = 4;
 	public static final int ABOUTHELP = 5;
 	
+	public static TextOptions channelFormat;
+	public static TextOptions pmFormat;
+	public static TextOptions infoFormat;
+	public static TextOptions consoleFormat;
+	
+	// Size for option window
 	private final int WHEIGHT = 300;
-	private final int WWIDTH = 700;
+	private final int WWIDTH = 720;
 
 	public Options() {
-
+		// Makes all the nodes for the JTree
 		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
 		DefaultMutableTreeNode tConn = new DefaultMutableTreeNode("Connection");
 		DefaultMutableTreeNode tStyle = new DefaultMutableTreeNode("Style");
@@ -70,16 +71,20 @@ public class Options extends JPanel implements TreeSelectionListener {
 		DefaultMutableTreeNode tHelpServer = new DefaultMutableTreeNode("Server Help");
 		DefaultMutableTreeNode tHelpAbout = new DefaultMutableTreeNode("About");
 
+		// makes treemodel around root and makes tree with treemodel
 		treeModel = new DefaultTreeModel(tRoot);
 		tree = new JTree(treeModel);
 
+		// Adds node to root node
 		treeModel.insertNodeInto(tHelp, tRoot, 0);
 		treeModel.insertNodeInto(tStyle, tRoot, 0);
 		treeModel.insertNodeInto(tConn, tRoot, 0);
 
-		tree.expandPath(tree.getPathForRow(0)); // expands first level
+		// First level expand not needed when expands whole tree
+		//tree.expandPath(tree.getPathForRow(0)); // expands first level
 		tree.setRootVisible(false); // Hides root node
 
+		// Adds option nodes to their parents
 		tConn.add(tPersonal);
 		tConn.add(tServer);
 		tStyle.add(tCmFormat);
@@ -93,8 +98,10 @@ public class Options extends JPanel implements TreeSelectionListener {
 		tHelp.add(tHelpServer);
 		tHelp.add(tHelpAbout);
 
+		// Expands all node in the tree
 		expandAll(tree, new TreePath(tRoot));
 
+		// Set selection listener for node target changes
 		tree.addTreeSelectionListener(this);
 
 		// Create a split pane with the two scroll panes in it.
@@ -131,15 +138,13 @@ public class Options extends JPanel implements TreeSelectionListener {
 		loadOptions();
 
 	}
-
+	
 	void setViewPersonal(String selectedServer) {
 		if (os != null) {
-			if (os.getSelectedServer() != null) { // Don't want new server if
-													// its nothing
+			if (os.getSelectedServer() != null) // Don't want to grab new server if its nothing
 				op.setSelectedServer(os.getSelectedServer()); // Set server
-			}
 		} else {
-			op = new OptionsPersonal("irc.quakenet.org"); // Std server
+				op = new OptionsPersonal("irc.quakenet.org"); // Std server
 		}
 		splitPane.setRightComponent(op);
 	}
@@ -148,7 +153,6 @@ public class Options extends JPanel implements TreeSelectionListener {
 		os.loadServers();
 		splitPane.setRightComponent(os);
 	}
-
 
 	private void setViewFormat(int view) {
 		if (view == TabComponent.CHANNEL)
@@ -163,6 +167,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 
 	void setViewHelp(int view) {
 		splitPane.setRightComponent(new SIRCHelp(helpPaths[view]));
+		// Selects the right help node in the tree, sends the path to the node.
 		if(helpPaths[view].contains("style"))
 			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Style]");
 		else if(helpPaths[view].contains("conn"))
@@ -181,7 +186,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	 * Create the GUI and show it. For thread safety, this method should be
 	 * invoked from the event-dispatching thread.
 	 */
-	public void createAndShowGUI() {
+	public void createAndShowGUI(JFrame jff) {
 		// Create and set up the window.
 		jf = new JFrame("sIRC Options");
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -199,17 +204,19 @@ public class Options extends JPanel implements TreeSelectionListener {
 		int Y = (screen.height / 2) - (WHEIGHT / 2); // Center vertically.
 
 		jf.setBounds(X, Y, WWIDTH, WHEIGHT);
+		
 		// Display the window.
 		jf.pack();
 		jf.setResizable(false);
 		jf.setVisible(true);
-		jf.setAlwaysOnTop(true);
+		
+		jf.setLocationRelativeTo(jff);
+		//jf.setAlwaysOnTop(false);
 	}
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
-				.getLastSelectedPathComponent();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 		if (node == null)
 			return;
 		if (node.isLeaf()) {

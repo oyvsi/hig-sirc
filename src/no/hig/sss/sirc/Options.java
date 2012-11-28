@@ -184,8 +184,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	}
 
 	/**
-	 * Create the GUI and show it. For thread safety, this method should be
-	 * invoked from the event-dispatching thread.
+	 * Create the GUI for Options and shows it.
 	 */
 	public void createAndShowGUI() {
 		// Create and set up the window.
@@ -216,50 +215,21 @@ public class Options extends JPanel implements TreeSelectionListener {
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-		if (node == null)
+		if ((node == null) || !(node.isLeaf()))
 			return;
-		if (node.isLeaf()) {
-			switch (node.toString()) {
-			case "Personal":
-				setViewPersonal(null);
-				break;
-
-			case "Server":
-				setViewServer();
-				break;
-
-			case "Channel messages":
-				setViewFormat(TabComponent.CHANNEL);
-				break;
-
-			case "Private messages":
-				setViewFormat(TabComponent.PM);
-				break;
-			case "Info messages":
-				setViewFormat(TabComponent.INFO);
-				break;
-			case "Console messages":
-				setViewFormat(TabComponent.CONSOLE);
-				break;
-			case "Connection Help":
-				setViewHelp(CONNECTIONHELP);
-				break;
-			case "Usage Help":
-				setViewHelp(USAGEHELP);
-				break;
-			case "Commands":
-				setViewHelp(COMMANDHELP);
-				break;
-			case "Style":
-				setViewHelp(STYLEHELP);
-				break;
-			case "Server Help":
-				setViewHelp(SERVERHELP);
-				break;
-			case "About":
-				setViewHelp(ABOUTHELP);
-				break;
-			}
+		switch (node.toString()) {
+			case "Personal": setViewPersonal(null); break;
+			case "Server": setViewServer(); break;
+			case "Channel messages": setViewFormat(TabComponent.CHANNEL); break;
+			case "Private messages": setViewFormat(TabComponent.PM); break;
+			case "Info messages": setViewFormat(TabComponent.INFO); break;
+			case "Console messages": setViewFormat(TabComponent.CONSOLE); break;
+			case "Connection Help": setViewHelp(CONNECTIONHELP); break;
+			case "Usage Help": setViewHelp(USAGEHELP); break;
+			case "Commands": setViewHelp(COMMANDHELP); break;
+			case "Style": setViewHelp(STYLEHELP); break;
+			case "Server Help": setViewHelp(SERVERHELP); break;
+			case "About": setViewHelp(ABOUTHELP); break;
 		}
 	}
 

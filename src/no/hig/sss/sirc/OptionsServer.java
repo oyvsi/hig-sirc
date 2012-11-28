@@ -29,18 +29,17 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-
 /**
- * This class handles the dialog for getting the connection options for an IRC
- * session.
+ * This class makes the JPanel for choosing the different servers and handelig file read 
+ * and load from the servers.ini.
  * 
- * @author oeivindk
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  * 
  */
 @SuppressWarnings("serial")
 public class OptionsServer extends JPanel implements TreeSelectionListener, ActionListener {
 
-	JButton add, change, delete, ok, cancel, help, addServer, back;
+	private JButton add, change, delete, ok, cancel, help, addServer, back;
 	private ArrayList<OptionsServerPrefs> osp;
 	private String[] networks;
 	private BorderLayout bl;
@@ -56,48 +55,50 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	private DefaultMutableTreeNode nToRemove = null;
 	private OptionsServerPrefs ospToRemove = null;
 	
-	// for edit and add server
-
 	/**
-	 * Constructor for the class, handle all GUI layout and fill inn initial
-	 * values
-	 * 
+	 * Class constructor
+	 * Makes the initial layout for serveroptions, including buttons and tree as a JPanel with borderlayout
 	 */
-
 	public OptionsServer() {
-
 		bl = new BorderLayout();
-		this.loadServers();
-		setLayout(bl);
+		this.loadServers();	// Load servers
+		setLayout(bl);	// Sets layout
 
+		// Initial treenode for the servers tree.
 		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
-
+		
+		// Makes new model based around root node
 		treeModel = new DefaultTreeModel(tRoot);
+		// Makes new tree based on the treemodel
 		tree = new JTree(treeModel);
 
+		// Adds all the servers with parent tRoot
 		addServers(tRoot);
-		tree.expandPath(tree.getPathForRow(0)); // expands path 1
+		tree.expandPath(tree.getPathForRow(0)); // expands first level under root
 		tree.setRootVisible(false); // Hides root node
 
+		// sets listener so we can select servers
 		tree.addTreeSelectionListener(this);
 
+		// makes tree scrollable
 		sp = new JScrollPane(tree);
 		sp.setPreferredSize(new Dimension(150, 200));
 		add(new JLabel("Server settings"), BorderLayout.NORTH);
 
 		add(sp, BorderLayout.CENTER);
-		// Create the panel with the four buttons on the right
+		// Create the panel with the three buttons on the right
 		action = new JPanel();
 		action.setLayout(new GridLayout(3, 1));
 		add = Helpers.createButton("button.add.buttonText", "button.add.tooltip", "add", this);
 		change = Helpers.createButton("connectionOptions.button.change.buttonText", "connectionOptions.button.change.tooltip", "change", this);
 		delete = Helpers.createButton("connectionOptions.button.delete.buttonText", "connectionOptions.button.delete.tooltip", "delete", this);
 
+		// adds buttons to the action panel
 		action.add(add);
 		action.add(change);
 		action.add(delete);
 		
-		// Add the buttons on the right
+		// Add the buttons
 		action.setSize(new Dimension(200, 60));
 		add(action, BorderLayout.EAST);
 		// Add ok, cancel, help buttons
@@ -108,6 +109,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		cancel = Helpers.createButton("button.cancel.buttonText", "connectionOptions.button.cancel.tooltip", "cancel", this);
 		help = Helpers.createButton("button.help.buttonText", "connectionOptions.button.help.tooltip", "help", this);
 		
+		// Add the buttons
 		navigate.add(ok);
 		navigate.add(cancel);
 		navigate.add(help);
@@ -117,39 +119,32 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	}
 	
 	/**
-	 * Test function for the class.
+	 * Listener for value changed in tree sets the selected server.
 	 * 
 	 * @param tse
 	 */
 	@Override
 	public void valueChanged(TreeSelectionEvent tse) {
-
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
 				.getLastSelectedPathComponent();
-		if (node == null)
+		if ((node == null) || !(node.isLeaf()))
 			return;
-		if (node.isLeaf()) {
-			setSelectedServer(node.toString(), node.getParent().toString());
-			switch (node.toString()) {
-			case "Personal":
-				break;
-
-			case "Server":
-				break;
-
-			case "Text":
-				break;
-
-			case "Color":
-				break;
-			}
-		}
+		// If node is leaf and node is not null, set selected server
+		setSelectedServer(node.toString(), node.getParent().toString());
 	}
+	
+	/**
+	 * Takes an Int array and makes comma separated string
+	 * 
+	 * @param ports
+	 * @return ports as String
+	 */
 	private String portsToString(int[] ports) {
 		String tempPorts = "";
 		for(int port : ports) {
 			tempPorts = tempPorts + port + ",";
 		}
+		// returns the string, and removes the comma at the end.
 		return(tempPorts.substring(0, tempPorts.length()-1));
 	}
 	
@@ -164,12 +159,10 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		ArrayList<Integer> al = new ArrayList<Integer>();
 		String[] temp;
 		String[] temp2;
-		//raw = raw.substring(0, (raw.length()-5));
 		temp = raw.split("G");
 
 		temp = temp[0].split(",");
 		for (String temp3 : temp) {
-			//System.out.println(temp3);
 			if (temp3.contains("-")) {
 				temp2 = temp3.split("-");
 				for (int i = Integer.valueOf(temp2[0]); i <= Integer
@@ -185,9 +178,12 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 			ports[i] = al.get(i).intValue();
 		}
 		return ports;
-
 	}
 
+	/**
+	 * Adds a server to list of servers and the root Tree node
+	 * @param t
+	 */
 	private void addServers(DefaultMutableTreeNode t) {
 		Collections.reverse(osp);		// Safe?
 		//Collections.reverse(networks);	// Can only be used on list
@@ -217,6 +213,10 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		}
 	}
 
+	/**
+	 * Handles action events for class
+	 * Events: add, addserver, delete, change, back, ok, cancel, help
+	 */
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		System.out.println(ae.getActionCommand());
@@ -259,20 +259,19 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		} else if (ae.getActionCommand().equals("ok")) {
 			sIRC.options.hideWindow(true); // Hides window and save prefs
 			sIRC.options.os.saveServers();
-		//	sIRC.options.op.save(); // Saves prefs to ini
 		} else if (ae.getActionCommand().equals("cancel")) {
 			sIRC.options.hideWindow(false); // Hides window, don't save prefs
-		//	sIRC.options.op.load(); // Loads prefs again
 		} else if (ae.getActionCommand().equals("back")) {
 			sIRC.options.os = new OptionsServer();
 			sIRC.options.setViewServer();
 		} else if (ae.getActionCommand().equals("help")) {
 			sIRC.options.setViewHelp(Options.SERVERHELP);
 		}
-		
-		
 	}
-
+	
+	/**
+	 * Saves server in the list of servers to file specified.
+	 */
 	public void saveServers() {
 		fileServers = Helpers.getFile("servers.ini");
 		FileWriter fos;
@@ -293,10 +292,10 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 			bw.newLine();
 			i = 0;
 			for (OptionsServerPrefs osp : this.osp) {
-				i++;
-				
 				int [] ports = osp.getPort();
 				String tempPorts = "";
+				
+				i++;
 				for(int port : ports) {
 					tempPorts = tempPorts + port + ",";
 				}
@@ -306,20 +305,18 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 						+ osp.getServerUrl() + ":" + tempPorts + 
 						"GROUP:" + osp.getServerGroup());
 				bw.newLine();
-				
-				//System.out.println("n" + i + "=" + osp.getServerName() + "SERVER:"
-				//		+ osp.getServerUrl() + ":" + tempPorts + 
-				//		"GROUP:" + osp.getServerGroup() + "\n");
 			}
 			bw.close();
 			fos.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
+	/**
+	 * Loads servers from file specified.
+	 */
 	public void loadServers() {
 		fileServers = Helpers.getFile("servers.ini");
 
@@ -331,39 +328,43 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		try {
 			FileInputStream fis;
 			fis = new FileInputStream(fileServers);
-			BufferedReader br = new BufferedReader(new InputStreamReader(fis,
-					Charset.forName("UTF-8")));
-			while (((line = br.readLine()) != null)) {
-				if (line.contains("[networks]"))
-					break;
-
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis, Charset.forName("UTF-8")));
+			while ((line = br.readLine()) != null) {
+				if (line.contains("[networks]"))	// Must read line first.
+					break;							// OH The infamous break.
 			}
 
-			while (((line = br.readLine()) != null)) {
-				if (line.contains("[servers]"))
-					break;
+			// Start to read networks
+			while ((line = br.readLine()) != null) {
+				if (line.contains("[servers]"))		// Must read line first.
+				break;								// OH The infamous break.
 				if (line.contains("=")) {
 					split = line.split("=");
 					tempNetworks.add(split[1]);
 				}
 			}
+			
+			// Start to read servers
 			while (((line = br.readLine()) != null)) {
 				tempServers.add(line);
-
 			}
+			// End of file read, lets close the file
 			fis.close();
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
 
+		// Put our servers into the String array of networks
 		networks = new String[tempNetworks.size()];
 		networks = tempNetworks.toArray(networks);
 
+		// but our servers into a temp array of Strings
 		String[] serv = new String[tempServers.size()];
 		serv = tempServers.toArray(serv);
 
 		String[] tempS;
-
+		
+		// Make list of server objects.
 		osp = new ArrayList<OptionsServerPrefs>();
 		OptionsServerPrefs tempOsp;
 
@@ -386,13 +387,20 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		}
 	}
 
+	/**
+	 * Makes a new view to edit or add a new server, adds listeners.
+	 * @param osp
+	 * @param n
+	 */
 	public void addServer(OptionsServerPrefs osp, DefaultMutableTreeNode n) {
+		// Remove items from JPanel
 		remove(sp);
 		remove(action);
 		if(server != null) {
 			remove(server);
 		}
 		
+		// Create layout for add/edit server
 		server = new JPanel();
 		server.setLayout(new GridLayout(5, 2));
 		server.setSize(new Dimension(100, 100));
@@ -415,6 +423,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		server.add(addServer);
 		server.add(back);
 
+		// Set values to se if we are adding or removing
 		nToRemove = n;
 		ospToRemove = osp;
 		
@@ -423,6 +432,9 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		repaint();
 	}
 
+	/**
+	 * Add server to list and tree, based on if server is being edited or a new one is made
+	 */
 	public void saveServer() {
 		OptionsServerPrefs osp = new OptionsServerPrefs(
 				editServerName.getText(), editServerUrl.getText(),
@@ -430,16 +442,14 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		this.osp.add(osp);
 		
 		if((nToRemove != null) && (ospToRemove != null)) {
+			// Delete server we just edited
 			treeModel.removeNodeFromParent(nToRemove);
 			this.osp.remove(ospToRemove);
+			// Make sure we remove references to "deleted objects"
 			nToRemove = null;
 			ospToRemove = null;
 		}
-		this.saveServers();
-	}
-
-	public void changeServer(OptionsServerPrefs osp) {
-
+		this.saveServers();	// save servers
 	}
 
 	/**

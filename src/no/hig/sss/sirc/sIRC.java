@@ -81,15 +81,15 @@ public class sIRC extends JFrame {
 		File configDest = new File(settingsDir, "config.ini");		
 		File serversDest = new File(settingsDir, "servers.ini");
 		
-		if(settingsDir.exists() == false) {	// Make sure we have %User%sIRC/
+		if(settingsDir.exists() == false) {	// Make sure we have %User%/sIRC/
 	        if(!settingsDir.mkdir())
 	            throw new IllegalStateException(settingsDir.toString());
 		}
 		
-		if(configDest.exists() == false) // There is no config-file in %User%sIRC/. Copy from jar
+		if(configDest.exists() == false) // There is no config-file in %User%/sIRC/. Copy from jar
 			Helpers.copyFile(getClass().getResourceAsStream("Resources/config.ini"), home + "/sIRC/config.ini");
 		
-		if(serversDest.exists() == false) // There is no servers-file in %User%sIRC/. Copy from jar
+		if(serversDest.exists() == false) // There is no servers-file in %User%/sIRC/. Copy from jar
 			Helpers.copyFile(getClass().getResourceAsStream("Resources/servers.ini"), home + "/sIRC/servers.ini");
 	}
 }

@@ -14,13 +14,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 /**
- * Helper class which holds methods for creating common JComponents
+ * Helper class which holds various methods used in other classes
+ * 
  * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
  */
 
 public final class Helpers {
-	
 	
 	/**
 	 * Creates a JMenuItem

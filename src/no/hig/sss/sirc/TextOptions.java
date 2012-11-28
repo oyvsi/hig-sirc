@@ -63,25 +63,25 @@ public class TextOptions extends JPanel implements ActionListener {
 	 */
 	
 	public TextOptions(String optionName) {
-		this.optionName = optionName;
+		this.optionName = optionName; // Name of style
 		fontName = "Serif";
 		italic = bold = false;
 		fontSize = 12;
 		color = new Color(0, 0, 0);	// Black
-		Integer[] fontSizeValues = {8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72};
+		Integer[] fontSizeValues = {8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72}; // Available for selection
 		
 		setLayout(new BorderLayout(10,15));
-		JPanel previewPanel = new JPanel();
+		JPanel previewPanel = new JPanel();  // Here we show what the selections look like
 		previewPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED), "Preview"));
-		JPanel settingsPanel = new JPanel();				
+		JPanel settingsPanel = new JPanel(); // Our panel for the font config				
 	    preview = new DefaultStyledDocument();
 
 		JTextPane text = new JTextPane(preview);
-		text.setEditable(false);
+		text.setEditable(false); // Display only
 		text.setOpaque(false);	// Set transparent
 		
 		selFontName = new JComboBox<String>(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
-		selFontName.setSelectedItem(fontName);
+		selFontName.setSelectedItem(fontName); // Initilized to serif
 		JLabel fontLabel = new JLabel("Font");	
 		selBold = new JCheckBox("Bold");
 		selItalic = new JCheckBox("Italic");
@@ -90,6 +90,7 @@ public class TextOptions extends JPanel implements ActionListener {
 		selColor = new ColorSelector();	
 		JLabel selColorLabel = new JLabel("Color");
 
+		// Add items to the panels
 		previewPanel.add(text);
 		settingsPanel.add(fontLabel);
 		settingsPanel.add(selFontName);
@@ -99,14 +100,15 @@ public class TextOptions extends JPanel implements ActionListener {
 		settingsPanel.add(selColor);
 		settingsPanel.add(selColorLabel);
 		
-		updatePreview();
+		updatePreview();	// Show the default selection
 		
-		JPanel edit = new JPanel();
+		JPanel edit = new JPanel();	// For showing the name of the style
 		edit.setLayout(new GridLayout(2,1));
 		edit.add(new JLabel(optionName));
 
 		edit.add(settingsPanel);
 
+		// Buttons at the bottom
 		ok = Helpers.createButton("button.ok.buttonText", "connectionOptions.button.ok.tooltip", "ok", this);
 		cancel = Helpers.createButton("button.cancel.buttonText", "connectionOptions.button.cancel.tooltip","cancel", this);
 		help = Helpers.createButton("button.help.buttonText", "connectionOptions.button.help.tooltip", "help", this);
@@ -153,6 +155,7 @@ public class TextOptions extends JPanel implements ActionListener {
 			}
 		});
 		
+		// For the color we have to use focusListener for when user has choosen one
 		selColor.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {}
@@ -219,14 +222,14 @@ public class TextOptions extends JPanel implements ActionListener {
 	 * @param pro - The object containing the selections
 	 */
 	public void load(Properties pro) {
-		try {
+		try { // Get our selections
 			fontName = pro.getProperty(optionName + "FontName");
 			italic = pro.getProperty(optionName + "Italic").equals("true");
 			bold = pro.getProperty(optionName + "Bold").equals("true");
 			
 			String fontSizeRead = pro.getProperty(optionName + "FontSize");
 			fontSize = Integer.parseInt(fontSizeRead);
-			
+			// Color is stored as 3 values (R G B)
 			String rgbColor = pro.getProperty(optionName + "RGBColor");
 			String[] rgb = rgbColor.split(" ");
 			int red = Integer.parseInt(rgb[0]);
@@ -234,13 +237,14 @@ public class TextOptions extends JPanel implements ActionListener {
 			int blue = Integer.parseInt(rgb[2]);
 			color = new Color(red, green, blue);
 			
+			// Update to what we got from properties
 			selItalic.setSelected(italic);
 			selBold.setSelected(bold);
 			selFontSize.setValue(fontSize);
 			selFontName.setSelectedItem(fontName);
 			selColor.setColor(color);
 			
-			
+			// Show what it looks like
 			updatePreview();
 		
 		} catch (Exception e) {
@@ -254,9 +258,10 @@ public class TextOptions extends JPanel implements ActionListener {
 	 */
 	private void updatePreview() { 
 		try {
-			preview.remove(0, preview.getLength());
-			preview.insertString(0, fontName, format());
+			preview.remove(0, preview.getLength());  // Remove old text 
+			preview.insertString(0, fontName, format());  // Show the new one
 		} catch (BadLocationException e) {
+			System.out.println("Error updating preview panel");
 			e.printStackTrace();
 		}	
 	}

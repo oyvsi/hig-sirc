@@ -38,9 +38,9 @@ class GUI implements ActionListener, MenuListener {
 	 * @return JMenuBar
 	 */
 	public JMenuBar menu() {
-		// Create menu
+		// Create menubar
 		JMenuBar menuBar = new JMenuBar();
-
+		// Create our menus
 		JMenu fileMenu = new JMenu(sIRC.i18n.getStr("menuBar.File"));
 		JMenu toolsMenu = new JMenu(sIRC.i18n.getStr("menuBar.Tools"));
 		JMenu helpMenu = new JMenu(sIRC.i18n.getStr("menuBar.Help"));
@@ -51,7 +51,7 @@ class GUI implements ActionListener, MenuListener {
 		toolsMenu.setToolTipText(sIRC.i18n.getStr("tooltip.Tools"));
 		helpMenu.setToolTipText(sIRC.i18n.getStr("tooltip.Help"));
 		serverMenu.setToolTipText(sIRC.i18n.getStr("tooltip.Server"));
-		
+		// Listener for when the user clicks on server menu
 		serverMenu.addMenuListener(this);
 
 		// Items for File menu

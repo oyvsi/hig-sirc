@@ -38,7 +38,6 @@ public class ConnectionManagement implements IRCEventListener {
 	 * Constructor 
 	 * Sets the timeformat and if we are connected or not
 	 */
-	
 	public ConnectionManagement() {
 		timeFormat = new SimpleDateFormat("HH:mm");
 		isConnected = false;
@@ -55,11 +54,11 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.alreadyConnected"));
 		}
 		if(isConnected == false && validateNick(nick) && validateServer(server)) {
-			String userName = sIRC.options.getUserName();
+			String userName = sIRC.options.getUserName(); // Get username from options-panel
 			
-			if(userName.length() > 1) {
+			if(userName.length() > 1) { // Is username defined in options-panel
 				String altNick = sIRC.options.getAltNick();
-				if(altNick.length() > 0 && validateNick(altNick))
+				if(altNick.length() > 0 && validateNick(altNick)) // Alt nick is defined
 					profile = new Profile(userName, nick, altNick, altNick + "_42");
 				else
 					profile = new Profile(userName, nick);
@@ -146,7 +145,6 @@ public class ConnectionManagement implements IRCEventListener {
 	 * Handles client-side use of away event
 	 * @param awayMsg the away message
 	 */
-	
 	public void away(String awayMsg) {
 		boolean away = (awayMsg != null);
 		if(session.isAway() && away == false)
@@ -159,8 +157,8 @@ public class ConnectionManagement implements IRCEventListener {
 	/**
 	 * Handles all events from server
 	 */
-	public void receiveEvent(IRCEvent e) {  // We have connected to irc server
-		if (e.getType() == Type.CONNECT_COMPLETE) {
+	public void receiveEvent(IRCEvent e) {  
+		if (e.getType() == Type.CONNECT_COMPLETE) { // We have connected to irc server
 			String server = session.getServerInformation().getServerName();
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionMangement.connected") + " " + server);
 			isConnected = true;
@@ -187,7 +185,7 @@ public class ConnectionManagement implements IRCEventListener {
 					Pattern nickRegex = Pattern.compile("^.+401\\s(\\S+)\\s(\\S+).+$");
 					Matcher nickMatch = nickRegex.matcher(ne.getRawEventData());
 					
-					if(nickMatch.matches()) {
+					if(nickMatch.matches()) {  // Error message is in a format we know
 						String msg = buildInfoPrefix() + sIRC.i18n.getStr("error.noSuchNick");
 						sIRC.tabContainer.message(msg, nickMatch.group(2), TabComponent.PM, TabComponent.INFO);
 					}
@@ -235,10 +233,10 @@ public class ConnectionManagement implements IRCEventListener {
 								 "/" + channelName  + " [" + modeText + mode + " " + nick + "]" + 
 							     " " + sIRC.i18n.getStr("channel.by") + " " + me.setBy(); 
 					
-					if(mode == 'o')
+					if(mode == 'o')	// op
 						sIRC.tabContainer.opMode(channelName, nick, action);
 
-					else if(mode == 'v')
+					else if(mode == 'v') // voice
 						sIRC.tabContainer.voiceMode(channelName, nick, action);	
 					if(mode == 'o' || mode == 'v')
 						sIRC.tabContainer.message(msg, channelName, TabComponent.CHANNEL, TabComponent.INFO);
@@ -256,14 +254,14 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.userQuit(nickName, msg);	// Pass the quit message to the tab
 		}
 
-		else if (e.getType() == Type.TOPIC) {	// Sent on topic changes and channel joins (if topic is set)
+		else if (e.getType() == Type.TOPIC) {  // Sent on topic changes and channel joins (if topic is set)
 			String topicMsg;
 			TopicEvent te = (TopicEvent) e;
 			String channelName = te.getChannel().getName();
 			String topic = te.getTopic();
 			String[] topicSetBy = te.getSetBy().split("~");
 
-			sIRC.tabContainer.setTopText(channelName, topic);	// Update top text in tab to the new topic
+			sIRC.tabContainer.setTopText(channelName, topic);  // Update top text in tab to the new topic
 			long timeNow = System.currentTimeMillis();
 			long timeSet = te.getSetWhen().getTime();
 			long timeDiff = (timeNow - timeSet) / 1000;
@@ -305,7 +303,7 @@ public class ConnectionManagement implements IRCEventListener {
 		}
 		
 
-		else if (e.getType() == Type.WHOIS_EVENT) {
+		else if (e.getType() == Type.WHOIS_EVENT) {	// A reply for a whois message
 			WhoisEvent we = (WhoisEvent) e;
 			String nick = we.getNick();
 			
@@ -335,7 +333,7 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.consoleMsg(whoismessage);
 			
 		}
-		else if (e.getType() == Type.NICK_CHANGE) {
+		else if (e.getType() == Type.NICK_CHANGE) {	 // We or someone in a channel or pm we're in changed nick
 			NickChangeEvent nce = (NickChangeEvent) e;
 			String oldNick = nce.getOldNick();
 			String newNick = nce.getNewNick();
@@ -348,10 +346,9 @@ public class ConnectionManagement implements IRCEventListener {
 					  + sIRC.i18n.getStr("channel.nickChange") + " " + newNick;	
 	
 			sIRC.tabContainer.nickChange(oldNick, newNick, msg);
-
 		}
 
-		else if (e.getType() == Type.CTCP_EVENT) {
+		else if (e.getType() == Type.CTCP_EVENT) {	// All CTCP events
 			CtcpEvent ce = (CtcpEvent) e;
 			String ctcp = ce.getCtcpString();
 			String identifier = ce.getNick();
@@ -372,26 +369,20 @@ public class ConnectionManagement implements IRCEventListener {
 		
 		
 		}
-	
-		else if(e.getType() == Type.KICK_EVENT) {
-			KickEvent ke = (KickEvent) e;
-			sIRC.tabContainer.userLeft(ke.getChannel().getName(), ke.getWho());
-			
-		}
 		
-		else if(e.getType() == Type.CONNECTION_LOST) {
+		else if(e.getType() == Type.CONNECTION_LOST) {	// We lost connection
 			isConnected = false;
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.disconnected"));
 		}
 		
-		else if(e.getType() == Type.CHANNEL_LIST_EVENT) {
+		else if(e.getType() == Type.CHANNEL_LIST_EVENT) { // We requiested a channel list
 			ChannelListEvent ce = (ChannelListEvent) e;
 			String msg = ce.getChannelName() + "(" + ce.getNumberOfUser() + ") " + ce.getTopic();
 			sIRC.tabContainer.message(msg, "Console", TabComponent.CONSOLE, TabComponent.INFO);
 		}
 		
-		else if(e.getRawEventData().contains(" KICK ")) {
-			String rawData = e.getRawEventData();
+		else if(e.getRawEventData().contains(" KICK ")) {	// Jerklib has a bug with kick-events. So we parse raw
+			String rawData = e.getRawEventData();			// Someone in a channel or pm we're in got kicked
 			String [] colonSplit = rawData.split(":");
 			String [] excSplit = colonSplit[1].split("!");
 			String kicker = excSplit[0];
@@ -403,12 +394,8 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.userLeft(channel, victim);
 			String kickMessage = buildInfoPrefix() + victim + " was kicked from " + channel + " by " + kicker + " [" + reason +"] ";
 			sIRC.tabContainer.message(kickMessage, channel, TabComponent.CHANNEL, TabComponent.INFO);
-			
-			
-			
-		} else {
-			
-			
+						
+		} else { // All inimplemented events	
 			sIRC.tabContainer.consoleMsg(e.getRawEventData());
 		}
 	}
@@ -477,6 +464,7 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.joinDisconnected"));
 		}
 	}
+	
 	/**
 	 * Closes either a channel tab or pm window
 	 * @param identifier the name of the tab
@@ -523,15 +511,15 @@ public class ConnectionManagement implements IRCEventListener {
 	}
 	
 	/**
-	 * Change of client-side nick
+	 * Change of client-side nick. Informs the server if connected
 	 * @param newNick our new nick
 	 */
 	public void changeNick(String newNick) {
-		if(isConnected)
+		if(isConnected) 
 			session.changeNick(newNick);
-		sIRC.options.setNick(newNick);
-		sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.changedNick") + " " + newNick);
 		
+		sIRC.options.setNick(newNick);
+		sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.changedNick") + " " + newNick);		
 	}
 	
 	/**
@@ -544,7 +532,6 @@ public class ConnectionManagement implements IRCEventListener {
 	public List<String> getUsersMode(String channelName, Action action, char mode) {
 		return session.getChannel(channelName).getNicksForMode(action, mode);
 	}
-	
 	
 	/**
 	 * Fetches all channels with a given user 
@@ -582,12 +569,12 @@ public class ConnectionManagement implements IRCEventListener {
 		return session;
 	}
 
+	/**
+	 * Getter for our connection state
+	 * 
+	 * @return are we connected to server or not
+	 */
 	public boolean isConnected() {
 		return isConnected;
 	}
-	
-	/*public boolean checkModeForUser(String channelName, Action action, char mode, String nick) {
-		return session.getChannel(channelName).checkModeForUser(action, mode, nick);
-	}*/
-
 }

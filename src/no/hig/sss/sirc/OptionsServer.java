@@ -274,7 +274,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	}
 
 	public void saveServers() {
-		fileServers = new File("servers2.ini");
+		fileServers = Helpers.getFile("servers.ini");
 		FileWriter fos;
 		try {
 			fos = new FileWriter(fileServers);
@@ -321,7 +321,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	}
 
 	public void loadServers() {
-		fileServers = new File("servers2.ini");
+		fileServers = Helpers.getFile("servers.ini");
 
 		ArrayList<String> tempServers = new ArrayList<String>();
 		ArrayList<String> tempNetworks = new ArrayList<String>();

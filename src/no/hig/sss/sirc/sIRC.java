@@ -2,6 +2,11 @@ package no.hig.sss.sirc;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
@@ -23,6 +28,13 @@ public class sIRC extends JFrame {
 	 * Constructor 
 	 */
 	public sIRC() {
+		try {
+			Helpers.setupSettings(getClass().getResource("Resources"));
+		} catch (IOException e) {
+			System.out.println("Error setting up config files");
+			e.printStackTrace();
+		}
+
 		i18n = new I18n();
 		conManagement = new ConnectionManagement(); 
 		tabContainer = new TabContainer();
@@ -53,5 +65,4 @@ public class sIRC extends JFrame {
 		irc.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		options.createAndShowGUI();
 	}
-	
 }

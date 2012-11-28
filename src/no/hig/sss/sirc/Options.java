@@ -28,12 +28,12 @@ public class Options extends JPanel implements TreeSelectionListener {
 
 	
 	private final String[] helpPaths = {
-			"File:help/conn_help.html", 
-			"File:help/usage_help.html", 
-			"File:help/command_help.html", 
-			"File:help/style_help.html",
-			"File:help/server_help.html",
-			"File:help/about_help.html" };
+			"help/conn_help.html", 
+			"help/usage_help.html", 
+			"help/command_help.html", 
+			"help/style_help.html",
+			"help/server_help.html",
+			"help/about_help.html" };
 	
 	public static final int CONNECTIONHELP = 0;
 	public static final int USAGEHELP = 1;
@@ -275,7 +275,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	}
 
 	private void saveOptions() {
-		File file = new File("config.ini");
+		File file = Helpers.getFile("config.ini");
 		FileOutputStream fos;
 		try {
 			fos = new FileOutputStream(file);
@@ -295,7 +295,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 	}
 
 	private void loadOptions() {
-		File file = new File("config.ini");
+		File file = Helpers.getFile("config.ini");
 		FileInputStream fis;
 		Properties pro;
 		try {

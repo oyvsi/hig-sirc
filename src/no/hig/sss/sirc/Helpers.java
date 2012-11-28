@@ -1,6 +1,11 @@
 package no.hig.sss.sirc;
 
 import java.awt.event.ActionListener;
+import java.io.File;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -79,6 +84,51 @@ public final class Helpers {
 			b.setToolTipText(sIRC.i18n.getStr(tt));
 		}
 		return b;
+	}
+	
+	public static File getFile(String name) {
+		File file = new File(System.getProperty("user.home") + "/sIRC", name);
+		return file;
+	}
+	
+	public static void setupSettings(URL resourcesPath) throws IOException {
+		
+		String home = System.getProperty("user.home");
+		File settingsDir = new File(home, "sirc");
+		
+		File configDest = new File(settingsDir, "config.ini");
+		File configSource = new File(resourcesPath.getPath(), "config.ini");
+		
+		File serversDest = new File(settingsDir, "servers.ini");
+		File serversSource = new File(resourcesPath.getPath(), "servers.ini");
+		
+		if(settingsDir.exists() == false) {	// Make sure we have %User%sIRC/
+	        if(!settingsDir.mkdir())
+	            throw new IllegalStateException(settingsDir.toString());
+		}
+		
+		if(configDest.exists() == false) 
+			copyFile(configSource, configDest);
+		
+		if(serversDest.exists() == false) 
+			copyFile(serversSource, serversDest);
+	}
+	
+		// Requires Java 7
+	public static void copyFile(File from, File to) throws IOException {
+	    Files.copy(from.toPath(), to.toPath());
+		/*
+		FileOutputStream output = new FileOutputStream(to);
+		InputStream input = new FileInputStream(from);
+		byte [] buffer = new byte[4096];
+		int bytesRead = input.read(buffer);
+		while (bytesRead != -1) {
+		    output.write(buffer, 0, bytesRead);
+		    bytesRead = input.read(buffer);
+		}
+		output.close();
+		input.close();*/
+		
 	}
 
 }

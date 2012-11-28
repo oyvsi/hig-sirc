@@ -17,16 +17,25 @@ import javax.swing.tree.TreePath;
 
 import java.util.*;
 
-//SplitPaneDemo itself is not a visible component.
+/**
+ * This class makes the JPanel for for options, including the splitpane, and the navigation tree on the left.
+ * 
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+ * 
+ */
 public class Options extends JPanel implements TreeSelectionListener {
 	private static final long serialVersionUID = 1L;
 	private JSplitPane splitPane;
 	private OptionsPersonal op;
-	public OptionsServer os;
 	private JFrame jf;
 	private JTree tree;
 	private DefaultTreeModel treeModel;
 
+	public OptionsServer os;
+	
+	// Size for option window
+	private final int WHEIGHT = 300;
+	private final int WWIDTH = 720;
 	
 	private final String[] helpPaths = {
 			"help/conn_help.html", 
@@ -47,11 +56,10 @@ public class Options extends JPanel implements TreeSelectionListener {
 	public static TextOptions pmFormat;
 	public static TextOptions infoFormat;
 	public static TextOptions consoleFormat;
-	
-	// Size for option window
-	private final int WHEIGHT = 300;
-	private final int WWIDTH = 720;
 
+	/**
+	 * Class constructor
+	 */
 	public Options() {
 		// Makes all the nodes for the JTree
 		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
@@ -140,7 +148,11 @@ public class Options extends JPanel implements TreeSelectionListener {
 
 	}
 	
-	void setViewPersonal(String selectedServer) {
+	/**
+	 * Sets the view in options to personal
+	 * @param selectedServer
+	 */
+	public void setViewPersonal(String selectedServer) {
 		if (os != null) {
 			if (os.getSelectedServer() != null) // Don't want to grab new server if its nothing
 				op.setSelectedServer(os.getSelectedServer()); // Set server
@@ -150,23 +162,19 @@ public class Options extends JPanel implements TreeSelectionListener {
 		splitPane.setRightComponent(op);
 	}
 
-	void setViewServer() {
+	/**
+	 * Sets the view in options to server also loads servers.
+	 */
+	public void setViewServer() {
 		os.loadServers();
 		splitPane.setRightComponent(os);
 	}
 
-	private void setViewFormat(int view) {
-		if (view == TabComponent.CHANNEL)
-			splitPane.setRightComponent(channelFormat);
-		else if (view == TabComponent.PM)
-			splitPane.setRightComponent(pmFormat);
-		else if (view == TabComponent.CONSOLE)
-			splitPane.setRightComponent(consoleFormat);
-		else if (view == TabComponent.INFO)
-			splitPane.setRightComponent(infoFormat);
-	}
-
-	void setViewHelp(int view) {
+	/**
+	 * Sets the view in options to help based on which help section based on parm
+	 * @param view
+	 */
+	public void setViewHelp(int view) {
 		splitPane.setRightComponent(new SIRCHelp(helpPaths[view]));
 		// Selects the right help node in the tree, sends the path to the node.
 		if(helpPaths[view].contains("style"))
@@ -179,6 +187,10 @@ public class Options extends JPanel implements TreeSelectionListener {
 			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, About]");
 	}
 
+	/**
+	 * Getter for split pane
+	 * @return
+	 */
 	public JSplitPane getSplitPane() {
 		return splitPane;
 	}
@@ -212,6 +224,10 @@ public class Options extends JPanel implements TreeSelectionListener {
 		jf.setVisible(true);
 	}
 
+	/**
+	 * Handler for tree selection, calls appropriate setView functions
+	 * @param e
+	 */
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -233,6 +249,10 @@ public class Options extends JPanel implements TreeSelectionListener {
 		}
 	}
 
+	/**
+	 * Hides options window, and saves options based on param
+	 * @param saveOptions
+	 */
 	public void hideWindow(Boolean saveOptions) {
 		jf.setVisible(false);
 		if (saveOptions)
@@ -241,11 +261,58 @@ public class Options extends JPanel implements TreeSelectionListener {
 			loadOptions();
 	}
 
+	/**
+	 * Sets options to visible
+	 */
 	public void showWindow() {
 		loadOptions();
 		jf.setVisible(true);
 	}
+	
+	/**
+	 * Getter for selected server
+	 * @return selected server
+	 */
+	public String getServer() {
+		return op.getSelectedServer();
+	}
+	
+	/**
+	 * Getter for alt nick
+	 * @return altnick
+	 */
+	public String getAltNick() {
+		return op.getAltnick();
+	}
+	
+	/**
+	 * Getter for user name 
+	 * @return userName
+	 */
+	public String getUserName() {
+		return op.getUserName();
+	}
+	
+	/**
+	 * Getter for nickname
+	 * @return nickName
+	 */
+	public String getNick() {
+		return op.getNickname();
+	}
 
+	/**
+	 * Setter for nickname
+	 * @param nick
+	 */
+	public void setNick(String nick) {
+		op.setNick(nick);
+		saveOptions();
+	}
+
+	/**
+	 * Saves options to prefs file
+	 */
 	private void saveOptions() {
 		File file = Helpers.getFile("config.ini");
 		FileOutputStream fos;
@@ -266,6 +333,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 		}
 	}
 
+	/**
+	 * Loads options from prefs file
+	 */
 	private void loadOptions() {
 		File file = Helpers.getFile("config.ini");
 		FileInputStream fis;
@@ -288,16 +358,27 @@ public class Options extends JPanel implements TreeSelectionListener {
 			e.printStackTrace();
 		}
 	}
-
-	public String getNick() {
-		return op.getNickname();
+	
+	/**
+	 * Sets the view in options to Format based on what to edit based on parm
+	 * @param view
+	 */
+	private void setViewFormat(int view) {
+		if (view == TabComponent.CHANNEL)
+			splitPane.setRightComponent(channelFormat);
+		else if (view == TabComponent.PM)
+			splitPane.setRightComponent(pmFormat);
+		else if (view == TabComponent.CONSOLE)
+			splitPane.setRightComponent(consoleFormat);
+		else if (view == TabComponent.INFO)
+			splitPane.setRightComponent(infoFormat);
 	}
 
-	public void setNick(String nick) {
-		op.setNick(nick);
-		saveOptions();
-	}
-
+	/**
+	 * Recursive function to expand all tree nodes under specific parent of tree
+	 * @param tree
+	 * @param parent
+	 */
 	private void expandAll(JTree tree, TreePath parent) {
 		TreeNode node = (TreeNode) parent.getLastPathComponent();
 		if (node.getChildCount() >= 0) {
@@ -314,6 +395,12 @@ public class Options extends JPanel implements TreeSelectionListener {
 		// tree.collapsePath(parent);
 	}
 
+	/**
+	 * Recursive function to select spesific tree node based on path to treenode to select
+	 * @param tree
+	 * @param parent
+	 * @param exp
+	 */
 	private void selectNode(JTree tree, TreePath parent, String exp) {
 		TreeNode node = (TreeNode) parent.getLastPathComponent();
 		if (node.getChildCount() >= 0) {
@@ -326,17 +413,5 @@ public class Options extends JPanel implements TreeSelectionListener {
 				}
 			}
 		}
-	}
-
-	public String getServer() {
-		return op.getSelectedServer();
-	}
-	
-	public String getAltNick() {
-		return op.getAltnick();
-	}
-	
-	public String getUserName() {
-		return op.getUserName();
 	}
 }

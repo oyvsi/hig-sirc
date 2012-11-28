@@ -113,7 +113,7 @@ public class TabComponent extends JPanel {
 	public void addText(String message, int type) {
 		Document document = chatArea.getDocument();
 		SimpleAttributeSet format;
-
+			// grab the text style
 		if(type == INFO)
 			format = Options.infoFormat.format();
 		else if(type == PM)
@@ -122,7 +122,7 @@ public class TabComponent extends JPanel {
 			format = Options.consoleFormat.format();
 		else
 			format = Options.channelFormat.format();
-		
+			// add the ext to the chat area with appropriate style 
 		try {
 			document.insertString(document.getLength(), message + "\n", format);
 		} catch (BadLocationException e) {

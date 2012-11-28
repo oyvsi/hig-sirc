@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -89,22 +87,33 @@ public final class Helpers {
 		return b;
 	}
 	
+	/**
+	 * Gets a file from a specified program folder %userhome%/sIRC/
+	 * @param name name of the file in sIRC holder under user home
+	 * @return the file
+	 */
 	public static File getFile(String name) {
 		File file = new File(System.getProperty("user.home") + "/sIRC", name);
 		return file;
 	}
 	
-	public static void copyFile(InputStream input, String destination) throws IOException {
-		 
-		OutputStream os = new FileOutputStream(destination);							// The output file
-		byte[] buffer = new byte[4096];													// Set the size of the buffer
-		int length;																		// Read size
+	/**
+	 * Copies a file
+	 * 
+	 * @param input - the stream to copy from
+	 * @param destination - the full path to copy to
+	 * @throws IOException
+	 */
+	
+	public static void copyFile(InputStream input, String destination) throws IOException { 
+		OutputStream os = new FileOutputStream(destination);							
+		byte[] buffer = new byte[4096];													
+		int length;																		
 		while ((length = input.read(buffer)) > 0) 
 			os.write(buffer, 0, length);
 
 		os.close();
 		input.close();
-		
 	}
 
 }

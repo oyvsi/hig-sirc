@@ -5,8 +5,6 @@ import javax.swing.*;
 import java.awt.*;              //for layout managers and more
 import java.awt.event.*;        //for action events
  
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.io.IOException;
  
 public class SIRCHelp extends JPanel implements ActionListener {

@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -192,7 +193,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 		jf.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		
 		// Icon for JFrame
-		ImageIcon img = new ImageIcon("icon.png");
+		URL myurl = this.getClass().getResource("Resources/icon.png");
+		ImageIcon img = new ImageIcon(this.getToolkit().getImage(myurl));
 		jf.setIconImage(img.getImage());
 		
 		

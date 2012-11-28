@@ -8,8 +8,11 @@ import java.awt.event.MouseListener;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+
+import jerklib.Channel;
 
 /**
  * UserList is used for the visualization of users
@@ -19,7 +22,7 @@ import javax.swing.SwingUtilities;
 public class UserList extends JList<String> implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	private TabContainer tabContainer = sIRC.tabContainer;
-	private String channel;
+	private String channelName;
 	private JPopupMenu popupMenu;
 	private ConnectionManagement cm = sIRC.conManagement;
 	
@@ -31,41 +34,30 @@ public class UserList extends JList<String> implements MouseListener {
 	 */
 	public UserList(String identifier, UserModel userModel) {
 		super(userModel);
-		channel = identifier;
-		popupMenu = new JPopupMenu();
-		this.add(popupMenu);
-		this.addMouseListener(this);
-		
+		channelName = identifier;
+		popupMenu = createPopupMenu();
+		add(popupMenu);
+		addMouseListener(this);
+	}
+	
+	private JPopupMenu createPopupMenu() {
+		JPopupMenu tmpPopupMenu = new JPopupMenu();
 		JMenu control = new JMenu("Control");
 		JMenu ctcp = new JMenu("CTCP");
-		JMenu dcc = new JMenu("DCC");
-		
-		JMenuItem info = new JMenuItem("Info");
+	
 		JMenuItem whois = new JMenuItem("Whois");
 		JMenuItem query = new JMenuItem("Query");
 		JMenuItem slap = new JMenuItem("Slap");
-		
-		JMenuItem ignore = new JMenuItem("Ignore");
-		JMenuItem unignore = new JMenuItem("Unignore");
+	
 		JMenuItem op = new JMenuItem("Op");
 		JMenuItem deop = new JMenuItem("Deop");
 		JMenuItem voice = new JMenuItem("Voice");
 		JMenuItem devoice = new JMenuItem("Devoice");
 		JMenuItem kick = new JMenuItem("Kick");
-		JMenuItem ban = new JMenuItem("Ban");
-		
-		JMenuItem send = new JMenuItem("Send");
-		JMenuItem chat = new JMenuItem("Chat");
 		
 		JMenuItem ping = new JMenuItem("Ping");
 		JMenuItem time = new JMenuItem("Time");
 		JMenuItem version = new JMenuItem("Version");
-		
-		info.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cm.getChannel(channel).op(parseNick(getSelectedValue().toString()));
-			}
-		});
 		
 		whois.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -77,18 +69,7 @@ public class UserList extends JList<String> implements MouseListener {
 			}
 		});
 		
-		ignore.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		
 		slap.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		
-		unignore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 			}
@@ -96,58 +77,91 @@ public class UserList extends JList<String> implements MouseListener {
 		
 		op.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cm.getChannel(channel).op(parseNick(getSelectedValue().toString()));
+				cm.getChannel(channelName).op(parseNick(getSelectedValue().toString()));
 			}
 		});
 		
 		deop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cm.getChannel(channel).deop(parseNick(getSelectedValue().toString()));
+				cm.getChannel(channelName).deop(parseNick(getSelectedValue().toString()));
 			}
 		});
 		
 		voice.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cm.getChannel(channel).voice(parseNick(getSelectedValue().toString()));
+				cm.getChannel(channelName).voice(parseNick(getSelectedValue().toString()));
 			}
 		});
 		
 		devoice.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cm.getChannel(channel).deVoice(parseNick(getSelectedValue().toString()));
+				cm.getChannel(channelName).deVoice(parseNick(getSelectedValue().toString()));
 			}
 		});
 		
 		kick.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cm.getChannel(channel).kick(parseNick(getSelectedValue().toString()), "lol");
+				String reason = JOptionPane.showInputDialog("Reason");
+				Channel channel = cm.getChannel(channelName);
+				String nick = parseNick(getSelectedValue().toString());
+				if(reason.isEmpty()) {
+					channel.kick(nick, "No reason");
+				} else {
+					channel.kick(nick, reason);
+				}
+				
+				
 			}
 		});
 		
-		ban.addActionListener(new ActionListener() {
+		
+		ping.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				handleCtcp("PING");
+			}
+		});
+		
+		time.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				handleCtcp("TIME");
+				
+			}
+		});
+		
+		version.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				handleCtcp("VERSION");
 			}
 		});
 		
 		// Control items
-		control.add(ignore);
-		control.add(unignore);
-		control.add(deop);
 		control.add(op);
+		control.add(deop);
 		control.add(voice);
+		control.add(devoice);
 		control.add(kick);
-		control.add(ban);
 		
 		// CTCP items
 		ctcp.add(ping);
 		ctcp.add(time);
 		ctcp.add(version);
 		
-		popupMenu.add(whois);
-		popupMenu.add(control);
-		popupMenu.add(ctcp);
+		// Add menu items to popup menu
+		tmpPopupMenu.add(whois);
+		tmpPopupMenu.add(control);
+		tmpPopupMenu.add(ctcp);;
+		
+		return tmpPopupMenu;
 	}
 	
+	
+	public void handleCtcp(String type) {
+		String nick = parseNick(getSelectedValue().toString());
+		cm.getSession().ctcp(nick, type);
+		String localMessage = "-> [" + nick + "]" + type;
+		sIRC.tabContainer.message(localMessage, channelName, TabComponent.CHANNEL, TabComponent.INFO);
+	}
+
 	/** 
 	 * Displays the popup menu with actions on a user 
 	 * @param me Mousevent - The Mousevent

@@ -2,6 +2,7 @@ package no.hig.sss.sirc;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,22 +37,8 @@ public class UserModel extends AbstractListModel {
 	 */
 	public UserModel(String identifier) {
 		channel = identifier;
-		List<String> tmpusers =  new ArrayList<String>(cm.getUsers(identifier));
 		usersForView = new ArrayList<String>();
-			
-		if(cm.getUsersMode(identifier, Action.PLUS, 'o').iterator().hasNext()) {
-			opExist = true;
-			op = createList(tmpusers, 'o');
-		}
-		
-		if(cm.getUsersMode(identifier, Action.PLUS, 'v').iterator().hasNext()) {
-			voiceExist = true;
-			voice = createList(tmpusers, 'v');
-		}
-		
-		regulars = new ArrayList<String>(tmpusers);
-		regularsExist = true;
-		
+		importList();
 		updateView();
 	}
 	
@@ -61,26 +48,7 @@ public class UserModel extends AbstractListModel {
 	 * @param nick
 	 */
 	public void addUser(String nick) {
-		if(cm.getUsersMode(channel, Action.PLUS, 'o').contains(nick)) {
-			if(!opExist) {
-				op = new ArrayList<String>();
-				opExist = true;
-			}
-			op.add(nick);
-		} else if  (cm.getUsersMode(channel, Action.PLUS, 'v').contains(nick)) {
-			if(!voiceExist) {
-				voice = new ArrayList<String>();
-				voiceExist = true;
-			}
-			voice.add(nick);
-		} else {
-			if(!regularsExist) {
-				regulars = new ArrayList<String>();
-				regularsExist = true;
-			}
-			regulars.add(nick);
-			}
-		
+		usersForView.add(nick);
 		updateView();
 	}
 	
@@ -90,20 +58,26 @@ public class UserModel extends AbstractListModel {
 	 * @return usersForView.contains(nick) True or false
 	 */
 	public boolean userInChannel(String nick) {
-		return usersForView.contains(nick);
+		return usersForView.contains("@"+nick);
+		
 	}
 	
-	public List<String> createList(List<String> tmpusers, char mode) {
-		List<String> userList = new ArrayList<String>();
-		Iterator<String> userIter = cm.getUsersMode(channel, Action.PLUS, mode).iterator();
-		userList = cm.getUsersMode(channel, Action.PLUS, mode);
+	public void importList() {
+		Iterator<String> userIter = cm.getUsers(channel).iterator();
 		while(userIter.hasNext()) {
 			String user = userIter.next();
-			if(tmpusers.contains(user)) {
-				tmpusers.remove(user);
-				}
+			System.out.println(user);
+			if(cm.getUsersMode(channel, Action.PLUS, 'o').contains(user)) {
+				usersForView.add('@'+user);
+				continue;
+			} else if (cm.getUsersMode(channel, Action.PLUS, 'v').contains(user)) {
+				usersForView.add('+'+user);
+				continue;
+			} else {
+				usersForView.add(user);
 			}
-		return userList;
+		}
+		sortList(usersForView);
 	}
 
 	/**
@@ -112,15 +86,7 @@ public class UserModel extends AbstractListModel {
 	 */
 	
 	public void removeUser(String nick) {		
-		
-		if(opExist && op.contains(nick)) {
-			op.remove(nick);
-		} else if(voiceExist && voice.contains(nick)) {
-			voice.remove(nick);
-		} else {
-			regulars.remove(nick);
-		}
-		
+		usersForView.remove(nick);
 		updateView();
 	}
 	
@@ -130,11 +96,8 @@ public class UserModel extends AbstractListModel {
 	 * 
 	 */
 	public Object getElementAt(int index) {
-		String user = usersForView.get(index);
-		if(opExist && op.contains(user)) return '@' + user;
-		if(voiceExist && voice.contains(user)) return '+' + user;
-		return user;
-		}
+		return usersForView.get(index);
+	}
 	
 	public int getSize() {
 		return usersForView.size();
@@ -155,8 +118,7 @@ public class UserModel extends AbstractListModel {
 	}
 	
 	public void sortList(List<String> list) {
-		Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
-			
+		Collections.sort(list, new SubstringComparator());
 	}
 
 	/**
@@ -165,32 +127,10 @@ public class UserModel extends AbstractListModel {
 	 * @param action - Either + or -
 	 */
 	
-	public void opMode(String nick, Action action) {
-		if(!opExist) {
-			op = new ArrayList<String>();
-			opExist = true;
-		} 
-		
-		if(action == Action.PLUS) {
-			if(voiceExist && voice.contains(nick)) {
-				voice.remove(nick);
-				if(voice.size() == 0) voiceExist = false;
-			} else {
-				regulars.remove(nick);
-				if(regulars.size() == 0) regularsExist = false;
-				
-			}
-			op.add(nick);
-		}
-		
-		
-		if(action == Action.MINUS) {
-			op.remove(nick);
-			regulars.add(nick);
-			regularsExist = true;
-		}
-		
-		updateView();
+	public void modeChange() {
+		 usersForView.clear();
+		 importList();
+		 updateView();
 		
 	}
 
@@ -200,16 +140,13 @@ public class UserModel extends AbstractListModel {
 	 * @param action Either + or -
 	 */
 	public void voiceMode(String nick, Action action) {
-		if(!voiceExist) {
-			voice = new ArrayList<String>();
-			voiceExist = true;
-		}  // Some channels have autovoice, and then we might be voiced before the mode comes 
-		if(action == Action.PLUS && voice.contains(nick) == false) {
-			if(opExist && op.contains(nick)) {	
-				op.remove(nick);
-				if(op.size() == 0) opExist = false;
-				
-			} else {
+		  // Some channels have autovoice, and then we might be voiced before the mode comes 
+		
+		if(opExist && !op.contains(nick))
+			if(action == Action.PLUS) {
+			if(!voiceExist && regulars.contains(nick)) {
+				voice = new ArrayList<String>();
+				voiceExist = true;
 				regulars.remove(nick);
 				if(regulars.size() == 0) regularsExist = false;
 			} 
@@ -217,14 +154,16 @@ public class UserModel extends AbstractListModel {
 		}
 		
 		if(action == Action.MINUS) {
-			voice.remove(nick);
-			regulars.add(nick);
-			regularsExist = true;
+			if(regularsExist && !regulars.contains(nick)) {
+				voice.remove(nick);
+				regulars.add(nick);
+			}	
 		}
 		
 		updateView();
 		
 	}
+
 	
 	/**
 	 * Changes a users nick 
@@ -233,17 +172,19 @@ public class UserModel extends AbstractListModel {
 	 */
 	
 	public void nickChange(String oldNick, String newNick) {
-		if(opExist && op.contains(oldNick)) {
-			op.remove(oldNick);
-			op.add(newNick);
-		} else if (voiceExist && voice.contains(oldNick)) {
-			voice.remove(oldNick);
-			voice.add(newNick);
+		System.out.println(usersForView);
+		if(usersForView.contains('@'+oldNick)) {
+			usersForView.remove('@'+oldNick);
+			usersForView.add('@'+newNick);
+			
+		} else if (usersForView.contains('+'+oldNick)) {
+			usersForView.remove('+'+oldNick);
+			usersForView.add('+'+newNick);
 		} else {
-			regulars.remove(oldNick);
-			regulars.add(newNick);
+			usersForView.remove(oldNick);
+			usersForView.add(newNick);
 		}
-		
+		sortList(usersForView);
 		updateView();
 }
 
@@ -252,22 +193,18 @@ public class UserModel extends AbstractListModel {
 	 * by JList
 	 */
 	public void updateView() {
-		usersForView.clear();
-		if(opExist) { 
-			sortList(op);
-			usersForView.addAll(op);
-		
-		}
-		if(voiceExist) {
-			sortList(voice);
-			usersForView.addAll(voice);
-		}
-		if(regularsExist) {
-			sortList(regulars);
-			usersForView.addAll(regulars);
-		}
-		
 		fireContentsChanged(this, 0, getSize());
 	}
 
+	class SubstringComparator implements Comparator<String> {
+		public int compare (String s1, String s2) {
+		
+		if  (s1.charAt(0) == '@' && s2.charAt(0) != '@') return -1;
+		else if  (s1.charAt(0) != '@' && s2.charAt(0) == '@') return 1;
+		else if  (s1.charAt(0) == '+' && s2.charAt(0) != '+') return -1;
+		else if  (s1.charAt(0) != '+' && s2.charAt(0) == '+') return 1;
+		else return s1.compareToIgnoreCase(s2);
+		}
+	
+}
 }

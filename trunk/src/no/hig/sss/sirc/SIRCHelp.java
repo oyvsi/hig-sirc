@@ -39,16 +39,17 @@ public class SIRCHelp extends JPanel implements ActionListener {
         
         java.net.URL helpURL;
 		try {
-			helpURL = new URL(url);
+			helpURL = getClass().getResource(url);
 			if (helpURL != null) {
 	            try {
 	                editorPane.setPage(helpURL);
+	                System.out.println("HELP: " +helpURL);
 	            } catch (IOException e) {
 	                System.err.println("Attempted to read a bad URL: " + helpURL);
 	            }
 			}
 	        return editorPane;
-		} catch (MalformedURLException e1) {
+		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}

@@ -21,7 +21,7 @@ public class I18n {
 		currentLocale = Locale.getDefault();
 		messages = ResourceBundle.getBundle("i18n/I18N", currentLocale);
 	}
-	
+
 	/**
 	 * Returns the text string from specifies id
 	 * 

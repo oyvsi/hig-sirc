@@ -233,11 +233,9 @@ public class ConnectionManagement implements IRCEventListener {
 								 "/" + channelName  + " [" + modeText + mode + " " + nick + "]" + 
 							     " " + sIRC.i18n.getStr("channel.by") + " " + me.setBy(); 
 					
-					if(mode == 'o')	// op
-						sIRC.tabContainer.opMode(channelName, nick, action);
 
-					else if(mode == 'v') // voice
-						sIRC.tabContainer.voiceMode(channelName, nick, action);	
+					sIRC.tabContainer.modeChange(channelName);	
+
 					if(mode == 'o' || mode == 'v')
 						sIRC.tabContainer.message(msg, channelName, TabComponent.CHANNEL, TabComponent.INFO);
 				}				
@@ -351,6 +349,7 @@ public class ConnectionManagement implements IRCEventListener {
 		else if (e.getType() == Type.CTCP_EVENT) {	// All CTCP events
 			CtcpEvent ce = (CtcpEvent) e;
 			String ctcp = ce.getCtcpString();
+			System.out.println(ctcp + "   " + ce.getMessage());
 			String identifier = ce.getNick();
 			if(ce.getChannel() != null)
 				identifier = ce.getChannel().getName();
@@ -366,9 +365,23 @@ public class ConnectionManagement implements IRCEventListener {
 					sIRC.tabContainer.message(printMsg, identifier, type, TabComponent.INFO);
 			}
 			
-		
-		
-		}
+			if(ctcp.startsWith("PING")) {
+				session.notice(ce.getNick(), "\001" + ce.getCtcpString() + "\001"); 
+			
+				
+			}
+			
+			if(ctcp.startsWith("VERSION")) {
+				session.notice(ce.getNick(), "\001" + "VERSION sIRC v1.0" + "\001");
+			}
+			
+			if(ctcp.startsWith("TIME")) {
+				SimpleDateFormat sdf = new SimpleDateFormat("E M d hh:mm:ss y");
+				Date date = new Date();
+				sdf.format(date);
+				session.notice(ce.getNick(),"\001 TIME " + date + "\001");
+			}
+	}
 		
 		else if(e.getType() == Type.CONNECTION_LOST) {	// We lost connection
 			isConnected = false;
@@ -428,7 +441,7 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.message(printMsg, identifier, type, TabComponent.INFO);
 		}
 	}
-	
+		
 	/**
 	 * Relays private message from client to the given user
 	 * @param toNick the user to send the message to

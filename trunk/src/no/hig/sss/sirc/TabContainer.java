@@ -1,5 +1,6 @@
 package no.hig.sss.sirc;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -67,6 +68,14 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 			newTab(identifier, type);
 		}
 		tabContainer.get(identifier).addText(message, format);	// Pass along the message
+		if(getSelectedIndex() == index) {
+			System.out.println("We are at the tab");
+			
+		} else {
+											Color lol = getForegroundAt(index);
+											System.out.println(lol.toString());
+			setForegroundAt(index, Color.BLUE);
+		}
 		// if user is set away. Send her a reminder.
 		if(isAway && type == TabComponent.PM)
 			tabContainer.get(identifier).addText(sIRC.i18n.getStr("pm.isAwayReminder"), TabComponent.INFO);
@@ -206,7 +215,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	 * @param action - Action object for the op-change
 	 */
 	public void opMode(String channelName, String nick, Action action) {
-		tabContainer.get(channelName).getUserModel().opMode(nick, action);
+	//	tabContainer.get(channelName).getUserModel().opMode(nick, action);
 	}
 	
 	/**
@@ -261,7 +270,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 					tab.addText(msg, TabComponent.INFO); // Pass the change nick message
 				}
 			}
-			else if(tab.getType() == TabComponent.PM) {
+			else if(tab.getType() == TabComponent.PM && tabContainer.containsKey(oldNick)) {
 				tab.setIdentifier(newNick);	// Notify the tab of new name
 				tab.setTopText(newNick);  // Change top text
 				setTitleAt(i, newNick);  // Change the title of the tab
@@ -315,5 +324,11 @@ public class TabContainer extends JTabbedPane implements ActionListener {
         if (selected != null) {
             sIRC.conManagement.closeChat(selected.getIdentifier(), selected.getType(), null);
         }
+	}
+
+
+	public void modeChange(String channelName) {
+		tabContainer.get(channelName).getUserModel().modeChange();
+		
 	}
 }

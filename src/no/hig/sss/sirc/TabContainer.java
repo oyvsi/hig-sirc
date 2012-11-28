@@ -139,24 +139,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 		index = indexOfTab(identifier);
 		setSelectedIndex(index);
 	}
-	/**
-	 * Sets Mnemonics for all tabs
-	 */
-	public void setMnemonics() {
-		for(int i = 0; i < getTabCount(); i++) {
-			switch(i) {	 // Set up shortcuts for the first 8 tabs.
-				case 0:	setMnemonicAt(i, KeyEvent.VK_1); break;
-				case 1: setMnemonicAt(i, KeyEvent.VK_2); break;
-				case 2: setMnemonicAt(i, KeyEvent.VK_3); break;
-				case 3: setMnemonicAt(i, KeyEvent.VK_4); break;
-				case 4: setMnemonicAt(i, KeyEvent.VK_5); break;
-				case 5: setMnemonicAt(i, KeyEvent.VK_6); break;
-				case 6: setMnemonicAt(i, KeyEvent.VK_7); break;
-				case 7: setMnemonicAt(i, KeyEvent.VK_8); break;
-				case 8: setMnemonicAt(i, KeyEvent.VK_9); break;
-			}
-		}
-	}
+
 	/**
 	 * Close a tab
 	 * 
@@ -237,7 +220,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	 */
 	public void userQuit(String nick, String msg) {
 		TabComponent tab;
-		for(int i = 1; i < tabContainer.size(); i++) {
+		for(int i = 1; i < tabContainer.size(); i++) {	// Loop all our tabs
 			tab = (TabComponent) getComponentAt(i);
 			
 			if(tab.getType() == TabComponent.CHANNEL) {
@@ -246,7 +229,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 					tab.addText(msg, TabComponent.INFO);
 				}
 			}
-			else if(tab.getType() == TabComponent.PM) {
+			else if(tab.getType() == TabComponent.PM && nick.equals(tab.getIdentifier())) {
 				tab.addText(msg, TabComponent.INFO);
 			}
 		}
@@ -330,5 +313,24 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	public void modeChange(String channelName) {
 		tabContainer.get(channelName).getUserModel().modeChange();
 		
+	}
+	
+	/**
+	 * Sets Mnemonics for all tabs
+	 */
+	private void setMnemonics() {
+		for(int i = 0; i < getTabCount(); i++) {
+			switch(i) {	 // Set up shortcuts for the first 8 tabs.
+				case 0:	setMnemonicAt(i, KeyEvent.VK_1); break;
+				case 1: setMnemonicAt(i, KeyEvent.VK_2); break;
+				case 2: setMnemonicAt(i, KeyEvent.VK_3); break;
+				case 3: setMnemonicAt(i, KeyEvent.VK_4); break;
+				case 4: setMnemonicAt(i, KeyEvent.VK_5); break;
+				case 5: setMnemonicAt(i, KeyEvent.VK_6); break;
+				case 6: setMnemonicAt(i, KeyEvent.VK_7); break;
+				case 7: setMnemonicAt(i, KeyEvent.VK_8); break;
+				case 8: setMnemonicAt(i, KeyEvent.VK_9); break;
+			}
+		}
 	}
 }

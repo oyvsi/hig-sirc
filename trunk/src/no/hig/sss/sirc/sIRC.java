@@ -1,6 +1,7 @@
 package no.hig.sss.sirc;
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -61,8 +62,7 @@ public class sIRC extends JFrame {
 	 */
 	public static void main(String[] args) {
 		sIRC irc = new sIRC();
-		ImageIcon img = new ImageIcon("icon.png");
-		irc.setIconImage(img.getImage());
+		
 		
 		irc.setVisible(true);
 		irc.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -72,6 +72,11 @@ public class sIRC extends JFrame {
 	public void setupSettings() throws IOException {		
 		String home = System.getProperty("user.home");
 	
+		// Set image icon
+		URL myurl = this.getClass().getResource("Resources/icon.png");
+		ImageIcon img = new ImageIcon(this.getToolkit().getImage(myurl));
+		setIconImage(img.getImage());
+		
 		File settingsDir = new File(home, "sirc");
 		File configDest = new File(settingsDir, "config.ini");		
 		File serversDest = new File(settingsDir, "servers.ini");

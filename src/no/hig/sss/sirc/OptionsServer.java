@@ -131,87 +131,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 			return;
 		// If node is leaf and node is not null, set selected server
 		setSelectedServer(node.toString(), node.getParent().toString());
-	}
-	
-	/**
-	 * Takes an Int array and makes comma separated string
-	 * 
-	 * @param ports
-	 * @return ports as String
-	 */
-	private String portsToString(int[] ports) {
-		String tempPorts = "";
-		for(int port : ports) {
-			tempPorts = tempPorts + port + ",";
-		}
-		// returns the string, and removes the comma at the end.
-		return(tempPorts.substring(0, tempPorts.length()-1));
-	}
-	
-	
-	/**
-	 * Takes string that looks like 6661-6669GROUP, or 6665-6668,7000GROUP
-	 * 
-	 * @param raw
-	 * @return array of ints
-	 */
-	private int[] toPort(String raw) {
-		ArrayList<Integer> al = new ArrayList<Integer>();
-		String[] temp;
-		String[] temp2;
-		temp = raw.split("G");
-
-		temp = temp[0].split(",");
-		for (String temp3 : temp) {
-			if (temp3.contains("-")) {
-				temp2 = temp3.split("-");
-				for (int i = Integer.valueOf(temp2[0]); i <= Integer
-						.valueOf(temp2[1]); i++) {
-					al.add(i);
-				}
-			} else {
-				al.add(Integer.valueOf(temp3));
-			}
-		}
-		int[] ports = new int[al.size()];
-		for (int i = 0; i < al.size(); i++) {
-			ports[i] = al.get(i).intValue();
-		}
-		return ports;
-	}
-
-	/**
-	 * Adds a server to list of servers and the root Tree node
-	 * @param t
-	 */
-	private void addServers(DefaultMutableTreeNode t) {
-		Collections.reverse(osp);		// Safe?
-		//Collections.reverse(networks);	// Can only be used on list
-		for(OptionsServerPrefs temposp : osp){
-			boolean isNetwork = false;
-			for(String network : this.networks) {
-				if((network.equalsIgnoreCase(temposp.getServerGroup()))) {
-					isNetwork = true;
-				}
-			}
-			if(!isNetwork) {
-				DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(temposp.getServerGroup());
-				treeModel.insertNodeInto(dmtn, t, 0);
-				dmtn.add(new DefaultMutableTreeNode(temposp.getServerName()));
-			}
-		}
-		for (String network : this.networks) {
-			if (!network.isEmpty()) {
-				DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(network);
-				treeModel.insertNodeInto(dmtn, t, 0);
-				for (int i = 0; i < osp.size(); i++) {
-					if (osp.get(i).getServerGroup().equals(network)) {
-						dmtn.add(new DefaultMutableTreeNode(osp.get(i).getServerName()));
-					}
-				}
-			}
-		}
-	}
+	}	
 
 	/**
 	 * Handles action events for class
@@ -315,6 +235,25 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	}
 
 	/**
+	 * @return the selectedServer
+	 */
+	public String getSelectedServer() {
+		return selectedServer;
+	}
+
+	/**
+	 * @param selectedServer
+	 *            the selectedServer to set
+	 */
+	public void setSelectedServer(String selectedServer, String group) {
+		for(OptionsServerPrefs osp : this.osp) {
+			if(osp.getServerName().equals(selectedServer) && osp.getServerGroup().equals(group)) {
+				this.selectedServer = osp.getServerUrl();
+			}
+		}
+	}
+
+	/**
 	 * Loads servers from file specified.
 	 */
 	public void loadServers() {
@@ -392,7 +331,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	 * @param osp
 	 * @param n
 	 */
-	public void addServer(OptionsServerPrefs osp, DefaultMutableTreeNode n) {
+	private void addServer(OptionsServerPrefs osp, DefaultMutableTreeNode n) {
 		// Remove items from JPanel
 		remove(sp);
 		remove(action);
@@ -435,7 +374,7 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 	/**
 	 * Add server to list and tree, based on if server is being edited or a new one is made
 	 */
-	public void saveServer() {
+	private void saveServer() {
 		OptionsServerPrefs osp = new OptionsServerPrefs(
 				editServerName.getText(), editServerUrl.getText(),
 				editServerGroup.getText(), toPort(editServerPorts.getText()));
@@ -451,22 +390,82 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		}
 		this.saveServers();	// save servers
 	}
-
 	/**
-	 * @return the selectedServer
+	 * Takes an Int array and makes comma separated string
+	 * 
+	 * @param ports
+	 * @return ports as String
 	 */
-	public String getSelectedServer() {
-		return selectedServer;
+	private String portsToString(int[] ports) {
+		String tempPorts = "";
+		for(int port : ports) {
+			tempPorts = tempPorts + port + ",";
+		}
+		// returns the string, and removes the comma at the end.
+		return(tempPorts.substring(0, tempPorts.length()-1));
+	}
+	
+	/**
+	 * Takes string that looks like 6661-6669GROUP, or 6665-6668,7000GROUP
+	 * 
+	 * @param raw
+	 * @return array of ints
+	 */
+	
+	private int[] toPort(String raw) {
+		ArrayList<Integer> al = new ArrayList<Integer>();
+		String[] temp;
+		String[] temp2;
+		temp = raw.split("G");
+
+		temp = temp[0].split(",");
+		for (String temp3 : temp) {
+			if (temp3.contains("-")) {
+				temp2 = temp3.split("-");
+				for (int i = Integer.valueOf(temp2[0]); i <= Integer
+						.valueOf(temp2[1]); i++) {
+					al.add(i);
+				}
+			} else {
+				al.add(Integer.valueOf(temp3));
+			}
+		}
+		int[] ports = new int[al.size()];
+		for (int i = 0; i < al.size(); i++) {
+			ports[i] = al.get(i).intValue();
+		}
+		return ports;
 	}
 
 	/**
-	 * @param selectedServer
-	 *            the selectedServer to set
+	 * Adds a server to list of servers and the root Tree node
+	 * @param t
 	 */
-	public void setSelectedServer(String selectedServer, String group) {
-		for(OptionsServerPrefs osp : this.osp) {
-			if(osp.getServerName().equals(selectedServer) && osp.getServerGroup().equals(group)) {
-				this.selectedServer = osp.getServerUrl();
+	private void addServers(DefaultMutableTreeNode t) {
+		Collections.reverse(osp);		// Safe?
+		//Collections.reverse(networks);	// Can only be used on list
+		for(OptionsServerPrefs temposp : osp){
+			boolean isNetwork = false;
+			for(String network : this.networks) {
+				if((network.equalsIgnoreCase(temposp.getServerGroup()))) {
+					isNetwork = true;
+				}
+			}
+			if(!isNetwork) {
+				DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(temposp.getServerGroup());
+				treeModel.insertNodeInto(dmtn, t, 0);
+				dmtn.add(new DefaultMutableTreeNode(temposp.getServerName()));
+			}
+		}
+		for (String network : this.networks) {
+			if (!network.isEmpty()) {
+				DefaultMutableTreeNode dmtn = new DefaultMutableTreeNode(network);
+				treeModel.insertNodeInto(dmtn, t, 0);
+				for (int i = 0; i < osp.size(); i++) {
+					if (osp.get(i).getServerGroup().equals(network)) {
+						dmtn.add(new DefaultMutableTreeNode(osp.get(i).getServerName()));
+					}
+				}
 			}
 		}
 	}

@@ -16,6 +16,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * This class makes the JPanel for personal options
+ * 
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+ * 
+ */
 public class OptionsPersonal extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JTextField username, nickname, altnick;
@@ -34,7 +40,6 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	 * values
 	 * 
 	 */
-
 	public OptionsPersonal(String selectedServer) {
 		filePrefs = new File("connetionoptionsprefs.ini");
 		bl = new BorderLayout();
@@ -92,6 +97,98 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	}
 
 	/**
+	 * Setter for nickname
+	 * @param nick The nickname to change to
+	 */
+	public void setNick(String nick) {
+		nickname.setText(nick);
+	
+	}
+
+	/**
+	 * Getter for userName
+	 * @return the username
+	 */
+	public String getUserName() {
+		return username.getText();
+	}
+
+	/**
+	 * Getter for nickname
+	 * @return the nickname
+	 */
+	public String getNickname() {
+		return nickname.getText();
+	}
+
+	/**
+	 * Getter for altnick
+	 * @return the altnick
+	 */
+	public String getAltnick() {
+		return altnick.getText();
+	}
+
+	/**
+	 * Handler for action commands
+	 * Handles Connect, ok, cancel, help
+	 */
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		System.out.println(ae.getActionCommand());
+		if(ae.getActionCommand().equals("connect")) {
+			sIRC.conManagement.connect(getNickname(), this.selectedServer.getText());
+			sIRC.options.hideWindow(true);	
+		} else if(ae.getActionCommand().equals("ok")) {
+			sIRC.options.hideWindow(true);
+		} else if(ae.getActionCommand().equals("cancel")) {
+			sIRC.options.hideWindow(false);
+		} else if(ae.getActionCommand().equals("help")) {
+			sIRC.options.setViewHelp(Options.CONNECTIONHELP);
+		}
+	}
+	
+	/**
+	 * Saves info in text areas to properties file
+	 * textfields: username, nickname, altnick, selectedserver 
+	 */
+	public Properties save() {
+		Properties pro = new Properties();
+		pro.setProperty("username", username.getText());
+		pro.setProperty("nickname", nickname.getText());
+		pro.setProperty("altnick", altnick.getText());
+		pro.setProperty("server", selectedServer.getText());
+		
+		return pro;
+	}
+	
+	/**
+	 * Loads prefs from config file
+	 * @param pro
+	 */
+	public void load(Properties pro) {		
+		username.setText(pro.getProperty("username"));
+		nickname.setText(pro.getProperty("nickname"));
+		altnick.setText(pro.getProperty("altnick"));
+		selectedServer.setText(pro.getProperty("server"));
+	}
+	/**
+	 * Getter for selected server
+	 * @return the selectedServer
+	 */
+	public String getSelectedServer() {
+		return selectedServer.getText();
+	}
+
+	/**
+	 * Setter for selected server
+	 * @param selectedServer the selectedServer to set
+	 */
+	public void setSelectedServer(String selectedServer) {
+		this.selectedServer.setText(selectedServer);
+	}
+
+	/**
 	 * Used to place components/panels in a single cell, take the x, y and
 	 * component to be placed as a parameter
 	 * 
@@ -120,97 +217,5 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		gbc.gridheight = height;
 		layout.setConstraints(c, gbc);
 		gridLayout.add(c);
-	}
-	
-	/**
-	 * Setter for nickname
-	 * @param nick The nickname to change to
-	 */
-	public void setNick(String nick) {
-		nickname.setText(nick);
-	
-	}
-
-	/**
-	 * Getter for userName
-	 * @return the username
-	 */
-	public String getUserName() {
-		return username.getText();
-	}
-
-
-	/**
-	 * Getter for nickname
-	 * @return the nickname
-	 */
-	public String getNickname() {
-		return nickname.getText();
-	}
-
-	/**
-	 * Getter for altnick
-	 * @return the altnick
-	 */
-	public String getAltnick() {
-		return altnick.getText();
-	}
-
-	/**
-	 * Handler for action commands
-	 * Handles Connect, ok, cancel, help
-	 */
-	@Override
-	public void actionPerformed(ActionEvent ae) {
-		System.out.println(ae.getActionCommand());
-		if(ae.getActionCommand().equals("connect")) {
-			sIRC.conManagement.connect(getNickname(), this.selectedServer.getText());
-			sIRC.options.hideWindow(true);
-			
-		} else if(ae.getActionCommand().equals("ok")) {
-			sIRC.options.hideWindow(true);
-		} else if(ae.getActionCommand().equals("cancel")) {
-			sIRC.options.hideWindow(false);
-		} else if(ae.getActionCommand().equals("help")) {
-			sIRC.options.setViewHelp(Options.CONNECTIONHELP);
-		}
-		
-		
-	}
-	
-	/**
-	 * Saves info in text areas to properties file
-	 * textfields: username, nickname, altnick, selectedserver 
-	 */
-	public Properties save() {
-		Properties pro = new Properties();
-		pro.setProperty("username", username.getText());
-		pro.setProperty("nickname", nickname.getText());
-		pro.setProperty("altnick", altnick.getText());
-		pro.setProperty("server", selectedServer.getText());
-		
-		return pro;
-	}
-	
-	public void load(Properties pro) {		
-		username.setText(pro.getProperty("username"));
-		nickname.setText(pro.getProperty("nickname"));
-		altnick.setText(pro.getProperty("altnick"));
-		selectedServer.setText(pro.getProperty("server"));
-	}
-	/**
-	 * Getter for selected server
-	 * @return the selectedServer
-	 */
-	public String getSelectedServer() {
-		return selectedServer.getText();
-	}
-
-	/**
-	 * Setter for selected server
-	 * @param selectedServer the selectedServer to set
-	 */
-	public void setSelectedServer(String selectedServer) {
-		this.selectedServer.setText(selectedServer);
 	}
 }

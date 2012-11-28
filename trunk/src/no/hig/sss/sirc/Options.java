@@ -21,8 +21,8 @@ import java.util.*;
 public class Options extends JPanel implements TreeSelectionListener {
 	private static final long serialVersionUID = 1L;
 	private JSplitPane splitPane;
-	OptionsPersonal op;
-	OptionsServer os;
+	private OptionsPersonal op;
+	public OptionsServer os;
 	private JFrame jf;
 	private JTree tree;
 	private DefaultTreeModel treeModel;
@@ -288,10 +288,10 @@ public class Options extends JPanel implements TreeSelectionListener {
 			consoleFormat.save().store(fos, "Console Messages");
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.out.println("The config file could not be opened");
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Error saving to config file");
 			e.printStackTrace();
 		}
 	}
@@ -311,10 +311,10 @@ public class Options extends JPanel implements TreeSelectionListener {
 			consoleFormat.load(pro);
 			fis.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.out.println("The config file could not be opened");
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Error loading config file");
 			e.printStackTrace();
 		}
 	}

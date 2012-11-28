@@ -1,15 +1,10 @@
 package no.hig.sss.sirc;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Files;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -69,6 +64,11 @@ public class sIRC extends JFrame {
 		options.createAndShowGUI();
 	}
 	
+	/**
+	 * Makes sure that we have our config files set up and sets program icon.
+	 * 
+	 * @throws IOException
+	 */
 	public void setupSettings() throws IOException {		
 		String home = System.getProperty("user.home");
 	
@@ -86,11 +86,10 @@ public class sIRC extends JFrame {
 	            throw new IllegalStateException(settingsDir.toString());
 		}
 		
-		if(configDest.exists() == false) 
+		if(configDest.exists() == false) // There is no config-file in %User%sIRC/. Copy from jar
 			Helpers.copyFile(getClass().getResourceAsStream("Resources/config.ini"), home + "/sIRC/config.ini");
 		
-		if(serversDest.exists() == false) 
+		if(serversDest.exists() == false) // There is no servers-file in %User%sIRC/. Copy from jar
 			Helpers.copyFile(getClass().getResourceAsStream("Resources/servers.ini"), home + "/sIRC/servers.ini");
-
 	}
 }

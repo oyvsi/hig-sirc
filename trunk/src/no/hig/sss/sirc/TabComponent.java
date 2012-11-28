@@ -126,10 +126,10 @@ public class TabComponent extends JPanel {
 		try {
 			document.insertString(document.getLength(), message + "\n", format);
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
+			System.out.println("Error adding text to tab");
 			e.printStackTrace();
 		}
-			
+			// Add text first, then set scroll
 	    SwingUtilities.invokeLater(new Thread() {
 	    	public void run() {
 	    		JScrollBar scrollBar = scrollPaneChat.getVerticalScrollBar();

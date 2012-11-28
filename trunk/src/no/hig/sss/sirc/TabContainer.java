@@ -306,10 +306,10 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	private String getTabIdentifier(int index) {
 		return ((TabComponent) getComponentAt(index)).getIdentifier();
 	}
-
-
 	
-	@Override
+	/**
+	 * Listener for our x to close tab
+	 */
 	public void actionPerformed(ActionEvent ae) {
 		TabComponent selected = (TabComponent) getSelectedComponent();
         if (selected != null) {

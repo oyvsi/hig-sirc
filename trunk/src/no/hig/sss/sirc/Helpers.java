@@ -2,6 +2,9 @@ package no.hig.sss.sirc;
 
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import java.io.IOException;
 import java.net.URL;
@@ -91,43 +94,16 @@ public final class Helpers {
 		return file;
 	}
 	
-	public static void setupSettings(URL resourcesPath) throws IOException {
-		
-		String home = System.getProperty("user.home");
-		File settingsDir = new File(home, "sirc");
-		
-		File configDest = new File(settingsDir, "config.ini");
-		File configSource = new File(resourcesPath.getPath(), "config.ini");
-		
-		File serversDest = new File(settingsDir, "servers.ini");
-		File serversSource = new File(resourcesPath.getPath(), "servers.ini");
-		
-		if(settingsDir.exists() == false) {	// Make sure we have %User%sIRC/
-	        if(!settingsDir.mkdir())
-	            throw new IllegalStateException(settingsDir.toString());
-		}
-		
-		if(configDest.exists() == false) 
-			copyFile(configSource, configDest);
-		
-		if(serversDest.exists() == false) 
-			copyFile(serversSource, serversDest);
-	}
-	
-		// Requires Java 7
-	public static void copyFile(File from, File to) throws IOException {
-	    Files.copy(from.toPath(), to.toPath());
-		/*
-		FileOutputStream output = new FileOutputStream(to);
-		InputStream input = new FileInputStream(from);
-		byte [] buffer = new byte[4096];
-		int bytesRead = input.read(buffer);
-		while (bytesRead != -1) {
-		    output.write(buffer, 0, bytesRead);
-		    bytesRead = input.read(buffer);
-		}
-		output.close();
-		input.close();*/
+	public static void copyFile(InputStream input, String destination) throws IOException {
+		 
+		OutputStream os = new FileOutputStream(destination);							// The output file
+		byte[] buffer = new byte[4096];													// Set the size of the buffer
+		int length;																		// Read size
+		while ((length = input.read(buffer)) > 0) 
+			os.write(buffer, 0, length);
+
+		os.close();
+		input.close();
 		
 	}
 

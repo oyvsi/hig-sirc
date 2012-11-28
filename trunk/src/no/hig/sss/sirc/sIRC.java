@@ -3,7 +3,10 @@ package no.hig.sss.sirc;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 
@@ -29,7 +32,7 @@ public class sIRC extends JFrame {
 	 */
 	public sIRC() {
 		try {
-			Helpers.setupSettings(getClass().getResource("Resources"));
+			setupSettings();
 		} catch (IOException e) {
 			System.out.println("Error setting up config files");
 			e.printStackTrace();
@@ -64,5 +67,25 @@ public class sIRC extends JFrame {
 		irc.setVisible(true);
 		irc.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		options.createAndShowGUI();
+	}
+	
+	public void setupSettings() throws IOException {		
+		String home = System.getProperty("user.home");
+	
+		File settingsDir = new File(home, "sirc");
+		File configDest = new File(settingsDir, "config.ini");		
+		File serversDest = new File(settingsDir, "servers.ini");
+		
+		if(settingsDir.exists() == false) {	// Make sure we have %User%sIRC/
+	        if(!settingsDir.mkdir())
+	            throw new IllegalStateException(settingsDir.toString());
+		}
+		
+		if(configDest.exists() == false) 
+			Helpers.copyFile(getClass().getResourceAsStream("Resources/config.ini"), home + "/sIRC/config.ini");
+		
+		if(serversDest.exists() == false) 
+			Helpers.copyFile(getClass().getResourceAsStream("Resources/servers.ini"), home + "/sIRC/servers.ini");
+
 	}
 }

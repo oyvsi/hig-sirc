@@ -73,7 +73,6 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		cancel = Helpers.createButton("button.cancel.buttonText", "connectionOptions.button.cancel.tooltip","cancel", this);
 		help = Helpers.createButton("button.help.buttonText", "connectionOptions.button.help.tooltip", "help", this);
 		
-		
 		navigate.add(ok);
 		navigate.add(cancel);
 		navigate.add(help);
@@ -96,12 +95,9 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	 * Used to place components/panels in a single cell, take the x, y and
 	 * component to be placed as a parameter
 	 * 
-	 * @param x
-	 *            the column for this component
-	 * @param y
-	 *            the row for this component
-	 * @param c
-	 *            the component to add to the layout
+	 * @param x the column for this component
+	 * @param y the row for this component
+	 * @param c the component to add to the layout
 	 */
 	private void add(int x, int y, Component c) {
 		add(x, y, 1, 1, c);
@@ -111,16 +107,11 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	 * Used to add a panel/component to the layout, just take the x, y, width
 	 * and height as well as the component to be placed as a parameter
 	 * 
-	 * @param x
-	 *            the column for this component
-	 * @param y
-	 *            the row for this component
-	 * @param width
-	 *            the number of columns this component will spawn
-	 * @param height
-	 *            the number of rows this component will spawn
-	 * @param c
-	 *            the component to add to the layout
+	 * @param x the column for this component
+	 * @param y the row for this component
+	 * @param width the number of columns this component will spawn
+	 * @param height the number of rows this component will spawn
+	 * @param c the component to add to the layout
 	 */
 	private void add(int x, int y, int width, int height, Component c) {
 		gbc.gridx = x;
@@ -132,7 +123,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	}
 	
 	/**
-	 * 
+	 * Setter for nickname
 	 * @param nick The nickname to change to
 	 */
 	public void setNick(String nick) {
@@ -141,6 +132,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	}
 
 	/**
+	 * Getter for userName
 	 * @return the username
 	 */
 	public String getUserName() {
@@ -149,6 +141,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 
 
 	/**
+	 * Getter for nickname
 	 * @return the nickname
 	 */
 	public String getNickname() {
@@ -156,13 +149,17 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	}
 
 	/**
+	 * Getter for altnick
 	 * @return the altnick
 	 */
 	public String getAltnick() {
 		return altnick.getText();
 	}
 
-
+	/**
+	 * Handler for action commands
+	 * Handles Connect, ok, cancel, help
+	 */
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		System.out.println(ae.getActionCommand());
@@ -180,6 +177,11 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		
 		
 	}
+	
+	/**
+	 * Saves info in text areas to properties file
+	 * textfields: username, nickname, altnick, selectedserver 
+	 */
 	public Properties save() {
 		Properties pro = new Properties();
 		pro.setProperty("username", username.getText());
@@ -197,6 +199,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		selectedServer.setText(pro.getProperty("server"));
 	}
 	/**
+	 * Getter for selected server
 	 * @return the selectedServer
 	 */
 	public String getSelectedServer() {
@@ -204,6 +207,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	}
 
 	/**
+	 * Setter for selected server
 	 * @param selectedServer the selectedServer to set
 	 */
 	public void setSelectedServer(String selectedServer) {

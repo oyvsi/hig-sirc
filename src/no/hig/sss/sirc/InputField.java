@@ -2,6 +2,7 @@ package no.hig.sss.sirc;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 
 import javax.swing.JTextField;
@@ -13,8 +14,7 @@ import javax.swing.JTextField;
  * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
  */
-
-public class InputField extends JTextField {
+public class InputField extends JTextField implements KeyListener {
 	private static final long serialVersionUID = 1L;
 	private ConnectionManagement connectionManagement;
 	private int type;	// Type of tab. Defined in TabComponent
@@ -25,26 +25,14 @@ public class InputField extends JTextField {
 	 * 
 	 * @param type the type of window the input field belongs to
 	 * @param identifier the name of the channel, or nickname of user in PM 
-	 */
-		
+	 */		
 	public InputField(int type, String identifier) {
 		super();
 		connectionManagement = sIRC.conManagement;
 		this.type = type;
 		this.identifier = identifier;
-		
-		// Listen for user pressing enter.
-		this.addKeyListener(new KeyAdapter() {
-	           public void keyReleased(KeyEvent e) {
-	               if(e.getKeyCode() == KeyEvent.VK_ENTER ) {
-	        	   JTextField textField = (JTextField) e.getSource();
-	                String text = textField.getText();
-	                textField.setText("");
-	                parseInput(text);
-	               }
-	           }
-		});
 	}
+	
 	/**
 	 * Sets the indentifier
 	 * 
@@ -86,6 +74,7 @@ public class InputField extends JTextField {
 						if(line.length == 2)
 							connectionManagement.joinChannel(line[1]);
 					}
+					
 					else if(cmd.equals("connect")) { // Connect to a irc-server
 							String nick = sIRC.options.getNick();
 							if(line.length == 2) {
@@ -95,11 +84,13 @@ public class InputField extends JTextField {
 									sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.noNick"));
 							}
 					}
+					
 					else if(cmd.equals("msg")) {	// Private messages
 						if(line.length > 2) {
 							connectionManagement.privMsg(line[1], restLine(line, 2));
 						}
 					}
+					
 					else if(cmd.equals("wc")) {	 // Close window
 						String partMsg = null;
 						if(line.length > 1)
@@ -113,6 +104,7 @@ public class InputField extends JTextField {
 							quitMsg = restLine(line, 1);
 						connectionManagement.disConnect(quitMsg);
 					}
+					
 					else if(cmd.equals("nick")) {	// Nick change
 						if(line.length == 2) {	
 							String newNick = restLine(line, 1);			
@@ -147,19 +139,48 @@ public class InputField extends JTextField {
 					else if(cmd.equals("list")) {
 						connectionManagement.ListChannels();
 					}
-						// Input starts with /, but we haven't implemented the command. Give error.
+					
+					// Input starts with /, but we haven't implemented the command. Give error.
 					else {
 						sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.unknownCommand"));
 					}
 				} catch (Exception e) {	// Split failed.
 					e.printStackTrace();
 				}
-			} else {	// Just normal chat
+			} 
+			
+			else {	// Just normal chat
 				if(type == TabComponent.CHANNEL)
 					connectionManagement.channelMsg(identifier, text);
 				else
 					connectionManagement.privMsg(identifier, text);		
 			}
 		}
-	}	 
+	}
+
+
+	/**
+	 * Listen for when the user presses enter and pass 
+	 * input to be parsed
+	 */
+	public void keyReleased(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_ENTER ) {
+  	   JTextField textField = (JTextField) e.getSource();
+          String text = textField.getText();
+          textField.setText("");
+          parseInput(text);
+         }		
+	}
+	
+	/**
+	 * Method not used
+	 */
+	@Override
+	public void keyTyped(KeyEvent e) {}
+	
+	/**
+	 * Method not used
+	 */
+	@Override
+	public void keyPressed(KeyEvent e) {}
 }

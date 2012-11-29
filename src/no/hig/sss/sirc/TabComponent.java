@@ -15,7 +15,7 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 
 /**
- * holds the tabs themselves.
+ * Class holding the different components creating a channel window or pm window
  * 
  * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
@@ -45,7 +45,6 @@ public class TabComponent extends JPanel {
 	 * @param type channel or pm
 	 * @param identifier the name to be set for the tab
 	 */
-	
 	public TabComponent(int type, String identifier) {
 		setLayout(new BorderLayout());
 		this.identifier = identifier;
@@ -53,6 +52,7 @@ public class TabComponent extends JPanel {
 		if(type == PM) {
 			this.type = PM;
 		}
+		
 		else if(type == CHANNEL) {
 			this.type = CHANNEL;
 			userModel = new UserModel(identifier);
@@ -60,7 +60,6 @@ public class TabComponent extends JPanel {
 			JScrollPane scrollPaneUsers = new JScrollPane(userList);
 			add(scrollPaneUsers, BorderLayout.EAST);
 		}
-			
 			
 		chatArea = new JTextPane();
 		chatArea.setEditable(false);
@@ -122,7 +121,7 @@ public class TabComponent extends JPanel {
 			format = Options.consoleFormat.format();
 		else
 			format = Options.channelFormat.format();
-			// add the ext to the chat area with appropriate style 
+			// add the text to the chat area with appropriate style 
 		try {
 			document.insertString(document.getLength(), message + "\n", format);
 		} catch (BadLocationException e) {

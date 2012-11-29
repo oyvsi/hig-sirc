@@ -14,7 +14,7 @@ public class OptionsServerPrefs {
 	private int[] port;
 	
 	/**
-	 * class constructor
+	 * class constructor not used
 	 */
 	public OptionsServerPrefs() {}
 	

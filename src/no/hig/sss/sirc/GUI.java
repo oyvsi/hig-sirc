@@ -55,8 +55,7 @@ class GUI implements ActionListener, MenuListener {
 		serverMenu.addMenuListener(this);
 
 		// Items for File menu
-		JMenuItem fileExit = Helpers.createMenuItem("fileMenu.Exit", "exit",
-				"tooltip.Exit", fileMenu, this);
+		JMenuItem fileExit = Helpers.createMenuItem("fileMenu.Exit", "exit", "tooltip.Exit", fileMenu, this);
 		// Items for Edit menu 
 		Helpers.createMenuItem("editMenu.Options", "options", "tooltip.Options", toolsMenu, this);
 		// Items for Help
@@ -85,7 +84,9 @@ class GUI implements ActionListener, MenuListener {
 	}
 
 
-	@Override
+	/**
+	 * Handles when user clicks on out menu items
+	 */
 	public void actionPerformed(ActionEvent e) {
 		String event = e.getActionCommand();
 		
@@ -102,15 +103,15 @@ class GUI implements ActionListener, MenuListener {
 			sIRC.conManagement.connect(sIRC.options.getNick(), sIRC.options.getServer());
 		} 
 		
-		else if (event.equals("joinAChannel")) {
+		else if (event.equals("joinAChannel")) {  // Ask for channel from user
 			String channel = (String) JOptionPane.showInputDialog(jf, sIRC.i18n.getStr("enterChannel"), "Join channel",
 					         JOptionPane.QUESTION_MESSAGE);
 			
 			if (channel != "" && channel != null)
-				sIRC.conManagement.joinChannel(channel);
+				sIRC.conManagement.joinChannel(channel);  // Join
 		} else if (event.equals("markedAway")) {
-			if(sIRC.conManagement.isConnected()) {
-				if(serverAway.isSelected()) {
+			if(sIRC.conManagement.isConnected()) {  // Must be connected to be set away
+				if(serverAway.isSelected()) {	// Ask for a reason
 					String awayMsg = (String) JOptionPane.showInputDialog(jf, sIRC.i18n.getStr("setAwayMsg"), "Set away message", 						
 						     JOptionPane.QUESTION_MESSAGE);
 					sIRC.conManagement.away(awayMsg);
@@ -118,7 +119,7 @@ class GUI implements ActionListener, MenuListener {
 				else {
 					sIRC.conManagement.away(null);
 				}
-			} else {
+			} else { // Not connected. Give error
 				JOptionPane.showMessageDialog(jf, sIRC.i18n.getStr("error.setAwayDisconnected"));
 				serverAway.setSelected(false);
 			}
@@ -126,21 +127,23 @@ class GUI implements ActionListener, MenuListener {
 			sIRC.options.showWindow();
 			sIRC.options.setViewHelp(Options.ABOUTHELP);
 			
-		} else {
+		} else {  // Unknown command
 			JOptionPane.showMessageDialog(null, sIRC.i18n.getStr("notFound.Text"));
 		}
 	}
 
-	@Override
+	/**
+	 * Handles when user clicks on server
+	 */
 	public void menuSelected(MenuEvent e) {
-		if(sIRC.conManagement.isConnected()) {
+		if(sIRC.conManagement.isConnected()) { // Enable features that are only applicable when connected
 			serverDisconnect.setEnabled(true);
 			serverAway.setEnabled(true);
 			serverJoinChannel.setEnabled(true);
 			serverChannelList.setEnabled(true);
 			
 			serverAway.setSelected(sIRC.conManagement.getSession().isAway());
-		} else {
+		} else {  // Disable them
 			serverDisconnect.setEnabled(false);
 			serverAway.setEnabled(false);
 			serverJoinChannel.setEnabled(false);

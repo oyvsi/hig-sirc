@@ -45,6 +45,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 			"help/server_help.html",
 			"help/about_help.html" };
 	
+	// Used to identify which help file to use
 	public static final int CONNECTIONHELP = 0;
 	public static final int USAGEHELP = 1;
 	public static final int COMMANDHELP = 2;
@@ -52,13 +53,15 @@ public class Options extends JPanel implements TreeSelectionListener {
 	public static final int SERVERHELP = 4;
 	public static final int ABOUTHELP = 5;
 	
+	// Used to identify which text options to use
 	public static TextOptions channelFormat;
 	public static TextOptions pmFormat;
 	public static TextOptions infoFormat;
 	public static TextOptions consoleFormat;
 
 	/**
-	 * Class constructor
+	 * Class constructor, creates JTree, Tree model, puts nodes in tree,
+	 * creates split pane for other views
 	 */
 	public Options() {
 		// Makes all the nodes for the JTree
@@ -80,7 +83,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		DefaultMutableTreeNode tHelpServer = new DefaultMutableTreeNode("Server Help");
 		DefaultMutableTreeNode tHelpAbout = new DefaultMutableTreeNode("About");
 
-		// makes treemodel around root and makes tree with treemodel
+		// makes tree model around root and makes tree with tree model
 		treeModel = new DefaultTreeModel(tRoot);
 		tree = new JTree(treeModel);
 
@@ -145,7 +148,6 @@ public class Options extends JPanel implements TreeSelectionListener {
 		consoleFormat.setPreferredSize(new Dimension(800, 600));
 
 		loadOptions();
-
 	}
 	
 	/**
@@ -234,18 +236,18 @@ public class Options extends JPanel implements TreeSelectionListener {
 		if ((node == null) || !(node.isLeaf()))
 			return;
 		switch (node.toString()) {
-			case "Personal": setViewPersonal(null); break;
-			case "Server": setViewServer(); break;
-			case "Channel messages": setViewFormat(TabComponent.CHANNEL); break;
-			case "Private messages": setViewFormat(TabComponent.PM); break;
-			case "Info messages": setViewFormat(TabComponent.INFO); break;
-			case "Console messages": setViewFormat(TabComponent.CONSOLE); break;
-			case "Connection Help": setViewHelp(CONNECTIONHELP); break;
-			case "Usage Help": setViewHelp(USAGEHELP); break;
-			case "Commands": setViewHelp(COMMANDHELP); break;
-			case "Style": setViewHelp(STYLEHELP); break;
-			case "Server Help": setViewHelp(SERVERHELP); break;
-			case "About": setViewHelp(ABOUTHELP); break;
+			case "Personal":			setViewPersonal(null); break;
+			case "Server": 				setViewServer(); break;
+			case "Channel messages": 	setViewFormat(TabComponent.CHANNEL); break;
+			case "Private messages": 	setViewFormat(TabComponent.PM); break;
+			case "Info messages": 		setViewFormat(TabComponent.INFO); break;
+			case "Console messages": 	setViewFormat(TabComponent.CONSOLE); break;
+			case "Connection Help": 	setViewHelp(CONNECTIONHELP); break;
+			case "Usage Help": 			setViewHelp(USAGEHELP); break;
+			case "Commands": 			setViewHelp(COMMANDHELP); break;
+			case "Style": 				setViewHelp(STYLEHELP); break;
+			case "Server Help": 		setViewHelp(SERVERHELP); break;
+			case "About": 				setViewHelp(ABOUTHELP); break;
 		}
 	}
 
@@ -392,7 +394,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 			}
 		}
 		tree.expandPath(parent);
-		// tree.collapsePath(parent);
+		// tree.collapsePath(parent);	// If we want collapse instead
 	}
 
 	/**

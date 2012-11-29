@@ -154,26 +154,28 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		} 
 		
 		else if (ae.getActionCommand().equals("delete")) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-			for (int i = osp.size() - 1; i >= 0; --i) {
-				if (osp.get(i).getServerName().equals(node.toString())) {			
-					if(node.getParent() != null) {
-						DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-						model.removeNodeFromParent(node);
-						osp.remove(i);
+			if(tree.getLastSelectedPathComponent() != null) {
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+				for (int i = osp.size() - 1; i >= 0; --i) {
+					if (osp.get(i).getServerName().equals(node.toString())) {			
+						if(node.getParent() != null) {
+							DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+							model.removeNodeFromParent(node);
+							osp.remove(i);
+						}
 					}
 				}
 			}
 		} 
-		
 		else if (ae.getActionCommand().equals("change")) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
-					.getLastSelectedPathComponent();
-			for (int i = osp.size() - 1; i >= 0; --i) {
-				if (osp.get(i).getServerName().equals(node.toString())) {
-					OptionsServerPrefs osp = this.osp.get(i);
-					addServer(osp, node);
-					break;		// Finds our node, gtfo
+			if(tree.getLastSelectedPathComponent() != null) {
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+				for (int i = osp.size() - 1; i >= 0; --i) {
+					if (osp.get(i).getServerName().equals(node.toString())) {
+						OptionsServerPrefs osp = this.osp.get(i);
+						addServer(osp, node);
+						break;		// Finds our node, gtfo
+					}
 				}
 			}
 		} 

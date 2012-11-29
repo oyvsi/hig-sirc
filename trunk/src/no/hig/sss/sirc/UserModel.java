@@ -7,25 +7,24 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
-import javax.swing.DefaultListModel;
 
 import jerklib.events.modes.ModeAdjustment.Action;
 
 
 /**
  * UserContainer holds all the users, and takes care of
- * adding, removing and mode updates on users
- * 
+ * adding, removing and mode updates
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
  */
-public class UserModel extends AbstractListModel {
+public class UserModel extends AbstractListModel<String> {
 	private static final long serialVersionUID = 1L;
 	private List<String> op;
 	private List<String> voice;
 	private List<String> regulars;
 	private ArrayList<String> usersForView;
 	private ConnectionManagement cm = sIRC.conManagement;
-	private String channel;
+	private String identifier;
 	boolean opExist = false;
 	boolean voiceExist = false;
 	boolean regularsExist = false;
@@ -36,16 +35,15 @@ public class UserModel extends AbstractListModel {
 	 * @param identifier
 	 */
 	public UserModel(String identifier) {
-		channel = identifier;
+		this.identifier = identifier;
 		usersForView = new ArrayList<String>();
 		importList();
 		updateView();
 	}
-	
 
 	/**
-	 * Adds a user to the appropriate list based on the users mode
-	 * @param nick
+	 * Adds a user and paint the list
+	 * @param nick - Nick to be added
 	 */
 	public void addUser(String nick) {
 		usersForView.add(nick);
@@ -58,153 +56,129 @@ public class UserModel extends AbstractListModel {
 	 * @return usersForView.contains(nick) True or false
 	 */
 	public boolean userInChannel(String nick) {
-		return usersForView.contains("@"+nick);
-		
+		boolean found = false;
+		if(usersForView.contains("@" + nick))
+				found = true;
+		if(usersForView.contains("+" + nick))
+				found = true;
+		if(usersForView.contains("" + nick))
+				found = true;
+		return found;
 	}
 	
+	/**
+	 * Imports the user list from the channel and appends the prefix
+	 * for op or voice
+	 */
 	public void importList() {
-		Iterator<String> userIter = cm.getUsers(channel).iterator();
+		Iterator<String> userIter = cm.getUsers(identifier).iterator();
 		while(userIter.hasNext()) {
 			String user = userIter.next();
-			System.out.println(user);
-			if(cm.getUsersMode(channel, Action.PLUS, 'o').contains(user)) {
+			// OP user
+			if(cm.getUsersMode(identifier, Action.PLUS, 'o').contains(user)) {
 				usersForView.add('@'+user);
 				continue;
-			} else if (cm.getUsersMode(channel, Action.PLUS, 'v').contains(user)) {
+			} 
+			// Voiced user
+			else if (cm.getUsersMode(identifier, Action.PLUS, 'v').contains(user)) {
 				usersForView.add('+'+user);
 				continue;
-			} else {
+			} 
+			// Regular user
+			else {
 				usersForView.add(user);
 			}
 		}
+		
 		sortList(usersForView);
 	}
 
 	/**
-	 * Removes a user 
+	 * Removes a user, sorts the new list and repaints the list
 	 * @param nick the nick of the user to remove
 	 */
-	
 	public void removeUser(String nick) {		
 		usersForView.remove(nick);
+		sortList(usersForView);
 		updateView();
 	}
 	
 	/**
-	 * Fetch a user from the list and append prefix
+	 * Fetch a user from the list
 	 * @param index 
 	 * 
 	 */
-	public Object getElementAt(int index) {
+	public String getElementAt(int index) {
 		return usersForView.get(index);
 	}
-	
+	/**
+	 * Get the size of usersForView used by JList
+	 */
 	public int getSize() {
 		return usersForView.size();
 	}
 	
-	
-	public ArrayList<String> getList() {
-		return usersForView;
-	}
-	
-	public List<String> getOpList() {
-		return op;
-		
-	}
-	
-	public List<String> getVoiceList() {
-		return voice;
-	}
-	
+	/**
+	 * Sorts the list based on the UserComparator
+	 * @param list - List to be sorted
+	 */
 	public void sortList(List<String> list) {
-		Collections.sort(list, new SubstringComparator());
+		Collections.sort(list, new UserComparator());
 	}
 
 	/**
-	 * Modifies the 'o' mode for a user, either op or deop
-	 * @param nick - The nick of the user
-	 * @param action - Either + or -
+	 * Clears the list, imports and sorts when a mode has changed
 	 */
-	
 	public void modeChange() {
 		 usersForView.clear();
 		 importList();
 		 updateView();
-		
 	}
-
-	/**
-	 * Modifies the mode for a user, either voice or devoice
-	 * @param nick The nick which is given the mode
-	 * @param action Either + or -
-	 */
-	public void voiceMode(String nick, Action action) {
-		  // Some channels have autovoice, and then we might be voiced before the mode comes 
-		
-		if(opExist && !op.contains(nick))
-			if(action == Action.PLUS) {
-			if(!voiceExist && regulars.contains(nick)) {
-				voice = new ArrayList<String>();
-				voiceExist = true;
-				regulars.remove(nick);
-				if(regulars.size() == 0) regularsExist = false;
-			} 
-			voice.add(nick);
-		}
-		
-		if(action == Action.MINUS) {
-			if(regularsExist && !regulars.contains(nick)) {
-				voice.remove(nick);
-				regulars.add(nick);
-			}	
-		}
-		
-		updateView();
-		
-	}
-
 	
 	/**
-	 * Changes a users nick 
+	 * Changes a users nick, sorts and repaints the list
 	 * @param oldNick
 	 * @param newNick
 	 */
-	
 	public void nickChange(String oldNick, String newNick) {
-		System.out.println(usersForView);
+		// User is OP
 		if(usersForView.contains('@'+oldNick)) {
 			usersForView.remove('@'+oldNick);
 			usersForView.add('@'+newNick);
-			
+		// User is voice
 		} else if (usersForView.contains('+'+oldNick)) {
 			usersForView.remove('+'+oldNick);
 			usersForView.add('+'+newNick);
+		// User is regular
 		} else {
 			usersForView.remove(oldNick);
 			usersForView.add(newNick);
 		}
+		
 		sortList(usersForView);
 		updateView();
 }
 
 	/**
-	 * Sorts a modified list and adds it to the list (usersForView) used
-	 * by JList
+	 * Notifies the JList that contents has changed for repaint
 	 */
 	public void updateView() {
 		fireContentsChanged(this, 0, getSize());
 	}
 
-	class SubstringComparator implements Comparator<String> {
+	/**
+	 * Comparator class used to sort users with precedence on prefix: @ > + > " "  
+	 * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+	 *
+	 */
+	class UserComparator implements Comparator<String> {
 		public int compare (String s1, String s2) {
 		
-		if  (s1.charAt(0) == '@' && s2.charAt(0) != '@') return -1;
-		else if  (s1.charAt(0) != '@' && s2.charAt(0) == '@') return 1;
+		if  (s1.charAt(0) == '@' && s2.charAt(0) != '@') return -1; // String s1 takes precedence over s2
+		else if  (s1.charAt(0) != '@' && s2.charAt(0) == '@') return 1; // String s2 takes precedence over s1
 		else if  (s1.charAt(0) == '+' && s2.charAt(0) != '+') return -1;
 		else if  (s1.charAt(0) != '+' && s2.charAt(0) == '+') return 1;
 		else return s1.compareToIgnoreCase(s2);
 		}
-	
-}
+	}
 }

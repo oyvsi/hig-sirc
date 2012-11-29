@@ -81,7 +81,7 @@ public class TextOptions extends JPanel implements ActionListener {
 		text.setOpaque(false);	// Set transparent
 		
 		selFontName = new JComboBox<String>(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
-		selFontName.setSelectedItem(fontName); // Initilized to serif
+		selFontName.setSelectedItem(fontName); // Initialized to serif
 		JLabel fontLabel = new JLabel("Font");	
 		selBold = new JCheckBox("Bold");
 		selItalic = new JCheckBox("Italic");
@@ -155,7 +155,7 @@ public class TextOptions extends JPanel implements ActionListener {
 			}
 		});
 		
-		// For the color we have to use focusListener for when user has choosen one
+		// For the color we have to use focusListener for when user has chosen one
 		selColor.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {}
@@ -168,7 +168,9 @@ public class TextOptions extends JPanel implements ActionListener {
 		});
 
 	}
-	
+	/**
+	 * Events fired when ok, cancel or help is pressed
+	 */
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		System.out.println(ae.getActionCommand());
@@ -216,6 +218,7 @@ public class TextOptions extends JPanel implements ActionListener {
 		return pro;
 			
 	}
+	
 	/**
 	 * Load selections from a Properties object
 	 * 

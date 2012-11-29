@@ -41,23 +41,24 @@ public class sIRC extends JFrame {
 		GUI gui = new GUI(this);		       
         add(tabContainer);
 
+        // Center the main window and margin to end of screen
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
                   screenSize.width  - inset*2,
                   screenSize.height - inset*2);
 
+        // Creates and sets menu bar
 		setJMenuBar(gui.menu());
-		//options.createAndShowGUI(this);
 	}
 	
 	/**
 	 * Main creates the JFrame and sets it to visible, with exit on close
-	 * @param args
+	 * 
+	 * @param args no args implemented
 	 */
 	public static void main(String[] args) {
 		sIRC irc = new sIRC();
-		
 		
 		irc.setVisible(true);
 		irc.setDefaultCloseOperation(EXIT_ON_CLOSE);

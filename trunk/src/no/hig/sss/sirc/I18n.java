@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
  * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
  */
+
 public class I18n {
 	private static ResourceBundle messages;
 	private Locale currentLocale;

@@ -19,7 +19,6 @@ import javax.swing.JMenuItem;
  * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
  */
-
 public final class Helpers {
 	
 	/**
@@ -42,6 +41,7 @@ public final class Helpers {
 		}
 		return mi;
 	}
+	
 	/**
 	 * Creates a JCheckBoxMenuItem
 	 * @param name Name of the new item
@@ -52,7 +52,6 @@ public final class Helpers {
 	 * @param state The default state to be set
 	 * @return cbmi The JCheckBoxMenuItem
 	 */
-
 	public static JCheckBoxMenuItem createCheckBoxMenuItem(String name, String ac,String tt, JMenu menu, ActionListener al, boolean state) {
 		JCheckBoxMenuItem cbmi = new JCheckBoxMenuItem(sIRC.i18n.getStr(name));
 		cbmi.setActionCommand(ac);
@@ -66,7 +65,6 @@ public final class Helpers {
 		return cbmi;
 	}
 	
-	
 	/**
 	 * Creates a JButton
 	 * @param name Name of the new item
@@ -75,7 +73,6 @@ public final class Helpers {
 	 * @param al Set this ActionListener
 	 * @return b The JButton
 	 */
-	
 	public static JButton createButton(String name, String tt, String ac, ActionListener al) {
 		JButton b = new JButton(sIRC.i18n.getStr(name));
 		b.addActionListener(al);
@@ -104,7 +101,6 @@ public final class Helpers {
 	 * @param destination - the full path to copy to
 	 * @throws IOException
 	 */
-	
 	public static void copyFile(InputStream input, String destination) throws IOException { 
 		OutputStream os = new FileOutputStream(destination);							
 		byte[] buffer = new byte[4096];													

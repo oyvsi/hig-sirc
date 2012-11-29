@@ -41,7 +41,6 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	 * 
 	 */
 	public OptionsPersonal(String selectedServer) {
-		filePrefs = new File("connetionoptionsprefs.ini");
 		bl = new BorderLayout();
 		setLayout(bl);
 		
@@ -61,6 +60,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		add(1, 2, new JLabel(sIRC.i18n.getStr("connectionOptions.label.username")));
 		add(1,4,new JLabel(sIRC.i18n.getStr("connectionOptions.label.nickname")));
 		add(1,5,new JLabel(sIRC.i18n.getStr("connectionOptions.label.altNick")));
+		
 		// Add textfields
 		gbc.anchor = GridBagConstraints.WEST;
 		if(!(selectedServer == null)){
@@ -102,7 +102,6 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	 */
 	public void setNick(String nick) {
 		nickname.setText(nick);
-	
 	}
 
 	/**
@@ -135,22 +134,28 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		System.out.println(ae.getActionCommand());
 		if(ae.getActionCommand().equals("connect")) {
 			sIRC.conManagement.connect(getNickname(), this.selectedServer.getText());
 			sIRC.options.hideWindow(true);	
-		} else if(ae.getActionCommand().equals("ok")) {
+		} 
+		
+		else if(ae.getActionCommand().equals("ok")) {
 			sIRC.options.hideWindow(true);
-		} else if(ae.getActionCommand().equals("cancel")) {
+		} 
+		
+		else if(ae.getActionCommand().equals("cancel")) {
 			sIRC.options.hideWindow(false);
-		} else if(ae.getActionCommand().equals("help")) {
+		} 
+		
+		else if(ae.getActionCommand().equals("help")) {
 			sIRC.options.setViewHelp(Options.CONNECTIONHELP);
 		}
 	}
 	
 	/**
 	 * Saves info in text areas to properties file
-	 * textfields: username, nickname, altnick, selectedserver 
+	 * textfields: username, nickname, altnick, selectedserver
+	 * @return pro
 	 */
 	public Properties save() {
 		Properties pro = new Properties();
@@ -159,6 +164,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		pro.setProperty("altnick", altnick.getText());
 		pro.setProperty("server", selectedServer.getText());
 		
+		// Once I was newb, now I
 		return pro;
 	}
 	
@@ -172,6 +178,7 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 		altnick.setText(pro.getProperty("altnick"));
 		selectedServer.setText(pro.getProperty("server"));
 	}
+	
 	/**
 	 * Getter for selected server
 	 * @return the selectedServer
@@ -192,6 +199,8 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	 * Used to place components/panels in a single cell, take the x, y and
 	 * component to be placed as a parameter
 	 * 
+	 * @author Cyberkoll
+	 * 
 	 * @param x the column for this component
 	 * @param y the row for this component
 	 * @param c the component to add to the layout
@@ -203,6 +212,8 @@ public class OptionsPersonal extends JPanel implements ActionListener {
 	/**
 	 * Used to add a panel/component to the layout, just take the x, y, width
 	 * and height as well as the component to be placed as a parameter
+	 * 
+	 * @author Cyberkoll
 	 * 
 	 * @param x the column for this component
 	 * @param y the row for this component

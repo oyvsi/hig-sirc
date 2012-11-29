@@ -15,8 +15,10 @@ import javax.swing.SwingUtilities;
 import jerklib.Channel;
 
 /**
- * UserList is used for the visualization of users
+ * UserList is used for the visualization of users strings and
+ * holds the popup menu with actions on a given user
  * 
+ * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
  */
 public class UserList extends JList<String> implements MouseListener {
@@ -25,7 +27,6 @@ public class UserList extends JList<String> implements MouseListener {
 	private String channelName;
 	private JPopupMenu popupMenu;
 	private ConnectionManagement cm = sIRC.conManagement;
-	
 	
 	/**
 	 * Constructor for UserList, creates popup menu and adds action listeners
@@ -39,39 +40,36 @@ public class UserList extends JList<String> implements MouseListener {
 		add(popupMenu);
 		addMouseListener(this);
 	}
-	
+	/** 
+	 * Sets up the popup menu with submenus, menuitems and adds
+	 * listeners to each menuitem
+	 * @return tmpPopupMenu - The popup menu
+	 */
 	private JPopupMenu createPopupMenu() {
 		JPopupMenu tmpPopupMenu = new JPopupMenu();
+		
+		// Main menus
 		JMenu control = new JMenu("Control");
 		JMenu ctcp = new JMenu("CTCP");
-	
+		
 		JMenuItem whois = new JMenuItem("Whois");
-		JMenuItem query = new JMenuItem("Query");
-		JMenuItem slap = new JMenuItem("Slap");
-	
+		
+		// Control menu items
 		JMenuItem op = new JMenuItem("Op");
 		JMenuItem deop = new JMenuItem("Deop");
 		JMenuItem voice = new JMenuItem("Voice");
 		JMenuItem devoice = new JMenuItem("Devoice");
 		JMenuItem kick = new JMenuItem("Kick");
 		
+		// CTCP menu items
 		JMenuItem ping = new JMenuItem("Ping");
 		JMenuItem time = new JMenuItem("Time");
 		JMenuItem version = new JMenuItem("Version");
 		
+		// Listeners
 		whois.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cm.getSession().whois(parseNick(getSelectedValue().toString()));
-			}
-		});
-		query.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		
-		slap.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
 			}
 		});
 		
@@ -101,16 +99,15 @@ public class UserList extends JList<String> implements MouseListener {
 		
 		kick.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String reason = JOptionPane.showInputDialog("Reason");
+				String reason = JOptionPane.showInputDialog("Reason:");
 				Channel channel = cm.getChannel(channelName);
 				String nick = parseNick(getSelectedValue().toString());
-				if(reason.isEmpty()) {
+				
+				if(reason.isEmpty()) { 
 					channel.kick(nick, "No reason");
 				} else {
 					channel.kick(nick, reason);
 				}
-				
-				
 			}
 		});
 		
@@ -124,7 +121,6 @@ public class UserList extends JList<String> implements MouseListener {
 		time.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				handleCtcp("TIME");
-				
 			}
 		});
 		
@@ -134,19 +130,19 @@ public class UserList extends JList<String> implements MouseListener {
 			}
 		});
 		
-		// Control items
+		// Add control items
 		control.add(op);
 		control.add(deop);
 		control.add(voice);
 		control.add(devoice);
 		control.add(kick);
 		
-		// CTCP items
+		// ADD CTCP items
 		ctcp.add(ping);
 		ctcp.add(time);
 		ctcp.add(version);
 		
-		// Add menu items to popup menu
+		// Add menus to popup menu
 		tmpPopupMenu.add(whois);
 		tmpPopupMenu.add(control);
 		tmpPopupMenu.add(ctcp);;
@@ -154,11 +150,14 @@ public class UserList extends JList<String> implements MouseListener {
 		return tmpPopupMenu;
 	}
 	
-	
+	/**
+	 * Sends the ctcp event of either TIME, PING or VERSION
+ 	 * @param type - the type to send
+	 */
 	public void handleCtcp(String type) {
 		String nick = parseNick(getSelectedValue().toString());
 		cm.getSession().ctcp(nick, type);
-		String localMessage = "-> [" + nick + "]" + type;
+		String localMessage = "-> [ " + nick + " ] " + type;
 		sIRC.tabContainer.message(localMessage, channelName, TabComponent.CHANNEL, TabComponent.INFO);
 	}
 
@@ -176,7 +175,6 @@ public class UserList extends JList<String> implements MouseListener {
 	 * @param nick - Nick to be parsed
 	 * @return nick  - Nick without prefix
 	 */
-	
 	public String parseNick(String nick) {
 		if(nick.startsWith("@") || nick.startsWith("+")) {
 			return nick.substring(1);
@@ -185,8 +183,8 @@ public class UserList extends JList<String> implements MouseListener {
 	}
 
 	/**
-	 * 
-	 * 
+	 * Handles two left clicks on a user (open new or existing pm tab) or 
+	 * right click on a user for popup menu with actions
 	 */
 	public void mouseClicked(MouseEvent me) {
 		
@@ -203,30 +201,30 @@ public class UserList extends JList<String> implements MouseListener {
 			setSelectedIndex(locationToIndex(me.getPoint()) );
 			showMenu(me);
 		}
-		
 	}
-
+	
+	/**
+	 * Method not implemented
+	 */
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void mouseEntered(MouseEvent arg0) {}
+	
+	/**
+	 * Method not implemented
+	 */
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseExited(MouseEvent arg0) {}
 
+	/**
+	 * Method not implemented
+	 */
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mousePressed(MouseEvent arg0) {}
 
+	/**
+	 * Method not implemented
+	 */
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseReleased(MouseEvent arg0) {}
+
 }

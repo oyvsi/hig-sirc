@@ -67,15 +67,9 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 		if(index == -1) {	// Unknown tab. Create a new
 			newTab(identifier, type);
 		}
+		
 		tabContainer.get(identifier).addText(message, format);	// Pass along the message
-		if(getSelectedIndex() == index) {
-			System.out.println("We are at the tab");
-			
-		} else {
-											Color lol = getForegroundAt(index);
-											System.out.println(lol.toString());
-			setForegroundAt(index, Color.BLUE);
-		}
+		
 		// if user is set away. Send her a reminder.
 		if(isAway && type == TabComponent.PM)
 			tabContainer.get(identifier).addText(sIRC.i18n.getStr("pm.isAwayReminder"), TabComponent.INFO);
@@ -89,6 +83,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	public void consoleMsg(String msg) {
 		tabContainer.get("Console").addText(msg, TabComponent.CONSOLE);
 	}
+	
 	/**
 	 * Get index of tab
 	 * 
@@ -99,7 +94,6 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 		return indexOfTab(identifier);
 	}
 
-	
 	/**
 	 * Creates a new tab
 	 * 
@@ -150,6 +144,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 		tabContainer.remove(identifier);
 		setMnemonics();	// Has to be updated when /wc between windows
 	}
+	
 	/**
 	 * Close all tabs, except console
 	 */
@@ -191,28 +186,6 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	}
 	
 	/**
-	 * Notifies a channel-tab that a op has been set or unset for a user
-	 * 
-	 * @param channelName - The name of the channel
-	 * @param nick - The nick of the user
-	 * @param action - Action object for the op-change
-	 */
-	public void opMode(String channelName, String nick, Action action) {
-	//	tabContainer.get(channelName).getUserModel().opMode(nick, action);
-	}
-	
-	/**
-	 * Notifies a channel-tab that a voice has been set or unset for a user
-	 * 
-	 * @param channelName - The name of the channel
-	 * @param nick - The nick of the user
-	 * @param action - Action object for the voice-change
-	 */
-	public void voiceMode(String channelName, String nick, Action action) {
-		tabContainer.get(channelName).getUserModel().voiceMode(nick, action);
-	}
-	
-	/**
 	 * Notifies all tabs concerned that a user has quit
 	 * 
 	 * @param nick - The nick of the user who quit
@@ -234,6 +207,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 			}
 		}
 	}
+	
 	/**
 	 * Notifies channels that a user has changed nick.
 	 * If we have a PM with the user, we change the tab to reflect the new nick.
@@ -253,6 +227,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 					tab.addText(msg, TabComponent.INFO); // Pass the change nick message
 				}
 			}
+			
 			else if(tab.getType() == TabComponent.PM && tabContainer.containsKey(oldNick)) {
 				tab.setIdentifier(newNick);	// Notify the tab of new name
 				tab.setTopText(newNick);  // Change top text
@@ -309,10 +284,12 @@ public class TabContainer extends JTabbedPane implements ActionListener {
         }
 	}
 
-
+	/**
+	 * Mode has changed for a user in a channel
+	 * @param channelName - The channel
+	 */
 	public void modeChange(String channelName) {
 		tabContainer.get(channelName).getUserModel().modeChange();
-		
 	}
 	
 	/**

@@ -43,7 +43,6 @@ public class ConnectionManagement implements IRCEventListener {
 		isConnected = false;
 	}
 	
-	
 	/**
 	 * Connects to a given server with user specified information
 	 * @param nick the nick to connect with
@@ -66,10 +65,10 @@ public class ConnectionManagement implements IRCEventListener {
 				profile = new Profile(nick);
 			}
 			
-			manager = new ConnectionManager(profile);
-			session = manager.requestConnection(server);
+			manager = new ConnectionManager(profile);  // jerklibs manager
+			session = manager.requestConnection(server); // session for connection
 			
-			session.addIRCEventListener(this);
+			session.addIRCEventListener(this);  // this class will receive all irc events
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.connecting"));
 		}
 	}
@@ -124,8 +123,7 @@ public class ConnectionManagement implements IRCEventListener {
 	public void ListChannels() {
 		String msg = "Attempting to get a channel list from server " + session.getServerInformation().getServerName();
 		sIRC.tabContainer.message(msg, "Console", TabComponent.CONSOLE, TabComponent.INFO);
-		session.chanList();
-		
+		session.chanList(); // Ask for a list, we'll get an event back
 	}
 	
 	/**
@@ -163,12 +161,13 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionMangement.connected") + " " + server);
 			isConnected = true;
 		} 
+
 		else if (e.getType() == Type.CHANNEL_MESSAGE) {	// message from others from channel we're in
 			MessageEvent me = (MessageEvent) e;
 			String message = buildSay(me.getNick(), me.getMessage());
 			sIRC.tabContainer.message(message, me.getChannel().getName(), TabComponent.CHANNEL, TabComponent.CHANNEL);			
 		}
-		
+
 		else if (e.getType() == Type.PRIVATE_MESSAGE) { // private message going to us
 			MessageEvent me = (MessageEvent) e;
 			String message = buildSay(me.getNick(), me.getMessage());
@@ -192,6 +191,7 @@ public class ConnectionManagement implements IRCEventListener {
 				}
 			}	
 		}	
+		
 		else if (e.getType() == Type.PART) {  // We or someone else leaves channel we're in
 			PartEvent pe = (PartEvent) e;
 			String channelName = pe.getChannelName();
@@ -205,6 +205,7 @@ public class ConnectionManagement implements IRCEventListener {
 				sIRC.tabContainer.userLeft(channelName, nickName);
 			}
 		}
+		
 		else if(e.getType() == Type.AWAY_EVENT) {	// Away message from server. Us or someone we talk to
 			AwayEvent ae = (AwayEvent) e;
 			if(ae.isYou() == false) {
@@ -214,6 +215,7 @@ public class ConnectionManagement implements IRCEventListener {
 				sIRC.tabContainer.message(awayMsg, nick, TabComponent.PM, TabComponent.INFO);
 			}
 		}
+		
 		else if (e.getType() == Type.MODE_EVENT) {  // Mode is changed for us or someone in a channel we're joined
 			
 			ModeEvent me = (ModeEvent) e;
@@ -274,7 +276,6 @@ public class ConnectionManagement implements IRCEventListener {
 						   sIRC.i18n.getStr("topic.changed") + " " + channelName + " " + 
 						   sIRC.i18n.getStr("topic.to") + " " + topic;
 			}
-			
 			sIRC.tabContainer.message(topicMsg, channelName, TabComponent.CHANNEL, TabComponent.INFO);			
 		}
 		
@@ -307,8 +308,6 @@ public class ConnectionManagement implements IRCEventListener {
 			
 			String hostName = we.getHost();
 			String realName = we.getRealName();
-			String userName = we.getUser();
-			String message = nick;
 			Date signOn = we.signOnTime();
 			String server = we.whoisServer();
 			boolean isIdle = we.isIdle();
@@ -321,7 +320,7 @@ public class ConnectionManagement implements IRCEventListener {
 			long minutes = tmp / 60;
 			long seconds = tmp % 60;
 			String idleMessage = days + " days " + hours + " hours " + minutes + " minutes " + seconds + " seconds ";
-			List<String> channels = we.getChannelNames();
+			
 			String infoPrefix = buildInfoPrefix();
 			String whoismessage = infoPrefix + nick  + " [" + hostName + "] " + '\n' + 
 								  infoPrefix + "ircname	: " + realName + '\n' +
@@ -351,25 +350,20 @@ public class ConnectionManagement implements IRCEventListener {
 			String ctcp = ce.getCtcpString();
 			System.out.println(ctcp + "   " + ce.getMessage());
 			String identifier = ce.getNick();
-			if(ce.getChannel() != null)
-				identifier = ce.getChannel().getName();
 			
-			if(ctcp.startsWith("ACTION")) {
+			if(ctcp.startsWith("ACTION")) {	// /me events
 				String actionMsg = ctcp.substring("ACTION".length() + 1);
 				String printMsg = buildSay("* " + ce.getNick(), actionMsg);
 				int type = sIRC.tabContainer.getType(identifier);
 				
 				if(type == TabComponent.CHANNEL)
-					sIRC.tabContainer.message(printMsg, identifier, type, TabComponent.INFO);
+					sIRC.tabContainer.message(printMsg, ce.getChannel().getName(), type, TabComponent.INFO);
 				else if(type == TabComponent.PM)
 					sIRC.tabContainer.message(printMsg, identifier, type, TabComponent.INFO);
 			}
 			
-			if(ctcp.startsWith("PING")) {
-				session.notice(ce.getNick(), "\001" + ce.getCtcpString() + "\001"); 
-			
-				
-			}
+			if(ctcp.startsWith("PING")) // needs 001 to be sent to user
+				session.notice(ce.getNick(), "\001" + ce.getCtcpString() + "\001"); 	
 			
 			if(ctcp.startsWith("VERSION")) {
 				session.notice(ce.getNick(), "\001" + "VERSION sIRC v1.0" + "\001");
@@ -388,7 +382,7 @@ public class ConnectionManagement implements IRCEventListener {
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.disconnected"));
 		}
 		
-		else if(e.getType() == Type.CHANNEL_LIST_EVENT) { // We requiested a channel list
+		else if(e.getType() == Type.CHANNEL_LIST_EVENT) { // We requested a channel list
 			ChannelListEvent ce = (ChannelListEvent) e;
 			String msg = ce.getChannelName() + "(" + ce.getNumberOfUser() + ") " + ce.getTopic();
 			sIRC.tabContainer.message(msg, "Console", TabComponent.CONSOLE, TabComponent.INFO);

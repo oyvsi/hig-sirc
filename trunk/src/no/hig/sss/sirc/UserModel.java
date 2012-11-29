@@ -19,9 +19,7 @@ import jerklib.events.modes.ModeAdjustment.Action;
  */
 public class UserModel extends AbstractListModel<String> {
 	private static final long serialVersionUID = 1L;
-	private List<String> op;
-	private List<String> voice;
-	private List<String> regulars;
+
 	private ArrayList<String> usersForView;
 	private ConnectionManagement cm = sIRC.conManagement;
 	private String identifier;

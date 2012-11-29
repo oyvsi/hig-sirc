@@ -350,16 +350,16 @@ public class OptionsServer extends JPanel implements TreeSelectionListener, Acti
 		server = new JPanel();
 		server.setLayout(new GridLayout(5, 2));
 		server.setSize(new Dimension(100, 100));
-		server.add(new JLabel("Server Name"));
+		server.add(new JLabel(sIRC.i18n.getStr("server.name")));
 		server.add(editServerName = new JTextField(osp != null ? osp
 				.getServerName() : ""));
-		server.add(new JLabel("Url"));
+		server.add(new JLabel(sIRC.i18n.getStr("server.url")));
 		server.add(editServerUrl = new JTextField(osp != null ? osp
 				.getServerUrl() : ""));
-		server.add(new JLabel("Ports"));
+		server.add(new JLabel(sIRC.i18n.getStr("server.port")));
 		server.add(editServerPorts = new JTextField(osp != null ? 
 				portsToString(osp.getPort()) : ""));
-		server.add(new JLabel("Group"));
+		server.add(new JLabel(sIRC.i18n.getStr("server.group")));
 		server.add(editServerGroup = new JTextField(osp != null ? osp
 				.getServerGroup() : ""));
 		

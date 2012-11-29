@@ -65,23 +65,23 @@ public class Options extends JPanel implements TreeSelectionListener {
 	 */
 	public Options() {
 		// Makes all the nodes for the JTree
-		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode("root");
-		DefaultMutableTreeNode tConn = new DefaultMutableTreeNode("Connection");
-		DefaultMutableTreeNode tStyle = new DefaultMutableTreeNode("Style");
-		DefaultMutableTreeNode tPersonal = new DefaultMutableTreeNode("Personal");
-		DefaultMutableTreeNode tServer = new DefaultMutableTreeNode("Server");
-		DefaultMutableTreeNode tCmFormat = new DefaultMutableTreeNode("Channel messages");
-		DefaultMutableTreeNode tPmFormat = new DefaultMutableTreeNode("Private messages");
-		DefaultMutableTreeNode tInfoFormat = new DefaultMutableTreeNode("Info messages");
-		DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode("Console messages");
+		DefaultMutableTreeNode tRoot = new DefaultMutableTreeNode(sIRC.i18n.getStr("tRoot"));
+		DefaultMutableTreeNode tConn = new DefaultMutableTreeNode(sIRC.i18n.getStr("tConn"));
+		DefaultMutableTreeNode tStyle = new DefaultMutableTreeNode(sIRC.i18n.getStr("tStyle"));
+		DefaultMutableTreeNode tPersonal = new DefaultMutableTreeNode(sIRC.i18n.getStr("tPersonal"));
+		DefaultMutableTreeNode tServer = new DefaultMutableTreeNode(sIRC.i18n.getStr("tServer"));
+		DefaultMutableTreeNode tCmFormat = new DefaultMutableTreeNode(sIRC.i18n.getStr("tCmFormat"));
+		DefaultMutableTreeNode tPmFormat = new DefaultMutableTreeNode(sIRC.i18n.getStr("tPmFormat"));
+		DefaultMutableTreeNode tInfoFormat = new DefaultMutableTreeNode(sIRC.i18n.getStr("tInfoFormat"));
+		DefaultMutableTreeNode tConFormat = new DefaultMutableTreeNode(sIRC.i18n.getStr("tConFormat"));
 
-		DefaultMutableTreeNode tHelp = new DefaultMutableTreeNode("Help");
-		DefaultMutableTreeNode tHelpConn = new DefaultMutableTreeNode("Connection Help");
-		DefaultMutableTreeNode tHelpUsage = new DefaultMutableTreeNode("Usage Help");
-		DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode("Commands");
-		DefaultMutableTreeNode tHelpStyle = new DefaultMutableTreeNode("Style");
-		DefaultMutableTreeNode tHelpServer = new DefaultMutableTreeNode("Server Help");
-		DefaultMutableTreeNode tHelpAbout = new DefaultMutableTreeNode("About");
+		DefaultMutableTreeNode tHelp = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelp"));
+		DefaultMutableTreeNode tHelpConn = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpConn"));
+		DefaultMutableTreeNode tHelpUsage = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpUsage"));
+		DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpCommands"));
+		DefaultMutableTreeNode tHelpStyle = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpStyle"));
+		DefaultMutableTreeNode tHelpServer = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpServer"));
+		DefaultMutableTreeNode tHelpAbout = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpAbout"));
 
 		// makes tree model around root and makes tree with tree model
 		treeModel = new DefaultTreeModel(tRoot);
@@ -180,13 +180,13 @@ public class Options extends JPanel implements TreeSelectionListener {
 		splitPane.setRightComponent(new SIRCHelp(helpPaths[view]));
 		// Selects the right help node in the tree, sends the path to the node.
 		if(helpPaths[view].contains("style"))
-			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Style]");
+			selectNode(tree, new TreePath(treeModel.getRoot()), sIRC.i18n.getStr("cStyle"));
 		else if(helpPaths[view].contains("conn"))
-			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Connection Help]");
+			selectNode(tree, new TreePath(treeModel.getRoot()), sIRC.i18n.getStr("cConn"));
 		else if(helpPaths[view].contains("server"))
-			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, Server Help]");
+			selectNode(tree, new TreePath(treeModel.getRoot()), sIRC.i18n.getStr("cServer"));
 		else if(helpPaths[view].contains("about"))
-			selectNode(tree, new TreePath(treeModel.getRoot()), "[root, Help, About]");
+			selectNode(tree, new TreePath(treeModel.getRoot()), sIRC.i18n.getStr("cAbout"));
 	}
 
 	/**

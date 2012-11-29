@@ -1,6 +1,5 @@
 package no.hig.sss.sirc;
 
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -146,6 +145,7 @@ public class InputField extends JTextField implements KeyListener {
 						sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("error.unknownCommand"));
 					}
 				} catch (Exception e) {	// Split failed.
+					System.out.println("Failed in parsing command");
 					e.printStackTrace();
 				}
 			} 

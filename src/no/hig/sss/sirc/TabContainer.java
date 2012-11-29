@@ -112,6 +112,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 			JPanel jp = new JPanel(new GridBagLayout());
 			jp.setOpaque(false);
 			
+			// set up x in corner
 			JLabel jl = new JLabel(identifier);
 			JButton jb = new JButton("x");
 			jb.setBorder(new EmptyBorder(1, 10, 1, 1));
@@ -155,22 +156,22 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 		}
 	}
 	
-/**
- * Sets the top text in a tab
- * 
- * @param identifier - The name of channel or nick
- * @param text - The text to put in top-field
- */
+	/**
+	 * Sets the top text in a tab
+	 * 
+	 * @param identifier - The name of channel or nick
+	 * @param text - The text to put in top-field
+	 */
 	public void setTopText(String identifier, String text) {
 		tabContainer.get(identifier).setTopText(text);
 	}
 	
-/**
- * Notifies a tab that a user has joined
- * 
- * @param identifier - The name of channel or nick
- * @param nick - The nick of the user who joined
- */
+	/**
+	 * Notifies a tab that a user has joined
+	 * 
+	 * @param identifier - The name of channel or nick
+	 * @param nick - The nick of the user who joined
+	 */
 	public void userJoined(String identifier, String nick) {
 		tabContainer.get(identifier).getUserModel().addUser(nick);
 	}
@@ -240,6 +241,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 		}
 		
 	}
+	
 	/**
 	 * Get the type of tab as defined in TabComponent
 	 * 

@@ -60,8 +60,7 @@ public class TextOptions extends JPanel implements ActionListener {
 	 * Constructor
 	 * 
 	 * @param optionName - The name of the text format
-	 */
-	
+	 */	
 	public TextOptions(String optionName) {
 		this.optionName = optionName; // Name of style
 		fontName = "Serif";
@@ -168,6 +167,7 @@ public class TextOptions extends JPanel implements ActionListener {
 		});
 
 	}
+	
 	/**
 	 * Events fired when ok, cancel or help is pressed
 	 */

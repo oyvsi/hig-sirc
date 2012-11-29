@@ -99,6 +99,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	 * 
 	 * @param identifier - The name of channel or nick
 	 * @param type - The type of tab. Defined in TabComponent
+	 * @throws InterruptedException 
 	 */
 	public void newTab(String identifier, int type) {
 		TabComponent tab = new TabComponent(type, identifier);

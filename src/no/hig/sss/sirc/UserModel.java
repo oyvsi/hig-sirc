@@ -17,7 +17,7 @@ import jerklib.events.modes.ModeAdjustment.Action;
  * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
  *
  */
-public class UserModel extends AbstractListModel<String> {
+public class UserModel extends AbstractListModel {
 	private static final long serialVersionUID = 1L;
 
 	private ArrayList<String> usersForView;
@@ -89,6 +89,7 @@ public class UserModel extends AbstractListModel<String> {
 		}
 		
 		sortList(usersForView);
+		updateView();
 	}
 
 	/**
@@ -106,7 +107,7 @@ public class UserModel extends AbstractListModel<String> {
 	 * @param index 
 	 * 
 	 */
-	public String getElementAt(int index) {
+	public Object getElementAt(int index) {
 		return usersForView.get(index);
 	}
 	/**
@@ -130,7 +131,6 @@ public class UserModel extends AbstractListModel<String> {
 	public void modeChange() {
 		 usersForView.clear();
 		 importList();
-		 updateView();
 	}
 	
 	/**
@@ -165,18 +165,17 @@ public class UserModel extends AbstractListModel<String> {
 	}
 
 	/**
-	 * Comparator class used to sort users with precedence on prefix: @ > + > " "  
+	 * Comparator class used to sort users with precedence on prefix: @ > + > ""  
+	 * Default is + > @ > ""
 	 * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
 	 *
 	 */
 	class UserComparator implements Comparator<String> {
 		public int compare (String s1, String s2) {
 		
-		if  (s1.charAt(0) == '@' && s2.charAt(0) != '@') return -1; // String s1 takes precedence over s2
-		else if  (s1.charAt(0) != '@' && s2.charAt(0) == '@') return 1; // String s2 takes precedence over s1
-		else if  (s1.charAt(0) == '+' && s2.charAt(0) != '+') return -1;
-		else if  (s1.charAt(0) != '+' && s2.charAt(0) == '+') return 1;
-		else return s1.compareToIgnoreCase(s2);
+		if  (s1.startsWith("@") && !s2.startsWith("@")) return -1; // Place s1 before s2
+		else if  (!s1.startsWith("@") && s2.startsWith("@")) return 1;  // Place s2 before s1
+		else return s1.compareToIgnoreCase(s2); // Regular sort
 		}
 	}
 }

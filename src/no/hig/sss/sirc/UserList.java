@@ -13,6 +13,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import jerklib.Channel;
+import jerklib.events.modes.ModeAdjustment.Action;
 
 /**
  * UserList is used for the visualization of users strings and

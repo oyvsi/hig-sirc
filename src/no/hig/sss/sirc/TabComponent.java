@@ -44,6 +44,7 @@ public class TabComponent extends JPanel {
 	 * Constructor - Creates either a pm tab or channel tab
 	 * @param type channel or pm
 	 * @param identifier the name to be set for the tab
+	 * @throws InterruptedException 
 	 */
 	public TabComponent(int type, String identifier) {
 		setLayout(new BorderLayout());

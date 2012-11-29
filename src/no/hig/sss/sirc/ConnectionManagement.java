@@ -305,27 +305,16 @@ public class ConnectionManagement implements IRCEventListener {
 		else if (e.getType() == Type.WHOIS_EVENT) {	// A reply for a whois message
 			WhoisEvent we = (WhoisEvent) e;
 			String nick = we.getNick();
-			
 			String hostName = we.getHost();
+			String userName = we.getUser();
 			String realName = we.getRealName();
-			Date signOn = we.signOnTime();
 			String server = we.whoisServer();
-			boolean isIdle = we.isIdle();
-			
-			
-			long idle = we.secondsIdle();
-			long days = idle / 86400;
-			long hours =  idle/ 3600;
-			long tmp = idle % 3600;
-			long minutes = tmp / 60;
-			long seconds = tmp % 60;
-			String idleMessage = days + " days " + hours + " hours " + minutes + " minutes " + seconds + " seconds ";
-			
 			String infoPrefix = buildInfoPrefix();
-			String whoismessage = infoPrefix + nick  + " [" + hostName + "] " + '\n' + 
+			String whoismessage = infoPrefix +  "WHOIS " + we.getNick()  + "  [" + we.getUser() + "@" 
+											 + we.getHost() + "] " + '\n' + 
 								  infoPrefix + "ircname	: " + realName + '\n' +
-								  infoPrefix + "server	: " + server + '\n' +
-								  ((isIdle) ? (infoPrefix + "idle	: " + idleMessage + " " + signOn) : "") +
+								  infoPrefix + "channels: " + we.getChannelNames() + '\n' +
+								  infoPrefix + "server: " + server + '\n' +
 								  infoPrefix + "END OF WHOIS";
 			sIRC.tabContainer.consoleMsg(whoismessage);
 			

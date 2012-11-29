@@ -43,7 +43,9 @@ public class Options extends JPanel implements TreeSelectionListener {
 			"help/command_help.html", 
 			"help/style_help.html",
 			"help/server_help.html",
-			"help/about_help.html" };
+			"help/rightclick_help.html",
+			"help/about_help.html",
+			};
 	
 	// Used to identify which help file to use
 	public static final int CONNECTIONHELP = 0;
@@ -51,7 +53,8 @@ public class Options extends JPanel implements TreeSelectionListener {
 	public static final int COMMANDHELP = 2;
 	public static final int STYLEHELP = 3;
 	public static final int SERVERHELP = 4;
-	public static final int ABOUTHELP = 5;
+	public static final int POPUPHELP = 5;
+	public static final int ABOUTHELP = 6;
 	
 	// Used to identify which text options to use
 	public static TextOptions channelFormat;
@@ -81,6 +84,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		DefaultMutableTreeNode tHelpCommands = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpCommands"));
 		DefaultMutableTreeNode tHelpStyle = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpStyle"));
 		DefaultMutableTreeNode tHelpServer = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpServer"));
+		DefaultMutableTreeNode tHelpPopup = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpPopup"));
 		DefaultMutableTreeNode tHelpAbout = new DefaultMutableTreeNode(sIRC.i18n.getStr("tHelpAbout"));
 
 		// makes tree model around root and makes tree with tree model
@@ -108,6 +112,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 		tHelp.add(tHelpCommands);
 		tHelp.add(tHelpStyle);
 		tHelp.add(tHelpServer);
+		tHelp.add(tHelpPopup);
 		tHelp.add(tHelpAbout);
 
 		// Expands all node in the tree
@@ -247,6 +252,7 @@ public class Options extends JPanel implements TreeSelectionListener {
 			case "Commands": 			setViewHelp(COMMANDHELP); break;
 			case "Style": 				setViewHelp(STYLEHELP); break;
 			case "Server Help": 		setViewHelp(SERVERHELP); break;
+			case "Popup Help":		    setViewHelp(POPUPHELP); break;
 			case "About": 				setViewHelp(ABOUTHELP); break;
 		}
 	}

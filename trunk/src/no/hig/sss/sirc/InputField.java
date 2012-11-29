@@ -31,6 +31,7 @@ public class InputField extends JTextField implements KeyListener {
 		connectionManagement = sIRC.conManagement;
 		this.type = type;
 		this.identifier = identifier;
+		addKeyListener(this);
 	}
 	
 	/**

@@ -27,7 +27,10 @@ class GUI implements ActionListener, MenuListener {
 	private JMenuItem serverJoinChannel;
 	private JMenuItem serverChannelList;
 	
-	
+	/**
+	 * Constructor. Stores frame for later use.
+	 * @param jf the parrent frame
+	 */
 	public GUI(JFrame jf) {
 		this.jf = jf;
 	}
@@ -92,42 +95,50 @@ class GUI implements ActionListener, MenuListener {
 		
 		if (event.equals("exit"))
 			System.exit(0);
+		
 		else if (event.equals("options"))
 			sIRC.options.showWindow();
+		
 		else if (event.equals("help")) {
 			sIRC.options.showWindow();
 			sIRC.options.setViewHelp(Options.CONNECTIONHELP);
-		} else if (event.equals("disconnect"))
-			sIRC.conManagement.disConnect(null);
-		else if (event.equals("connect")) {
-			sIRC.conManagement.connect(sIRC.options.getNick(), sIRC.options.getServer());
 		} 
 		
+		else if (event.equals("disconnect"))
+			sIRC.conManagement.disConnect(null);
+		
+		else if (event.equals("connect"))
+			sIRC.conManagement.connect(sIRC.options.getNick(), sIRC.options.getServer());
+	
+		
 		else if (event.equals("joinAChannel")) {  // Ask for channel from user
-			String channel = (String) JOptionPane.showInputDialog(jf, sIRC.i18n.getStr("enterChannel"), "Join channel",
-					         JOptionPane.QUESTION_MESSAGE);
-			
-			if (channel != "" && channel != null)
+			String channel = (String) JOptionPane.showInputDialog(jf, sIRC.i18n.getStr("enterChannel"), "Join channel", JOptionPane.QUESTION_MESSAGE);			
+			if(channel != "" && channel != null)
 				sIRC.conManagement.joinChannel(channel);  // Join
-		} else if (event.equals("markedAway")) {
-			if(sIRC.conManagement.isConnected()) {  // Must be connected to be set away
-				if(serverAway.isSelected()) {	// Ask for a reason
-					String awayMsg = (String) JOptionPane.showInputDialog(jf, sIRC.i18n.getStr("setAwayMsg"), "Set away message", 						
-						     JOptionPane.QUESTION_MESSAGE);
-					sIRC.conManagement.away(awayMsg);
-				} 
-				else {
-					sIRC.conManagement.away(null);
-				}
-			} else { // Not connected. Give error
-				JOptionPane.showMessageDialog(jf, sIRC.i18n.getStr("error.setAwayDisconnected"));
-				serverAway.setSelected(false);
+		} 
+		
+		else if (event.equals("markedAway")) {
+			if(serverAway.isSelected()) {	// Ask for a reason
+				String awayMsg = (String) JOptionPane.showInputDialog(jf, sIRC.i18n.getStr("setAwayMsg"), "Set away message", 						
+					     JOptionPane.QUESTION_MESSAGE);
+				sIRC.conManagement.away(awayMsg);
+			} 
+			else {
+				sIRC.conManagement.away(null);
 			}
-		} else if (event.equals("about")) {
+		} 
+		
+		else if(event.equals("about")) {
 			sIRC.options.showWindow();
-			sIRC.options.setViewHelp(Options.ABOUTHELP);
-			
-		} else {  // Unknown command
+			sIRC.options.setViewHelp(Options.ABOUTHELP);	
+		} 
+		
+		else if(event.equals("listOfChannels")) {
+			sIRC.conManagement.ListChannels();
+			sIRC.tabContainer.setSelectedIndex(0);
+		}
+		
+		else {  // Unknown command
 			JOptionPane.showMessageDialog(null, sIRC.i18n.getStr("notFound.Text"));
 		}
 	}
@@ -142,8 +153,10 @@ class GUI implements ActionListener, MenuListener {
 			serverJoinChannel.setEnabled(true);
 			serverChannelList.setEnabled(true);
 			
-			serverAway.setSelected(sIRC.conManagement.getSession().isAway());
-		} else {  // Disable them
+			serverAway.setSelected(sIRC.conManagement.getSession().isAway());	// Are we away?
+		} 
+		
+		else {  // Disable them
 			serverDisconnect.setEnabled(false);
 			serverAway.setEnabled(false);
 			serverJoinChannel.setEnabled(false);
@@ -151,8 +164,13 @@ class GUI implements ActionListener, MenuListener {
 		}
 	}
 
-	@Override
+	/**
+	 * Not implemented
+	 */
 	public void menuDeselected(MenuEvent e) {}
-	@Override
-	public void menuCanceled(MenuEvent e) {	}
+
+	/**
+	 * Not implemented
+	 */
+	public void menuCanceled(MenuEvent e) {}
 }

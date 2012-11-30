@@ -73,9 +73,7 @@ public class UserModel extends AbstractListModel {
 	 * 
 	 * @param nick the nick of the user to remove
 	 */
-
 	public void removeUser(String nick) {
-
 		if (op.contains(nick)) {
 			op.remove(nick);
 			opEdited = true;
@@ -89,9 +87,10 @@ public class UserModel extends AbstractListModel {
 
 		updateList();
 	}
-
 	/**
-	 * 
+	 * Get the element at index with the prefix for given mode on user
+	 * User by ListModel
+	 * @return user with prefix if mode is set
 	 */
 	@Override
 	public Object getElementAt(int index) {
@@ -100,7 +99,11 @@ public class UserModel extends AbstractListModel {
 		if (voice.contains(user)) return '+' + user;
 		return user;
 	}
-
+	
+	/**
+	 * Get size of usersForView which is user for display
+	 * @return int - The Size
+	 */
 	public int getSize() {
 		return usersForView.size();
 	}
@@ -112,14 +115,6 @@ public class UserModel extends AbstractListModel {
 	public List<String> getOpList() {
 		return op;
 
-	}
-
-	/**
-	 * Get the voice list
-	 * @return op The voice list
-	 */
-	public List<String> getVoiceList() {
-		return voice;
 	}
 
 	/**
@@ -189,7 +184,6 @@ public class UserModel extends AbstractListModel {
 
 		voiceEdited = true;
 		updateList();
-
 	}
 
 	/**
@@ -253,9 +247,10 @@ public class UserModel extends AbstractListModel {
 		
 			/* If any duplicates found, use filtered list*/
 			if(duplicate) {
-				if(!tmpVoice.isEmpty())
+				if(!tmpVoice.isEmpty()) {
 					sortList(tmpVoice);
-					usersForView.addAll(tmpVoice); 
+				}
+				usersForView.addAll(tmpVoice); 
 			} else {
 				usersForView.addAll(voice);
 			}
@@ -287,7 +282,6 @@ public class UserModel extends AbstractListModel {
 		opEdited = true;
 		voiceEdited = true;
 		regularsEdited = true;
-
 		
 		updateList();
 	}

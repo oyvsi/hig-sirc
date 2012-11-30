@@ -289,14 +289,6 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	}
 
 	/**
-	 * Mode has changed for a user in a channel
-	 * @param channelName - The channel
-	 */
-	public void modeChange(String channelName) {
-		//tabContainer.get(channelName).getUserModel().modeChange();
-	}
-	
-	/**
 	 * Sets Mnemonics for all tabs
 	 */
 	private void setMnemonics() {
@@ -327,10 +319,6 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 		
 	}
 	
-	public void createUserList(String channelName, List<String> users) {
-		//tabContainer.get(channelName).getUserModel().createList(users);
-	}
-
 
 	public void injectUsers(String channelName, List<String> regulars, List<String> op, List<String> voice) {
 		tabContainer.get(channelName).getUserModel().injectUsers(regulars, op, voice);

@@ -134,7 +134,8 @@ public class UserList extends JList<String> implements MouseListener {
 	class ControlListener implements ActionListener {
 
 		/**
-		 * Handles Kick, Op, Deop, Voice, and Devoice based us having OP
+		 * Handles events Kick, Op, Deop, Voice, and Devoice based on us having OP
+		 * @param ae - The event
 		 */
 		public void actionPerformed(ActionEvent ae) {
 			String ourNick = cm.getNick();

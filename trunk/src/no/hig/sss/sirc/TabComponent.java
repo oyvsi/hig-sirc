@@ -56,7 +56,7 @@ public class TabComponent extends JPanel {
 		
 		else if(type == CHANNEL) {
 			this.type = CHANNEL;
-			userModel = new UserModel(identifier);
+			userModel = new UserModel();
 			userList = new UserList(identifier, userModel);
 			JScrollPane scrollPaneUsers = new JScrollPane(userList);
 			add(scrollPaneUsers, BorderLayout.EAST);

@@ -36,6 +36,7 @@ public class UserList extends JList<String> implements MouseListener {
 	 */
 	public UserList(String identifier, UserModel userModel) {
 		super(userModel);
+		this.setFixedCellWidth(100);
 		channelName = identifier;
 		popupMenu = createPopupMenu();
 		add(popupMenu);

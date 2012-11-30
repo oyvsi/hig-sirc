@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -292,7 +293,7 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 	 * @param channelName - The channel
 	 */
 	public void modeChange(String channelName) {
-		tabContainer.get(channelName).getUserModel().modeChange();
+		//tabContainer.get(channelName).getUserModel().modeChange();
 	}
 	
 	/**
@@ -312,5 +313,27 @@ public class TabContainer extends JTabbedPane implements ActionListener {
 				case 8: setMnemonicAt(i, KeyEvent.VK_9); break;
 			}
 		}
+	}
+
+
+	public void opMode(String channelName, String nick, Action action) {
+		tabContainer.get(channelName).getUserModel().opMode(nick, action);
+		
+	}
+
+
+	public void voiceMode(String channelName, String nick, Action action) {
+		tabContainer.get(channelName).getUserModel().voiceMode(nick, action);
+		
+	}
+	
+	public void createUserList(String channelName, List<String> users) {
+		//tabContainer.get(channelName).getUserModel().createList(users);
+	}
+
+
+	public void injectUsers(String channelName, List<String> regulars, List<String> op, List<String> voice) {
+		tabContainer.get(channelName).getUserModel().injectUsers(regulars, op, voice);
+		
 	}
 }

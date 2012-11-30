@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +33,7 @@ public class ConnectionManagement implements IRCEventListener {
 	private Session session;
 	private Profile profile;
 	private Boolean isConnected;
+	private Boolean joinComplete;
 	private SimpleDateFormat timeFormat;
 
 	/**
@@ -236,7 +238,11 @@ public class ConnectionManagement implements IRCEventListener {
 							     " " + sIRC.i18n.getStr("channel.by") + " " + me.setBy(); 
 					
 
-					sIRC.tabContainer.modeChange(channelName);	
+					if(mode == 'o')
+                        sIRC.tabContainer.opMode(channelName, nick, action);
+
+					if(mode == 'v')
+                        sIRC.tabContainer.voiceMode(channelName, nick, action);
 
 					if(mode == 'o' || mode == 'v')
 						sIRC.tabContainer.message(msg, channelName, TabComponent.CHANNEL, TabComponent.INFO);
@@ -280,6 +286,7 @@ public class ConnectionManagement implements IRCEventListener {
 		}
 		
 		else if (e.getType() == Type.JOIN_COMPLETE) {	// We have successfully joined a channel
+			joinComplete = true;
 			JoinCompleteEvent je = (JoinCompleteEvent) e;
 			String topic = je.getChannel().getTopic();
 			String channelName = je.getChannel().getName();
@@ -369,6 +376,26 @@ public class ConnectionManagement implements IRCEventListener {
 		else if(e.getType() == Type.CONNECTION_LOST) {	// We lost connection
 			isConnected = false;
 			sIRC.tabContainer.consoleMsg(sIRC.i18n.getStr("connectionManagement.disconnected"));
+		}
+		
+		else if(e.getType() == Type.NICK_LIST_EVENT) { // The listing of nick from the server is done.
+			NickListEvent nle = (NickListEvent) e;
+			Channel channel = nle.getChannel();
+			List<String> regulars = channel.getNicks();
+			List<String> tmpAll = new ArrayList<String>(regulars);
+			List<String> op = channel.getNicksForMode(Action.PLUS, 'o');
+			List<String> voice = channel.getNicksForMode(Action.PLUS, 'v');
+			Iterator<String> userIter = tmpAll.iterator();
+			while(userIter.hasNext()) {
+				String nick = userIter.next();
+				if(op.contains(nick) || voice.contains(nick)) {
+					regulars.remove(nick);
+				}
+			}
+			sIRC.tabContainer.injectUsers(channel.getName(), regulars, op, voice);
+			 
+			
+			//sIRC.tabContainer.createUserList(nle.getChannel().getName(), nle.getNicks());
 		}
 		
 		else if(e.getType() == Type.CHANNEL_LIST_EVENT) { // We requested a channel list
@@ -503,8 +530,20 @@ public class ConnectionManagement implements IRCEventListener {
 	 * @return List<String> the list with users
 	 */
 	public List<String> getUsers(String channelName) {
+		if(joinComplete) {
 		return session.getChannel(channelName).getNicks();
+		} 
+		return null;
 	}
+	
+	public static void waiting (int n){     
+        long t0, t1;
+        t0 =  System.currentTimeMillis();
+        do{
+            t1 = System.currentTimeMillis();
+        }while ((t1 - t0) < (n));
+    }
+	
 	
 	/**
 	 * Change of client-side nick. Informs the server if connected

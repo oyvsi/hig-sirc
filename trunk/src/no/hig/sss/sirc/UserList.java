@@ -133,10 +133,13 @@ public class UserList extends JList<String> implements MouseListener {
 	 */
 	class ControlListener implements ActionListener {
 
-		@Override
+		/**
+		 * Handles Kick, Op, Deop, Voice, and Devoice based us having OP
+		 */
 		public void actionPerformed(ActionEvent ae) {
 			String ourNick = cm.getNick();
 			String selectedNick = parseNick(getSelectedValue().toString());
+			// If OP, execute given control event
 			if(userModel.getOpList().contains(ourNick)) {
 				
 				if(ae.getActionCommand().equals("Kick")) {
@@ -146,7 +149,7 @@ public class UserList extends JList<String> implements MouseListener {
 					if(reason.isEmpty()) channel.kick(selectedNick, "No reason");
 					else channel.kick(selectedNick, reason);
 				} 
-				
+	
 				else if (ae.getActionCommand().equals("Op")) {
 					cm.getChannel(channelName).op(parseNick(getSelectedValue().toString()));
 				} 

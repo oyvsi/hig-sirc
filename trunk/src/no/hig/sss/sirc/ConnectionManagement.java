@@ -190,11 +190,10 @@ public class ConnectionManagement implements IRCEventListener {
 						String msg = buildInfoPrefix() + sIRC.i18n.getStr("error.noSuchNick");
 						sIRC.tabContainer.message(msg, nickMatch.group(2), TabComponent.PM, TabComponent.INFO);
 					}
-				}
+				}	
 			}	
-		}	
 		
-		else if (e.getType() == Type.PART) {  // We or someone else leaves channel we're in
+		} else if (e.getType() == Type.PART) {  // We or someone else leaves channel we're in
 			PartEvent pe = (PartEvent) e;
 			String channelName = pe.getChannelName();
 			String userName = pe.getUserName();
@@ -286,7 +285,6 @@ public class ConnectionManagement implements IRCEventListener {
 		}
 		
 		else if (e.getType() == Type.JOIN_COMPLETE) {	// We have successfully joined a channel
-			joinComplete = true;
 			JoinCompleteEvent je = (JoinCompleteEvent) e;
 			String topic = je.getChannel().getTopic();
 			String channelName = je.getChannel().getName();
@@ -311,9 +309,7 @@ public class ConnectionManagement implements IRCEventListener {
 
 		else if (e.getType() == Type.WHOIS_EVENT) {	// A reply for a whois message
 			WhoisEvent we = (WhoisEvent) e;
-			String nick = we.getNick();
-			String hostName = we.getHost();
-			String userName = we.getUser();
+			
 			String realName = we.getRealName();
 			String server = we.whoisServer();
 			String infoPrefix = buildInfoPrefix();
@@ -403,10 +399,10 @@ public class ConnectionManagement implements IRCEventListener {
 			String msg = ce.getChannelName() + "(" + ce.getNumberOfUser() + ") " + ce.getTopic();
 			sIRC.tabContainer.message(msg, "Console", TabComponent.CONSOLE, TabComponent.INFO);
 		}
-		
+		// Line to be parsed :golvSIRC!~yy@91.90.45.31.customer.cdi.no KICK #teamhenkars.sirc golv :HI 
 		else if(e.getRawEventData().contains(" KICK ")) {	// Jerklib has a bug with kick-events. So we parse raw
 			String rawData = e.getRawEventData();			// Someone in a channel or pm we're in got kicked
-			String [] colonSplit = rawData.split(":");
+			String [] colonSplit = rawData.split(":");		
 			String [] excSplit = colonSplit[1].split("!");
 			String kicker = excSplit[0];
 			String rest = excSplit[1];
@@ -421,7 +417,8 @@ public class ConnectionManagement implements IRCEventListener {
 		} else { // All inimplemented events	
 			sIRC.tabContainer.consoleMsg(e.getRawEventData());
 		}
-	}
+      }
+	
 	
 	
 	/**
@@ -530,20 +527,8 @@ public class ConnectionManagement implements IRCEventListener {
 	 * @return List<String> the list with users
 	 */
 	public List<String> getUsers(String channelName) {
-		if(joinComplete) {
 		return session.getChannel(channelName).getNicks();
-		} 
-		return null;
 	}
-	
-	public static void waiting (int n){     
-        long t0, t1;
-        t0 =  System.currentTimeMillis();
-        do{
-            t1 = System.currentTimeMillis();
-        }while ((t1 - t0) < (n));
-    }
-	
 	
 	/**
 	 * Change of client-side nick. Informs the server if connected
@@ -611,5 +596,14 @@ public class ConnectionManagement implements IRCEventListener {
 	 */
 	public boolean isConnected() {
 		return isConnected;
+	}
+	
+	/**
+	 * Getter for our nick
+	 * 
+	 * @return our nick
+	 */
+	public String getNick() {
+		return session.getNick();
 	}
 }

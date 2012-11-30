@@ -28,6 +28,8 @@ public class UserList extends JList<String> implements MouseListener {
 	private String channelName;
 	private JPopupMenu popupMenu;
 	private ConnectionManagement cm = sIRC.conManagement;
+	private UserModel userModel;
+	private ActionListener controlListener;
 	
 	/**
 	 * Constructor for UserList, creates popup menu and adds action listeners
@@ -36,11 +38,13 @@ public class UserList extends JList<String> implements MouseListener {
 	 */
 	public UserList(String identifier, UserModel userModel) {
 		super(userModel);
+		this.userModel = userModel;
 		this.setFixedCellWidth(100);
 		channelName = identifier;
 		popupMenu = createPopupMenu();
 		add(popupMenu);
 		addMouseListener(this);
+		controlListener = new ControlListener();
 	}
 	/** 
 	 * Sets up the popup menu with submenus, menuitems and adds
@@ -69,50 +73,18 @@ public class UserList extends JList<String> implements MouseListener {
 		JMenuItem version = new JMenuItem("Version");
 		
 		// Listeners
+		
+		kick.addActionListener(new ControlListener());
+		op.addActionListener(new ControlListener());
+		deop.addActionListener(new ControlListener());
+		voice.addActionListener(new ControlListener());
+		devoice.addActionListener(new ControlListener());
+		
 		whois.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cm.getSession().whois(parseNick(getSelectedValue().toString()));
 			}
 		});
-		
-		op.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cm.getChannel(channelName).op(parseNick(getSelectedValue().toString()));
-			}
-		});
-		
-		deop.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cm.getChannel(channelName).deop(parseNick(getSelectedValue().toString()));
-			}
-		});
-		
-		voice.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cm.getChannel(channelName).voice(parseNick(getSelectedValue().toString()));
-			}
-		});
-		
-		devoice.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cm.getChannel(channelName).deVoice(parseNick(getSelectedValue().toString()));
-			}
-		});
-		
-		kick.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String reason = JOptionPane.showInputDialog("Reason:");
-				Channel channel = cm.getChannel(channelName);
-				String nick = parseNick(getSelectedValue().toString());
-				
-				if(reason.isEmpty()) { 
-					channel.kick(nick, "No reason");
-				} else {
-					channel.kick(nick, reason);
-				}
-			}
-		});
-		
 		
 		ping.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -150,6 +122,52 @@ public class UserList extends JList<String> implements MouseListener {
 		tmpPopupMenu.add(ctcp);;
 		
 		return tmpPopupMenu;
+	}
+	
+	
+	/**
+	 * Inner class to send events if we are OP, else notify the user
+	 * in the given channel
+	 * @author Oyvind Sigerstad, Nils Slaaen, Bjorn-Erik Strand
+	 *
+	 */
+	class ControlListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent ae) {
+			String ourNick = cm.getNick();
+			String selectedNick = parseNick(getSelectedValue().toString());
+			if(userModel.getOpList().contains(ourNick)) {
+				
+				if(ae.getActionCommand().equals("Kick")) {
+					String reason = JOptionPane.showInputDialog("Reason:");
+					Channel channel = cm.getChannel(channelName);
+					
+					if(reason.isEmpty()) channel.kick(selectedNick, "No reason");
+					else channel.kick(selectedNick, reason);
+				} 
+				
+				else if (ae.getActionCommand().equals("Op")) {
+					cm.getChannel(channelName).op(parseNick(getSelectedValue().toString()));
+				} 
+				
+				else if (ae.getActionCommand().equals("Deop")) {
+					cm.getChannel(channelName).deop(parseNick(getSelectedValue().toString()));
+				} 
+				
+				else if (ae.getActionCommand().equals("Voice")) {
+					cm.getChannel(channelName).voice(parseNick(getSelectedValue().toString()));
+				} 
+				
+				else if (ae.getActionCommand().equals("Devoice")) {
+					cm.getChannel(channelName).deVoice(parseNick(getSelectedValue().toString()));
+				}
+			
+			}  else {
+				sIRC.tabContainer.message("-> Insufficient privileges for that action", channelName, TabComponent.CHANNEL, TabComponent.INFO);
+			}
+		}
+		
 	}
 	
 	/**
